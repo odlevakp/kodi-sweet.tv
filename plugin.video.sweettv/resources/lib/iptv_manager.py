@@ -55,7 +55,7 @@ def get_channels():
         _log("Not logged in, returning empty channel list")
         return {"version": 1, "streams": []}
 
-    channels = api.get_channels()
+    channels, _ = api.get_channels()
     streams = []
 
     for ch in channels:
@@ -102,7 +102,7 @@ def get_epg():
         _log("Not logged in, returning empty EPG")
         return {"version": 1, "epg": {}}
 
-    channels = api.get_channels()
+    channels, _ = api.get_channels()
     channel_ids = []
     adult_ids = set()
 

@@ -28,7 +28,7 @@ def main():
     if action is None:
         show_main_menu(handle)
     elif action == "browse_channels":
-        browse_channels(handle)
+        browse_channels(handle, params)
     elif action == "play_channel":
         play_channel(handle, params)
     elif action == "play_catchup":
@@ -95,8 +95,13 @@ def show_main_menu(handle):
 # -- Live TV channel list ------------------------------------------------
 
 
-def browse_channels(handle):
-    """Show list of live TV channels."""
+def browse_channels(handle, params=None):
+    """Show channel categories, or channels within a category."""
+    if params is None:
+        params = {}
+
+    category_id = params.get("category_id", [None])[0]
+
     api = SweetTVApi()
     if not api.is_logged_in():
         xbmcgui.Dialog().ok("Sweet.TV", "Not logged in. Please pair your device first.")
@@ -104,11 +109,39 @@ def browse_channels(handle):
 
     addon = xbmcaddon.Addon()
     show_adult = addon.getSettingBool("show_adult")
-    channels = api.get_channels()
+    channels, categories = api.get_channels()
+
+    # If no category selected, show "All Channels" + category list.
+    if category_id is None:
+        # All channels option.
+        url = "plugin://plugin.video.sweettv/?action=browse_channels&category_id=all"
+        li = xbmcgui.ListItem("All Channels")
+        li.setArt({"icon": "DefaultTVShows.png"})
+        xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)
+
+        for cat in categories:
+            # Skip adult category if disabled.
+            if not show_adult and cat["id"] == 1:
+                continue
+            url = "plugin://plugin.video.sweettv/?action=browse_channels&category_id=%s" % cat["id"]
+            li = xbmcgui.ListItem(cat["name"])
+            li.setArt({"icon": "DefaultTVShows.png"})
+            xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)
+
+        xbmcplugin.endOfDirectory(handle)
+        return
+
+    # Filter channels by category.
+    if category_id != "all":
+        cat_id = int(category_id)
+        channels = [
+            ch for ch in channels
+            if cat_id in ch["categories"] or str(cat_id) in ch["categories"]
+        ]
 
     # Get current EPG for channel descriptions.
     channel_ids = [int(ch["id"]) for ch in channels]
-    epg = api.get_epg(limit_next=1, channels=channel_ids)
+    epg = api.get_epg(limit_next=1, channels=channel_ids) if channel_ids else {}
 
     for ch in channels:
         if not show_adult and ch["adult"]:
@@ -230,7 +263,7 @@ def browse_archive(handle, params):
 
     addon = xbmcaddon.Addon()
     show_adult = addon.getSettingBool("show_adult")
-    channels = api.get_channels()
+    channels, _ = api.get_channels()
 
     for ch in channels:
         if not show_adult and ch["adult"]:

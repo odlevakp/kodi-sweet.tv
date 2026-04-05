@@ -283,9 +283,10 @@ class SweetTVApi:
     # -- Channels ---------------------------------------------------------
 
     def get_channels(self):
-        """Get list of available channels.
+        """Get list of available channels and categories.
 
-        Returns list of channel dicts sorted by number.
+        Returns (channels, categories) where channels is a list of dicts
+        sorted by number, and categories is a list of {id, name} dicts.
         """
         data = self._call_api(
             "TvService/GetChannels.json",
@@ -302,7 +303,16 @@ class SweetTVApi:
 
         if data.get("status") != "OK":
             _log("Failed to load channels: %s" % data, level=xbmc.LOGERROR)
-            return []
+            return [], []
+
+        categories = []
+        for cat in data.get("categories") or []:
+            categories.append(
+                {
+                    "id": cat.get("id"),
+                    "name": cat.get("name", ""),
+                }
+            )
 
         channels = []
         for ch in data.get("list") or []:
@@ -319,6 +329,7 @@ class SweetTVApi:
                         1 in ch.get("category", [])
                         or "1" in ch.get("category", [])
                     ),
+                    "categories": ch.get("category", []),
                     "catchup_days": (
                         ch.get("catchup_duration", 0)
                         if ch.get("catchup")
@@ -327,7 +338,7 @@ class SweetTVApi:
                 }
             )
 
-        return sorted(channels, key=lambda c: c["number"])
+        return sorted(channels, key=lambda c: c["number"]), categories
 
     # -- EPG --------------------------------------------------------------
 
