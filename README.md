@@ -70,9 +70,38 @@ Kodi TV Section
 - EPG data is provided as XMLTV format through IPTV Manager
 - Channel list is provided as M3U format through IPTV Manager
 
+## Auto-Update Repository
+
+This addon includes a Kodi repository for automatic updates:
+
+1. Download `repository.sweettv-1.0.0.zip` from the [latest release](https://github.com/odlevakp/kodi-sweet.tv/releases/latest)
+2. Install it in Kodi via Settings -> Add-ons -> Install from ZIP file
+3. Install Sweet.TV from the repository
+4. Future updates will be picked up automatically by Kodi
+
 ## Development
 
 Based on the [Enigma2 sweet.tv plugin](https://github.com/archivczsk/archivczsk-doplnky/tree/main/plugin_video_sweettv) for API reference.
+
+### Prerequisites
+
+- GNU sed (`brew install coreutils` on macOS for `gsed`)
+- GitHub CLI (`gh`) for releases
+
+### Make Commands
+
+| Command          | Description                                                      |
+|------------------|------------------------------------------------------------------|
+| `make build`     | Build installable addon ZIP in `dist/`                           |
+| `make repo`      | Build repository addon ZIP in `dist/`                            |
+| `make repo-index`| Regenerate `repo/addons.xml` and `repo/addons.xml.md5`          |
+| `make release`   | Build, update repo index, tag, push, and create GitHub release   |
+| `make version`   | Print current version (today's date: YYYY.MM.DD)                 |
+| `make clean`     | Remove `dist/` build artifacts                                   |
+
+### Versioning
+
+Releases use date-based versions: `2026.04.05`, `2026.04.06`, etc.
 
 ## License
 

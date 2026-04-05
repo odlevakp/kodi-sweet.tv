@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.sweettv"
+       name="Sweet.TV Repository"
+       version="1.0.0"
+       provider-name="kodi-sweet.tv">
+  <extension point="xbmc.addon.repository" name="Sweet.TV Repository">
+    <info compressed="false">https://raw.githubusercontent.com/odlevakp/kodi-sweet.tv/main/repo/addons.xml</info>
+    <checksum>https://raw.githubusercontent.com/odlevakp/kodi-sweet.tv/main/repo/addons.xml.md5</checksum>
+    <datadir zip="true">https://github.com/odlevakp/kodi-sweet.tv/releases/latest/download/</datadir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Sweet.TV Kodi Repository</summary>
+    <summary lang="sk_SK">Sweet.TV Kodi Repozitar</summary>
+    <description lang="en_GB">Repository for Sweet.TV Kodi addon. Provides automatic updates.</description>
+    <platform>all</platform>
+    <license>GPL-3.0</license>
+  </extension>
+</addon>
