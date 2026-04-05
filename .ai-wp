@@ -1,0 +1,50 @@
+# AI Work Progress - Sweet.TV Kodi Addon
+
+## Project Goal
+Build a Kodi addon for sweet.tv that provides native TV experience (live channels, EPG, archive, VOD) using IPTV Manager integration.
+
+## Phases
+
+### Phase 1: Core Live TV + EPG [IN PROGRESS]
+- [x] Analyze Enigma2 reference plugin for API understanding
+- [x] Plan architecture and discuss with user
+- [ ] Set up repo structure (README, configs, addon skeleton)
+- [ ] Implement sweet.tv API client (auth, channels, EPG, streams)
+- [ ] Implement IPTV Manager integration
+- [ ] Build addon entry point and URL router
+- [ ] Create settings UI
+- [ ] Implement device pairing flow
+- [ ] Implement live stream playback with lifecycle management
+- [ ] Test and validate
+
+### Phase 2: Archive/Catchup [PLANNED]
+- [ ] Browse channels with archive support
+- [ ] Browse archive by day
+- [ ] Play archived programs
+
+### Phase 3: Parental Lock [PLANNED]
+- [ ] Adult channel filtering
+- [ ] PIN protection for adult content
+- [ ] Integration with Kodi parental controls
+
+### Phase 4: Subscription Info [PLANNED]
+- [ ] Fetch and display subscription details
+- [ ] Show plan type and expiry
+
+### Phase 5: Additional Features [PLANNED]
+- [ ] VOD/Movies (genres, collections, trailers)
+- [ ] Search (movies + EPG records)
+- [ ] Device management
+- [ ] Quality selection
+- [ ] Slovak localization
+- [ ] Favorites/recently watched
+
+## Technical Decisions
+- IPTV Manager for native TV section (user choice)
+- Kodi 21+ only, no legacy support
+- English first, localization later
+- Device pairing auth (not username/password - API requirement)
+
+## Reference
+- Enigma2 plugin: tmp/archivczsk-doplnky/plugin_video_sweettv/
+- sweet.tv API: https://api.sweet.tv/ (all POST, JSON)

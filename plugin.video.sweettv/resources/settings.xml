@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <category label="General">
+    <setting id="pair_device" type="action" label="Pair Device" action="RunPlugin(plugin://plugin.video.sweettv/?action=pair_device)"/>
+    <setting id="unpair_device" type="action" label="Unpair Device (Logout)" action="RunPlugin(plugin://plugin.video.sweettv/?action=unpair_device)"/>
+    <setting id="max_bitrate" type="labelenum" label="Maximum Bitrate" values="Unlimited|8 Mbit/s|6 Mbit/s|4 Mbit/s|3 Mbit/s|2 Mbit/s" default="Unlimited"/>
+  </category>
+  <category label="Channels">
+    <setting id="show_adult" type="bool" label="Show Adult Channels" default="false"/>
+    <setting id="epg_days" type="slider" label="EPG Days to Load" default="3" range="1,1,7" option="int"/>
+  </category>
+  <category label="Playback">
+    <setting id="use_inputstream" type="bool" label="Use Inputstream Adaptive" default="true"/>
+    <setting id="auto_close_stream" type="bool" label="Auto-close Stream on Stop" default="true"/>
+  </category>
+  <category label="Advanced">
+    <setting id="manage_devices" type="action" label="Manage Registered Devices" action="RunPlugin(plugin://plugin.video.sweettv/?action=manage_devices)"/>
+    <setting id="subscription_info" type="action" label="Show Subscription Info" action="RunPlugin(plugin://plugin.video.sweettv/?action=subscription_info)"/>
+  </category>
+</settings>

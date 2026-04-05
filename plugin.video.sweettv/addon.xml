@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.sweettv"
+       name="Sweet.TV"
+       version="0.1.0"
+       provider-name="kodi-sweet.tv">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+    <import addon="script.module.requests" version="2.25.0"/>
+    <import addon="inputstream.adaptive" version="21.0.0" optional="true"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.service" library="service.py" start="startup"/>
+  <!-- IPTV Manager integration endpoints -->
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>iptv</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <!-- IPTV Manager configuration -->
+    <iptv_manager>
+      <channels_uri>plugin://plugin.video.sweettv/?action=iptv_channels</channels_uri>
+      <epg_uri>plugin://plugin.video.sweettv/?action=iptv_epg</epg_uri>
+    </iptv_manager>
+    <summary lang="en_GB">Sweet.TV streaming service</summary>
+    <summary lang="sk_SK">Sweet.TV streamovacia sluzba</summary>
+    <description lang="en_GB">Watch Sweet.TV live channels, EPG, archive and movies in Kodi. Integrates with IPTV Manager for native TV experience.</description>
+    <description lang="sk_SK">Sledujte Sweet.TV live kanaly, EPG, archiv a filmy v Kodi. Integracia s IPTV Manager pre nativny TV zazitok.</description>
+    <disclaimer lang="en_GB">This addon requires a valid Sweet.TV subscription.</disclaimer>
+    <platform>all</platform>
+    <license>GPL-3.0</license>
+    <source>https://github.com/pave1-o/kodi-sweet.tv</source>
+    <news>v0.1.0 - Initial release with live TV, EPG, and IPTV Manager integration</news>
+  </extension>
+</addon>
