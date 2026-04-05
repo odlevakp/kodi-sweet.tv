@@ -21,8 +21,8 @@
   <extension point="xbmc.addon.metadata">
     <!-- IPTV Manager configuration -->
     <iptv_manager>
-      <channels_uri>plugin://plugin.video.sweettv/?action=iptv_channels</channels_uri>
-      <epg_uri>plugin://plugin.video.sweettv/?action=iptv_epg</epg_uri>
+      <channels_uri>plugin://plugin.video.sweettv/?action=iptv_channels&amp;port={port}</channels_uri>
+      <epg_uri>plugin://plugin.video.sweettv/?action=iptv_epg&amp;port={port}</epg_uri>
     </iptv_manager>
     <summary lang="en_GB">Sweet.TV streaming service</summary>
     <summary lang="sk_SK">Sweet.TV streamovacia sluzba</summary>
