@@ -187,21 +187,15 @@ def play_channel(handle, params):
         xbmcgui.Dialog().ok("Sweet.TV", "Not logged in. Please pair your device first.")
         return
 
-    addon = xbmcaddon.Addon()
-    max_bitrate_str = addon.getSetting("max_bitrate")
-    max_bitrate = _parse_bitrate(max_bitrate_str)
-
-    stream_url, stream_id = api.get_live_link(channel_id, max_bitrate=max_bitrate)
-    if not stream_url:
+    # Get the master playlist URL directly — let inputstream.adaptive handle quality.
+    master_url, stream_id = api.open_stream(channel_id)
+    if not master_url:
         xbmcgui.Dialog().notification("Sweet.TV", "Failed to load stream", xbmcgui.NOTIFICATION_ERROR)
         return
 
-    li = xbmcgui.ListItem(path=stream_url)
-
-    if addon.getSettingBool("use_inputstream"):
-        li.setProperty("inputstream", "inputstream.adaptive")
-        li.setProperty("inputstream.adaptive.manifest_type", "hls")
-
+    li = xbmcgui.ListItem(path=master_url)
+    li.setProperty("inputstream", "inputstream.adaptive")
+    li.setProperty("inputstream.adaptive.manifest_type", "hls")
     li.setProperty("inputstream.adaptive.stream_headers", "User-Agent=%s" % SweetTVApi.USER_AGENT)
 
     # Store stream_id for cleanup.
@@ -226,23 +220,14 @@ def play_catchup(handle, params):
         xbmcgui.Dialog().ok("Sweet.TV", "Not logged in. Please pair your device first.")
         return
 
-    addon = xbmcaddon.Addon()
-    max_bitrate_str = addon.getSetting("max_bitrate")
-    max_bitrate = _parse_bitrate(max_bitrate_str)
-
-    stream_url, stream_id = api.get_live_link(
-        channel_id, epg_id=int(epg_id), max_bitrate=max_bitrate
-    )
-    if not stream_url:
+    master_url, stream_id = api.open_stream(channel_id, epg_id=int(epg_id))
+    if not master_url:
         xbmcgui.Dialog().notification("Sweet.TV", "Failed to load archive stream", xbmcgui.NOTIFICATION_ERROR)
         return
 
-    li = xbmcgui.ListItem(path=stream_url)
-
-    if addon.getSettingBool("use_inputstream"):
-        li.setProperty("inputstream", "inputstream.adaptive")
-        li.setProperty("inputstream.adaptive.manifest_type", "hls")
-
+    li = xbmcgui.ListItem(path=master_url)
+    li.setProperty("inputstream", "inputstream.adaptive")
+    li.setProperty("inputstream.adaptive.manifest_type", "hls")
     li.setProperty("inputstream.adaptive.stream_headers", "User-Agent=%s" % SweetTVApi.USER_AGENT)
 
     if stream_id:
