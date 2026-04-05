@@ -41,12 +41,12 @@ Sweet.tv uses device pairing instead of username/password login:
 
 ## Settings
 
-| Setting | Description | Default |
-|---|---|---|
-| Max Bitrate | Maximum stream bandwidth | Unlimited |
-| Show Adult Channels | Toggle adult content visibility | Off |
-| EPG Days | Number of days to load EPG data | 3 |
-| Stream Close on Stop | Auto-close stream on playback stop | On |
+| Setting              | Description                        | Default   |
+|----------------------|------------------------------------|-----------|
+| Max Bitrate          | Maximum stream bandwidth            | Unlimited |
+| Show Adult Channels  | Toggle adult content visibility     | Off       |
+| EPG Days             | Number of days to load EPG data     | 3         |
+| Stream Close on Stop | Auto-close stream on playback stop  | On        |
 
 ## Architecture
 
