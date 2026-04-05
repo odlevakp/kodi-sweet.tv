@@ -53,7 +53,17 @@ Sweet.tv uses device pairing instead of username/password login:
 This addon integrates with Kodi's native TV functionality through IPTV Manager:
 
 ```
-sweet.tv API <-> sweettv_api.py <-> plugin.py <-> IPTV Manager <-> PVR IPTV Simple Client <-> Kodi TV Section
+sweet.tv API
+    ↕
+sweettv_api.py
+    ↕
+addon.py
+    ↕
+IPTV Manager
+    ↕
+PVR IPTV Simple Client
+    ↕
+Kodi TV Section
 ```
 
 - HLS streams are played via `inputstream.adaptive`
