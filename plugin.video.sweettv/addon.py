@@ -27,6 +27,8 @@ def main():
 
     if action is None:
         show_main_menu(handle)
+    elif action == "browse_channels":
+        browse_channels(handle)
     elif action == "play_channel":
         play_channel(handle, params)
     elif action == "play_catchup":
@@ -75,7 +77,7 @@ def show_main_menu(handle):
     """Show the addon's main navigation menu."""
     addon = xbmcaddon.Addon()
     items = [
-        ("Live TV", "play_channel", "DefaultTVShows.png", True),
+        ("Live TV", "browse_channels", "DefaultTVShows.png", True),
         ("Archive", "browse_archive", "DefaultYear.png", True),
         ("Movies", "browse_movies", "DefaultMovies.png", True),
         ("Search", "search", "DefaultAddonsSearch.png", True),
@@ -86,6 +88,54 @@ def show_main_menu(handle):
         li = xbmcgui.ListItem(label)
         li.setArt({"icon": icon})
         xbmcplugin.addDirectoryItem(handle, url, li, isFolder=is_folder)
+
+    xbmcplugin.endOfDirectory(handle)
+
+
+# -- Live TV channel list ------------------------------------------------
+
+
+def browse_channels(handle):
+    """Show list of live TV channels."""
+    api = SweetTVApi()
+    if not api.is_logged_in():
+        xbmcgui.Dialog().ok("Sweet.TV", "Not logged in. Please pair your device first.")
+        return
+
+    addon = xbmcaddon.Addon()
+    show_adult = addon.getSettingBool("show_adult")
+    channels = api.get_channels()
+
+    # Get current EPG for channel descriptions.
+    channel_ids = [int(ch["id"]) for ch in channels]
+    epg = api.get_epg(limit_next=1, channels=channel_ids)
+
+    for ch in channels:
+        if not show_adult and ch["adult"]:
+            continue
+
+        label = ch["name"]
+        info = {"title": ch["name"]}
+
+        # Show current program in the label.
+        ch_epg = epg.get(ch["id"], [])
+        img = ch.get("logo")
+        if ch_epg:
+            event = ch_epg[0]
+            from datetime import datetime
+            start = datetime.fromtimestamp(int(event["time_start"])).strftime("%H:%M")
+            stop = datetime.fromtimestamp(int(event["time_stop"])).strftime("%H:%M")
+            label = "%s - [I]%s[/I]" % (ch["name"], event.get("text", ""))
+            info["plot"] = "%s - %s\n%s" % (start, stop, event.get("text", ""))
+            if event.get("preview_url"):
+                img = event["preview_url"]
+
+        url = "plugin://plugin.video.sweettv/?action=play_channel&channel_id=%s" % ch["id"]
+        li = xbmcgui.ListItem(label)
+        li.setInfo("video", info)
+        li.setArt({"icon": ch.get("logo", ""), "thumb": img})
+        li.setProperty("IsPlayable", "true")
+        xbmcplugin.addDirectoryItem(handle, url, li, isFolder=False)
 
     xbmcplugin.endOfDirectory(handle)
 
