@@ -1,6 +1,6 @@
 ADDON_ID   := plugin.video.sweettv
 REPO_ID    := repository.sweettv
-VERSION    := $(shell date +%Y.%m.%d)
+VERSION    := $(shell gsed -n '/^       version=/s/.*version="\([^"]*\)".*/\1/p' $(ADDON_ID)/addon.xml)
 ZIP_NAME   := $(ADDON_ID)-$(VERSION).zip
 REPO_ZIP   := $(REPO_ID)-1.0.0.zip
 DIST_DIR   := dist
