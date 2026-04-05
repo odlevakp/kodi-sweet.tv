@@ -307,10 +307,18 @@ class SweetTVApi:
 
         categories = []
         for cat in data.get("categories") or []:
+            _log("Category raw data: %s" % cat)
+            cat_name = (
+                cat.get("name")
+                or cat.get("caption")
+                or cat.get("title")
+                or cat.get("label")
+                or str(cat.get("id", ""))
+            )
             categories.append(
                 {
                     "id": cat.get("id"),
-                    "name": cat.get("name", ""),
+                    "name": cat_name,
                 }
             )
 
