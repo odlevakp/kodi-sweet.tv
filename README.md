@@ -20,17 +20,22 @@ A Kodi addon for [sweet.tv](https://sweet.tv) streaming service that provides a 
 ## Requirements
 
 - Kodi 21 (Omega) or later
-- [IPTV Manager](https://github.com/add-ons/service.iptv.manager) addon
-- [PVR IPTV Simple Client](https://github.com/kodi-pvr/pvr.iptvsimple) addon
 - Active sweet.tv subscription
+
+Dependencies (auto-installed when you install the addon):
+- [IPTV Manager](https://github.com/add-ons/service.iptv.manager) - bridges addon data to PVR
+- [PVR IPTV Simple Client](https://github.com/kodi-pvr/pvr.iptvsimple) - provides native TV section
+- [inputstream.adaptive](https://github.com/xbmc/inputstream.adaptive) - HLS stream playback
 
 ## Installation
 
-1. Install IPTV Manager and PVR IPTV Simple Client from the Kodi addon repository
-2. Install this addon (manual ZIP or from repository)
-3. Open the addon settings and select "Pair Device"
-4. Follow the on-screen instructions to pair your device at sweet.tv
-5. Channels will appear in Kodi's TV section automatically
+1. Download `plugin.video.sweettv-YYYY.MM.DD.zip` from the [latest release](https://github.com/odlevakp/kodi-sweet.tv/releases/latest)
+2. In Kodi, go to **Settings -> Add-ons -> Install from ZIP file**
+3. Select the downloaded ZIP — dependencies are installed automatically
+4. Open the addon from **Add-ons -> Video add-ons -> Sweet.TV**
+5. Go to addon settings and click **Pair Device**
+6. Follow the on-screen instructions to pair at sweet.tv
+7. **Restart Kodi** — channels will appear in the **TV** section
 
 ## Device Pairing
 
