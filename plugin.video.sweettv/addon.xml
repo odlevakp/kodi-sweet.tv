@@ -14,10 +14,6 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.service" library="service.py" start="startup"/>
-  <!-- IPTV Manager integration endpoints -->
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>iptv</provides>
-  </extension>
   <extension point="xbmc.addon.metadata">
     <!-- IPTV Manager configuration -->
     <iptv_manager>
