@@ -21,6 +21,7 @@ Thumbs.db
 
 # Project
 tmp/
+dist/
 *.log
 
 # Addon data
