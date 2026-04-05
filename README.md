@@ -3,7 +3,7 @@
 A Kodi addon for [sweet.tv](https://sweet.tv) streaming service that provides a native TV experience with live channels, EPG guide, archive/catchup, and VOD content.
 
 > [!NOTE]
-> This addon was lovingly vibe-coded with Claude. It works, but expect rough edges.
+> This addon was vibe-coded with Claude Code. It works, but expect rough edges.
 > Bug reports and PRs are welcome!
 
 ## Features
