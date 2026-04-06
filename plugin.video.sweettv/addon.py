@@ -27,6 +27,25 @@ def main():
     action = params.get("action", [None])[0]
     _log("Action: %s, Params: %s" % (action, params))
 
+    # Auto-trigger pairing on first use. Skip for actions that handle
+    # the not-logged-in state themselves or shouldn't trigger UI.
+    _PAIRING_EXEMPT = {
+        "pair_device", "unpair_device",
+        "iptv_channels", "iptv_epg",
+        "fav_add", "fav_remove",
+    }
+    if action not in _PAIRING_EXEMPT:
+        api = SweetTVApi()
+        if not api.is_logged_in():
+            _log("Not logged in - launching pairing flow", level=xbmc.LOGINFO)
+            pair_device()
+            # If still not logged in (user cancelled), bail out cleanly.
+            if not SweetTVApi().is_logged_in():
+                if action is None:
+                    # Show empty main menu so the addon "opens" without error.
+                    xbmcplugin.endOfDirectory(handle, succeeded=True, updateListing=False)
+                return
+
     if action is None:
         show_main_menu(handle)
     elif action == "browse_channels":
@@ -85,18 +104,21 @@ def main():
 
 def show_main_menu(handle):
     """Show the addon's main navigation menu."""
-    addon = xbmcaddon.Addon()
     items = [
         (_t(M.LIVE_TV), "browse_channels", "DefaultTVShows.png", True),
         (_t(M.ARCHIVE), "browse_archive", "DefaultYear.png", True),
         (_t(M.MOVIES), "browse_movies", "DefaultMovies.png", True),
         (_t(M.SEARCH), "search", "DefaultAddonsSearch.png", True),
+        (_t(M.REGISTERED_DEVICES), "manage_devices", "DefaultNetwork.png", True),
+        (_t(M.SUBSCRIPTION_TITLE), "subscription_info", "DefaultIconInfo.png", False),
     ]
 
     for label, action, icon, is_folder in items:
         url = "plugin://plugin.video.sweettv/?action=%s" % action
         li = xbmcgui.ListItem(label)
         li.setArt({"icon": icon})
+        if not is_folder:
+            li.setProperty("IsPlayable", "false")
         xbmcplugin.addDirectoryItem(handle, url, li, isFolder=is_folder)
 
     xbmcplugin.endOfDirectory(handle)
@@ -677,29 +699,35 @@ def manage_devices(handle):
     """Show list of registered devices."""
     api = SweetTVApi()
     if not api.is_logged_in():
-        xbmcgui.Dialog().ok("Sweet.TV", "Not logged in.")
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.NOT_LOGGED_IN))
         return
 
     devices = api.get_devices()
     if not devices:
-        xbmcgui.Dialog().ok("Sweet.TV", "No devices found.")
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.NO_DEVICES))
         return
 
     from datetime import datetime
 
     for dev in devices:
         date_str = datetime.fromtimestamp(int(dev.get("date_added", 0))).strftime("%d.%m.%Y %H:%M")
-        label = "%s (%s) - Added: %s" % (
-            dev.get("model", "Unknown"),
-            dev.get("type", "Unknown"),
-            date_str,
-        )
+        # Build a friendly device label: prefer model, fall back to subtype/type.
+        model = (dev.get("model") or "").strip()
+        subtype = (dev.get("subtype") or "").strip()
+        dtype = (dev.get("type") or "").strip()
+        if model:
+            name = "%s (%s)" % (model, dtype) if dtype else model
+        elif subtype and subtype != "Unknown":
+            name = "%s (%s)" % (subtype, dtype) if dtype else subtype
+        else:
+            name = dtype or "?"
+        label = "%s — %s: %s" % (name, _t(M.SUB_DEVICE_ADDED), date_str)
         url = (
             "plugin://plugin.video.sweettv/"
             "?action=remove_device&token_id=%s" % dev.get("token_id", "")
         )
         li = xbmcgui.ListItem(label)
-        li.setInfo("video", {"plot": "Select to remove this device"})
+        li.setInfo("video", {"plot": _t(M.SUB_DEVICE_SELECT_REMOVE)})
         xbmcplugin.addDirectoryItem(handle, url, li, isFolder=False)
 
     xbmcplugin.endOfDirectory(handle)
@@ -711,12 +739,12 @@ def remove_device(params):
     if not token_id:
         return
 
-    if not xbmcgui.Dialog().yesno("Sweet.TV", "Remove this device?"):
+    if not xbmcgui.Dialog().yesno("Sweet.TV", _t(M.REMOVE_DEVICE_CONFIRM)):
         return
 
     api = SweetTVApi()
     api.remove_device(token_id)
-    xbmcgui.Dialog().ok("Sweet.TV", "Device removed.")
+    xbmcgui.Dialog().ok("Sweet.TV", _t(M.DEVICE_REMOVED))
     xbmc.executebuiltin("Container.Refresh")
 
 
@@ -727,22 +755,70 @@ def show_subscription_info():
     """Show subscription details in a dialog."""
     api = SweetTVApi()
     if not api.is_logged_in():
-        xbmcgui.Dialog().ok("Sweet.TV", "Not logged in.")
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.NOT_LOGGED_IN))
         return
 
-    info = api.get_user_info()
-    if info.get("status") != "OK":
-        xbmcgui.Dialog().ok("Sweet.TV", "Failed to load subscription info.")
+    response = api.get_user_info()
+    if response.get("status") != "OK":
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.SUBSCRIPTION_FAILED))
         return
 
-    # Format whatever info the API returns.
-    lines = ["Status: Active"]
-    for key in ("tariff_name", "tariff", "balance", "end_date", "subscription_end"):
-        if key in info:
-            label = key.replace("_", " ").title()
-            lines.append("%s: %s" % (label, info[key]))
+    # Real fields live under the "info" key.
+    info = response.get("info", {})
+    lines = []
 
-    xbmcgui.Dialog().textviewer("Sweet.TV - Subscription", "\n".join(lines))
+    # Account status.
+    if info.get("is_blocked"):
+        status = _t(M.SUB_STATUS_BLOCKED)
+    elif info.get("account_status") == "ACTIVE":
+        status = _t(M.SUB_STATUS_ACTIVE)
+    else:
+        status = info.get("account_status", "?")
+    lines.append("%s: %s" % (_t(M.SUB_ACCOUNT), status))
+    lines.append("")
+
+    # Tariff / plan name.
+    tariff = info.get("tariff", "")
+    if tariff:
+        lines.append("%s: %s" % (_t(M.SUB_PLAN), tariff))
+
+    # Active services with expiry and days remaining.
+    services = info.get("services") or []
+    if services:
+        lines.append("")
+        lines.append("%s:" % _t(M.SUB_ACTIVE_SERVICES))
+        from datetime import datetime, date
+        today = date.today()
+        for svc in services:
+            name = svc.get("name", "?")
+            expires_at = svc.get("expires_at", "")
+            line = "  - %s" % name
+            if expires_at:
+                try:
+                    exp_date = datetime.strptime(expires_at, "%Y-%m-%d").date()
+                    days_left = (exp_date - today).days
+                    line += " (%s %s, %d %s)" % (
+                        _t(M.SUB_EXPIRES), expires_at, days_left, _t(M.SUB_DAYS_LEFT)
+                    )
+                except ValueError:
+                    line += " (%s %s)" % (_t(M.SUB_EXPIRES), expires_at)
+            lines.append(line)
+
+    # Balance and amount due.
+    balance = info.get("balance")
+    to_pay = info.get("to_pay")
+    if balance is not None:
+        lines.append("")
+        lines.append("%s: %s" % (_t(M.SUB_BALANCE), balance))
+    if to_pay:
+        lines.append("%s: %s" % (_t(M.SUB_TO_PAY), to_pay))
+
+    # Parental control state.
+    if info.get("parental_control_enabled"):
+        lines.append("")
+        lines.append("%s: %s" % (_t(M.SUB_PARENTAL_CONTROL), _t(M.SUB_ENABLED)))
+
+    xbmcgui.Dialog().textviewer(_t(M.SUBSCRIPTION_TITLE), "\n".join(lines))
 
 
 # -- Helpers -------------------------------------------------------------

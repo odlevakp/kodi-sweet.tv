@@ -148,11 +148,63 @@ msgstr ""
 
 # Subscription
 msgctxt "#30700"
-msgid "Sweet.TV - Subscription"
+msgid "Subscription Information"
 msgstr ""
 
 msgctxt "#30701"
 msgid "Failed to load subscription info."
+msgstr ""
+
+msgctxt "#30702"
+msgid "Account"
+msgstr ""
+
+msgctxt "#30703"
+msgid "Plan"
+msgstr ""
+
+msgctxt "#30704"
+msgid "Active services"
+msgstr ""
+
+msgctxt "#30705"
+msgid "expires"
+msgstr ""
+
+msgctxt "#30706"
+msgid "days left"
+msgstr ""
+
+msgctxt "#30707"
+msgid "Balance"
+msgstr ""
+
+msgctxt "#30708"
+msgid "To pay"
+msgstr ""
+
+msgctxt "#30709"
+msgid "Parental control"
+msgstr ""
+
+msgctxt "#30710"
+msgid "Enabled"
+msgstr ""
+
+msgctxt "#30711"
+msgid "ACTIVE"
+msgstr ""
+
+msgctxt "#30712"
+msgid "BLOCKED"
+msgstr ""
+
+msgctxt "#30713"
+msgid "Added"
+msgstr ""
+
+msgctxt "#30714"
+msgid "Select to remove this device"
 msgstr ""
 
 # Settings labels
@@ -188,10 +240,6 @@ msgctxt "#30807"
 msgid "Playback"
 msgstr ""
 
-msgctxt "#30808"
-msgid "Use Inputstream Adaptive"
-msgstr ""
-
 msgctxt "#30809"
 msgid "Auto-close Stream on Stop"
 msgstr ""
@@ -206,6 +254,55 @@ msgstr ""
 
 msgctxt "#30812"
 msgid "Show Subscription Info"
+msgstr ""
+
+# Settings help text (descriptions shown in the footer)
+msgctxt "#30900"
+msgid "General settings: account pairing and stream quality."
+msgstr ""
+
+msgctxt "#30901"
+msgid "Start the device pairing flow. You will be shown a code to enter at sweet.tv -> My Devices."
+msgstr ""
+
+msgctxt "#30902"
+msgid "Logout from sweet.tv and clear stored credentials. You will need to re-pair to use the addon again."
+msgstr ""
+
+msgctxt "#30903"
+msgid "Cap the maximum HLS variant bitrate the addon will request. Lower values use less bandwidth at the cost of quality."
+msgstr ""
+
+msgctxt "#30904"
+msgid "Channel and EPG configuration."
+msgstr ""
+
+msgctxt "#30905"
+msgid "When enabled, channels marked as adult by sweet.tv (18+ category) appear in listings and the TV guide."
+msgstr ""
+
+msgctxt "#30906"
+msgid "How many days of EPG data to fetch from sweet.tv when IPTV Manager refreshes. More days = larger payload and slower refresh."
+msgstr ""
+
+msgctxt "#30907"
+msgid "Stream playback behaviour."
+msgstr ""
+
+msgctxt "#30909"
+msgid "Tell sweet.tv to release the stream slot when playback stops. If disabled, slots leak until the server times them out, which can trigger 'too many devices' errors."
+msgstr ""
+
+msgctxt "#30910"
+msgid "Advanced settings: device management and subscription info."
+msgstr ""
+
+msgctxt "#30911"
+msgid "Open the list of devices currently registered to your sweet.tv account. You can remove devices to free up slots."
+msgstr ""
+
+msgctxt "#30912"
+msgid "Show details about your active sweet.tv subscription."
 msgstr ""
 
 msgctxt "#30813"

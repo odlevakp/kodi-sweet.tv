@@ -63,6 +63,19 @@ class _MessageRegistry:
     # Subscription (30700-30799).
     SUBSCRIPTION_TITLE = 30700
     SUBSCRIPTION_FAILED = 30701
+    SUB_ACCOUNT = 30702
+    SUB_PLAN = 30703
+    SUB_ACTIVE_SERVICES = 30704
+    SUB_EXPIRES = 30705
+    SUB_DAYS_LEFT = 30706
+    SUB_BALANCE = 30707
+    SUB_TO_PAY = 30708
+    SUB_PARENTAL_CONTROL = 30709
+    SUB_ENABLED = 30710
+    SUB_STATUS_ACTIVE = 30711
+    SUB_STATUS_BLOCKED = 30712
+    SUB_DEVICE_ADDED = 30713
+    SUB_DEVICE_SELECT_REMOVE = 30714
 
     # Settings labels (30800-30899) — these are referenced from settings.xml
     # by ID, no need to use them in Python code.

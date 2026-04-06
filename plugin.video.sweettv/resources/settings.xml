@@ -1,24 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings>
-  <category label="30800">
-    <setting id="pair_device" type="action" label="30801" action="RunPlugin(plugin://plugin.video.sweettv/?action=pair_device)"/>
-    <setting id="unpair_device" type="action" label="30802" action="RunPlugin(plugin://plugin.video.sweettv/?action=unpair_device)"/>
-    <setting id="max_bitrate" type="labelenum" label="30803" values="Unlimited|8 Mbit/s|6 Mbit/s|4 Mbit/s|3 Mbit/s|2 Mbit/s" default="Unlimited"/>
-  </category>
-  <category label="30804">
-    <setting id="show_adult" type="bool" label="30805" default="false"/>
-    <setting id="epg_days" type="slider" label="30806" default="3" range="1,1,7" option="int"/>
-  </category>
-  <category label="30807">
-    <setting id="use_inputstream" type="bool" label="30808" default="true"/>
-    <setting id="auto_close_stream" type="bool" label="30809" default="true"/>
-  </category>
-  <category label="30810">
-    <setting id="manage_devices" type="action" label="30811" action="RunPlugin(plugin://plugin.video.sweettv/?action=manage_devices)"/>
-    <setting id="subscription_info" type="action" label="30812" action="RunPlugin(plugin://plugin.video.sweettv/?action=subscription_info)"/>
-  </category>
-  <!-- IPTV Manager integration - hidden settings used by service.iptv.manager. -->
-  <setting id="iptv.enabled" type="bool" default="true" visible="false"/>
-  <setting id="iptv.channels_uri" type="text" default="plugin://plugin.video.sweettv/?action=iptv_channels&amp;port={port}" visible="false"/>
-  <setting id="iptv.epg_uri" type="text" default="plugin://plugin.video.sweettv/?action=iptv_epg&amp;port={port}" visible="false"/>
+<settings version="1">
+  <section id="plugin.video.sweettv">
+
+    <category id="general" label="30800" help="30900">
+      <group id="1">
+        <setting id="pair_device" type="action" label="30801" help="30901">
+          <level>0</level>
+          <control type="button" format="action">
+            <data>RunPlugin(plugin://plugin.video.sweettv/?action=pair_device)</data>
+          </control>
+        </setting>
+        <setting id="unpair_device" type="action" label="30802" help="30902">
+          <level>0</level>
+          <control type="button" format="action">
+            <data>RunPlugin(plugin://plugin.video.sweettv/?action=unpair_device)</data>
+          </control>
+        </setting>
+        <setting id="max_bitrate" type="string" label="30803" help="30903">
+          <level>0</level>
+          <default>Unlimited</default>
+          <constraints>
+            <options>
+              <option>Unlimited</option>
+              <option>8 Mbit/s</option>
+              <option>6 Mbit/s</option>
+              <option>4 Mbit/s</option>
+              <option>3 Mbit/s</option>
+              <option>2 Mbit/s</option>
+            </options>
+          </constraints>
+          <control type="list" format="string">
+            <heading>30803</heading>
+          </control>
+        </setting>
+      </group>
+    </category>
+
+    <category id="channels" label="30804" help="30904">
+      <group id="1">
+        <setting id="show_adult" type="boolean" label="30805" help="30905">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="epg_days" type="integer" label="30806" help="30906">
+          <level>0</level>
+          <default>3</default>
+          <constraints>
+            <minimum>1</minimum>
+            <step>1</step>
+            <maximum>7</maximum>
+          </constraints>
+          <control type="slider" format="integer">
+            <popup>false</popup>
+          </control>
+        </setting>
+      </group>
+    </category>
+
+    <category id="playback" label="30807" help="30907">
+      <group id="1">
+        <setting id="auto_close_stream" type="boolean" label="30809" help="30909">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle"/>
+        </setting>
+      </group>
+    </category>
+
+
+    <!-- IPTV Manager integration - hidden settings used by service.iptv.manager. -->
+    <category id="iptv_manager_internal">
+      <group id="1">
+        <setting id="iptv.enabled" type="boolean">
+          <level>4</level>
+          <default>true</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="iptv.channels_uri" type="string">
+          <level>4</level>
+          <default>plugin://plugin.video.sweettv/?action=iptv_channels&amp;port={port}</default>
+          <control type="edit" format="string"/>
+        </setting>
+        <setting id="iptv.epg_uri" type="string">
+          <level>4</level>
+          <default>plugin://plugin.video.sweettv/?action=iptv_epg&amp;port={port}</default>
+          <control type="edit" format="string"/>
+        </setting>
+      </group>
+    </category>
+
+  </section>
 </settings>

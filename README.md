@@ -10,12 +10,15 @@ A Kodi addon for [sweet.tv](https://sweet.tv) streaming service that provides a 
 
 - **Live TV** - Watch sweet.tv channels directly in Kodi's TV section
 - **EPG Guide** - Full electronic program guide integrated with Kodi's TV guide
-- **Archive/Catchup** - Watch previously aired programs (per-channel availability)
-- **VOD/Movies** - Browse movies by genre and collection
+- **Channel Groups** - Sweet.TV categories (Sports, Movies, Kids, etc.) and your favourites become PVR channel groups
+- **Archive/Catchup** - Watch previously aired programs (per-channel availability, up to 7 days)
+- **Free Movies** - Browse free (ad-supported) movies by genre or collection. Paid SVOD/TVOD movies are not supported.
 - **Search** - Search across movies and EPG records
+- **Favourites** - Mark channels as favourites with a context menu, stored locally
 - **Stream Quality** - Configurable maximum bitrate
 - **Adult Content Filter** - Toggle adult channel visibility
 - **Device Management** - View and remove registered devices
+- **Localization** - English, Slovak, and Czech UI
 
 ## Requirements
 
@@ -91,29 +94,30 @@ After completing Step 4 above, channels appear in Kodi's main **TV** menu with:
 
 While browsing channels in the addon UI, open the context menu on any channel and select **Add to Favourites**. A **Favourites** category appears at the top of the Live TV list. Favourites are stored locally per Kodi install.
 
+After the next IPTV Manager refresh, your favourites also appear as a **Favourites** channel group in Kodi's native TV section.
+
+### Movies
+
+**Add-ons → Video add-ons → Sweet.TV → Movies** — browse by genre or collection.
+
+Only free (AVOD, ad-supported) movies are listed and playable. Paid movies use Widevine DRM which this addon does not support.
+
 ### Archive / Catchup
 
 **Add-ons → Video add-ons → Sweet.TV → Archive** — pick a channel, then a day, then a program.
 
-## Device Pairing
-
-Sweet.tv uses device pairing instead of username/password login:
-
-1. The addon generates a pairing code
-2. Go to [sweet.tv](https://sweet.tv) on your computer or phone
-3. Log in to your account
-4. Navigate to your profile -> "My Devices"
-5. Enter the pairing code and click "Activate"
-6. The addon will automatically detect the pairing and start working
-
 ## Settings
 
-| Setting              | Description                        | Default   |
-|----------------------|------------------------------------|-----------|
-| Max Bitrate          | Maximum stream bandwidth            | Unlimited |
-| Show Adult Channels  | Toggle adult content visibility     | Off       |
-| EPG Days             | Number of days to load EPG data     | 3         |
-| Stream Close on Stop | Auto-close stream on playback stop  | On        |
+| Setting                   | Description                                            | Default   |
+|---------------------------|--------------------------------------------------------|-----------|
+| Pair Device               | Run the device pairing flow                            | —         |
+| Unpair Device (Logout)    | Clear stored credentials                               | —         |
+| Maximum Bitrate           | Cap on stream bandwidth                                | Unlimited |
+| Show Adult Channels       | Toggle adult content visibility                        | Off       |
+| EPG Days to Load          | Number of days of EPG data to fetch (1–7)              | 3         |
+| Auto-close Stream on Stop | Call CloseStream on playback stop to free the slot     | On        |
+| Manage Registered Devices | View/remove devices linked to your sweet.tv account    | —         |
+| Show Subscription Info    | Display subscription details (raw API fields for now)  | —         |
 
 ## Architecture
 
@@ -133,9 +137,12 @@ PVR IPTV Simple Client
 Kodi TV Section
 ```
 
-- HLS streams are played via `inputstream.adaptive`
+- HLS streams are played via Kodi's built-in HLS player (which tolerates the broken `ads-badtest.sweet.tv` ad preroll that inputstream.adaptive choked on)
 - EPG data is provided as XMLTV format through IPTV Manager
 - Channel list is provided as M3U format through IPTV Manager
+- Movies are streamed as channel catchups, not as standalone VOD — see [docs/architecture.md](docs/architecture.md#movie-playback-avod-only)
+
+For a deeper explanation, read [docs/architecture.md](docs/architecture.md).
 
 ## Auto-Update Repository
 
@@ -175,7 +182,7 @@ Based on the [Enigma2 sweet.tv plugin](https://github.com/archivczsk/archivczsk-
 
 ### Versioning
 
-Releases use date-based versions: `2026.04.05`, `2026.04.06`, etc.
+Releases use date-based versions with a per-day counter: `2026.04.05.0`, `2026.04.05.1`, ..., `2026.04.06.0`. Each `make build` auto-increments the counter so Kodi accepts the install over the previous one.
 
 ## License
 

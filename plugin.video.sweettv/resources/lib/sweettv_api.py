@@ -18,10 +18,13 @@ class SweetTVApi:
 
     API_BASE = "https://api.sweet.tv/"
     BILLING_BASE = "https://billing.sweet.tv/"
+    # Vanilla Linux Chrome UA - sweet.tv uses this to detect "device subtype".
+    # Putting Linux here avoids being labelled "MACOS" in the device list.
     USER_AGENT = (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "Mozilla/5.0 (X11; Linux x86_64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/131.0.0.0 Safari/537.36"
+        "Chrome/146.0.0.0 Safari/537.36 "
+        "Kodi/sweettv-addon"
     )
 
     def __init__(self):
@@ -86,6 +89,7 @@ class SweetTVApi:
         return {
             "type": "DT_AndroidTV",
             "mac": mac,
+            "model": self._device_model(),
             "application": {"type": "AT_SWEET_TV_Player"},
             "sub_type": 39,
             "firmware": {"versionCode": 1, "versionString": "7.4.50"},
@@ -98,6 +102,19 @@ class SweetTVApi:
             },
             "advertisingId": str(uuid.uuid4()),
         }
+
+    @staticmethod
+    def _device_model():
+        """Build a human-readable device name like 'Kodi (hostname)'."""
+        import socket
+        try:
+            host = socket.gethostname() or "unknown"
+            # Strip trailing .local on macOS-style hostnames.
+            if host.endswith(".local"):
+                host = host[:-6]
+        except Exception:
+            host = "unknown"
+        return "Kodi (%s)" % host
 
     # -- Login persistence ------------------------------------------------
 

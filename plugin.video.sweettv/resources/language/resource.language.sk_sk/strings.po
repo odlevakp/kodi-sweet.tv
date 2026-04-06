@@ -148,12 +148,64 @@ msgstr "Vyberte pre odstránenie tohto zariadenia"
 
 # Subscription
 msgctxt "#30700"
-msgid "Sweet.TV - Subscription"
-msgstr "Sweet.TV - Predplatné"
+msgid "Subscription Information"
+msgstr "Informácie o predplatnom"
 
 msgctxt "#30701"
 msgid "Failed to load subscription info."
 msgstr "Nepodarilo sa načítať informácie o predplatnom."
+
+msgctxt "#30702"
+msgid "Account"
+msgstr "Účet"
+
+msgctxt "#30703"
+msgid "Plan"
+msgstr "Tarif"
+
+msgctxt "#30704"
+msgid "Active services"
+msgstr "Aktívne služby"
+
+msgctxt "#30705"
+msgid "expires"
+msgstr "vyprší"
+
+msgctxt "#30706"
+msgid "days left"
+msgstr "dní zostáva"
+
+msgctxt "#30707"
+msgid "Balance"
+msgstr "Zostatok"
+
+msgctxt "#30708"
+msgid "To pay"
+msgstr "Na úhradu"
+
+msgctxt "#30709"
+msgid "Parental control"
+msgstr "Rodičovská kontrola"
+
+msgctxt "#30710"
+msgid "Enabled"
+msgstr "Zapnutá"
+
+msgctxt "#30711"
+msgid "ACTIVE"
+msgstr "AKTÍVNY"
+
+msgctxt "#30712"
+msgid "BLOCKED"
+msgstr "BLOKOVANÝ"
+
+msgctxt "#30713"
+msgid "Added"
+msgstr "Pridané"
+
+msgctxt "#30714"
+msgid "Select to remove this device"
+msgstr "Vyberte pre odstránenie tohto zariadenia"
 
 # Settings labels
 msgctxt "#30800"
@@ -188,10 +240,6 @@ msgctxt "#30807"
 msgid "Playback"
 msgstr "Prehrávanie"
 
-msgctxt "#30808"
-msgid "Use Inputstream Adaptive"
-msgstr "Použiť Inputstream Adaptive"
-
 msgctxt "#30809"
 msgid "Auto-close Stream on Stop"
 msgstr "Automaticky uzavrieť stream pri zastavení"
@@ -207,6 +255,55 @@ msgstr "Spravovať registrované zariadenia"
 msgctxt "#30812"
 msgid "Show Subscription Info"
 msgstr "Zobraziť informácie o predplatnom"
+
+# Settings help text (descriptions shown in the footer)
+msgctxt "#30900"
+msgid "General settings: account pairing and stream quality."
+msgstr "Všeobecné nastavenia: párovanie účtu a kvalita streamu."
+
+msgctxt "#30901"
+msgid "Start the device pairing flow. You will be shown a code to enter at sweet.tv -> My Devices."
+msgstr "Spustí proces párovania zariadenia. Zobrazí sa vám kód, ktorý zadáte na sweet.tv -> Moje zariadenia."
+
+msgctxt "#30902"
+msgid "Logout from sweet.tv and clear stored credentials. You will need to re-pair to use the addon again."
+msgstr "Odhlási vás zo sweet.tv a vymaže uložené prihlasovacie údaje. Pre ďalšie použitie doplnku bude potrebné opätovné spárovanie."
+
+msgctxt "#30903"
+msgid "Cap the maximum HLS variant bitrate the addon will request. Lower values use less bandwidth at the cost of quality."
+msgstr "Obmedzí maximálny bitrate HLS variantu, ktorý si doplnok vyžiada. Nižšie hodnoty šetria pripojenie na úkor kvality."
+
+msgctxt "#30904"
+msgid "Channel and EPG configuration."
+msgstr "Konfigurácia kanálov a EPG."
+
+msgctxt "#30905"
+msgid "When enabled, channels marked as adult by sweet.tv (18+ category) appear in listings and the TV guide."
+msgstr "Ak je zapnuté, kanály označené sweet.tv ako pre dospelých (kategória 18+) sa zobrazia v zoznamoch a v TV programe."
+
+msgctxt "#30906"
+msgid "How many days of EPG data to fetch from sweet.tv when IPTV Manager refreshes. More days = larger payload and slower refresh."
+msgstr "Koľko dní EPG dát stiahnuť zo sweet.tv pri obnove cez IPTV Manager. Viac dní znamená väčšie množstvo dát a pomalšiu obnovu."
+
+msgctxt "#30907"
+msgid "Stream playback behaviour."
+msgstr "Správanie pri prehrávaní streamu."
+
+msgctxt "#30909"
+msgid "Tell sweet.tv to release the stream slot when playback stops. If disabled, slots leak until the server times them out, which can trigger 'too many devices' errors."
+msgstr "Po zastavení prehrávania povie sweet.tv, aby uvoľnil slot streamu. Ak je vypnuté, sloty zostávajú obsadené až do timeoutu na serveri, čo môže spôsobiť chybu 'príliš veľa zariadení'."
+
+msgctxt "#30910"
+msgid "Advanced settings: device management and subscription info."
+msgstr "Pokročilé nastavenia: správa zariadení a informácie o predplatnom."
+
+msgctxt "#30911"
+msgid "Open the list of devices currently registered to your sweet.tv account. You can remove devices to free up slots."
+msgstr "Otvorí zoznam zariadení aktuálne registrovaných k vášmu sweet.tv účtu. Zariadenia môžete odstrániť pre uvoľnenie slotov."
+
+msgctxt "#30912"
+msgid "Show details about your active sweet.tv subscription."
+msgstr "Zobrazí informácie o vašom aktívnom sweet.tv predplatnom."
 
 msgctxt "#30813"
 msgid "Show Movies Not in Subscription"
