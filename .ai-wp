@@ -1,21 +1,21 @@
 # AI Work Progress - Sweet.TV Kodi Addon
 
-## Project Goal
-Build a Kodi addon for sweet.tv that provides native TV experience (live channels, EPG, archive, VOD) using IPTV Manager integration.
+Project context, conventions, and gotchas live in [CLAUDE.md](CLAUDE.md).
+Architecture, API, debugging, localization deep-dives are in [docs/](docs/).
+This file tracks **what's done and what's left**, nothing else.
 
 ## Phases
 
 ### Phase 1: Core Live TV + EPG [DONE]
 - [x] Analyze Enigma2 reference plugin for API understanding
-- [x] Plan architecture and discuss with user
-- [x] Set up repo structure (README, configs, addon skeleton)
-- [x] Implement sweet.tv API client (auth, channels, EPG, streams)
-- [x] Implement IPTV Manager integration (channels + EPG via socket)
-- [x] Build addon entry point and URL router
-- [x] Create settings UI (bitrate, adult filter, pairing)
-- [x] Implement device pairing flow with on-screen dialogs
+- [x] Repo structure (README, configs, addon skeleton)
+- [x] sweet.tv API client (auth, channels, EPG, streams)
+- [x] IPTV Manager integration (channels + EPG via socket)
+- [x] URL router and main menu
+- [x] Settings UI (bitrate, adult filter, pairing)
+- [x] Device pairing flow with on-screen dialogs
 - [x] Auto-launch pairing on first use
-- [x] Implement live stream playback (Kodi built-in HLS player, not inputstream.adaptive)
+- [x] Live stream playback (Kodi built-in HLS player)
 - [x] Live TV channel browsing with sweet.tv categories
 - [x] Channels appear in Kodi's native TV section via IPTV Manager
 - [x] PVR channel groups from sweet.tv categories + Pinned Channels
@@ -39,7 +39,7 @@ Build a Kodi addon for sweet.tv that provides native TV experience (live channel
 - [x] Balance, parental control state
 
 ### Phase 5: Additional Features [DONE / ongoing]
-- [x] VOD/Movies (genres, collections) - AVOD only, served as channel catchups
+- [x] VOD/Movies (genres, collections) — AVOD only, served as channel catchups
 - [x] Movies sorted alphabetically by default with year/rating sort options
 - [x] Movie titles show [year] ★rating in grey
 - [x] "Sweet.TV details" context menu fetches full info on demand
@@ -65,81 +65,14 @@ Build a Kodi addon for sweet.tv that provides native TV experience (live channel
 
 ### Documentation [DONE]
 - [x] README with feature list, install steps, settings table
-- [x] docs/architecture.md - module structure, data flow, IPTV Manager handshake
-- [x] docs/api-reference.md - all endpoints, gotchas (movies via catchup, ad preroll, GetMovieInfo bulk vs single)
-- [x] docs/localization.md - string ID system, how to add languages
-- [x] docs/debugging.md - log locations, common issues, recovery steps
+- [x] CLAUDE.md with project context, conventions, gotchas
+- [x] docs/architecture.md
+- [x] docs/api-reference.md
+- [x] docs/localization.md
+- [x] docs/debugging.md
 
-## Known Issues / Lessons Learned
-- IPTV Manager and PVR Simple Client CANNOT be declared as Kodi dependencies — install fails. Users must install them manually.
-- PVR Simple Client catchup must be enabled in its settings to use catchup from the TV guide.
-- Kodi rejects ZIP install if same version is already installed — Makefile auto-bumps the suffix.
-- Sweet.tv API: bulk GetMovieInfo never returns description/duration/channel_id/epg_id; need single-movie call.
-- Sweet.tv API: MovieService/GetLink is dead for AVOD content; movies stream via TvService/OpenStream as channel catchups.
-- The Linux User-Agent triggered an alternate CDN that returned a media playlist instead of a master playlist; reverted to Windows UA.
-- The new x-device header (1;22;39;2;7.4.50) is needed for movies; the old (1;22;0;2;3.7.1) returned empty movie lists.
-- Sweet.tv inserts an ad preroll from the unreachable host ads-badtest.sweet.tv. inputstream.adaptive can't recover from it; Kodi's built-in HLS player tolerates it.
-- The HLS playlist URL from OpenStream is single-use and expires quickly; can't be cached.
-- After clearing addon state on Linux Mint Flatpak, NEVER delete Addons*.db — that wipes all installed addons, not just ours.
-
-## Technical Decisions
-- IPTV Manager for native TV section (user choice over rolling our own PVR backend)
-- Kodi 21+ only, no legacy support
-- Localization: M.NAME constants in strings.py (not bare numeric IDs in code)
-- Device pairing auth (not username/password — API requirement)
-- Built-in HLS player for streams (NOT inputstream.adaptive — chokes on the ad preroll)
-- GNU sed (gsed) used in Makefile, not BSD sed
-
-## Architecture
-
-```
-sweet.tv API
-    ↕
-sweettv_api.py (auth, channels, EPG, streams, movies, search)
-    ↕
-addon.py (URL router) + service.py (stream cleanup, IPTV Manager bridge)
-    ↕
-IPTV Manager (channels + EPG via socket)
-    ↕
-PVR IPTV Simple Client
-    ↕
-Kodi TV Section
-```
-
-## File Layout
-```
-plugin.video.sweettv/
-  addon.xml          - manifest, dependencies
-  addon.py           - URL router and all action handlers
-  service.py         - background service for stream lifecycle
-  icon.png           - addon icon
-  resources/
-    settings.xml     - addon settings (Kodi 21 v1 schema)
-    language/        - en_gb, sk_sk, cs_cz strings.po
-    lib/
-      sweettv_api.py    - API client
-      iptv_manager.py   - IPTV Manager socket integration
-      favourites.py     - pinned channels (legacy module name)
-      strings.py        - M.NAME localization constants
-
-repository.sweettv/
-  addon.xml          - Kodi repo pointer to raw GitHub
-
-repo/
-  addons.xml         - generated by `make repo-index`
-  addons.xml.md5
-
-docs/
-  architecture.md
-  api-reference.md
-  localization.md
-  debugging.md
-
-Makefile             - build, release, version targets
-```
-
-## Reference
-- Enigma2 plugin: tmp/archivczsk-doplnky/plugin_video_sweettv/ (gitignored)
-- sweet.tv API: https://api.sweet.tv/ (all POST, JSON)
-- IPTV Manager: https://github.com/add-ons/service.iptv.manager
-- PVR Simple Client: https://github.com/kodi-pvr/pvr.iptvsimple
+### Testing [ONGOING]
+- [x] Linux Mint Flatpak Kodi (primary dev/test target)
+- [ ] Android TV Kodi
+- [ ] LibreELEC / standard Linux Kodi
+- [ ] Windows / macOS Kodi
