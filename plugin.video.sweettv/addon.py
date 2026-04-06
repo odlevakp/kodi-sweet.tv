@@ -117,12 +117,13 @@ def browse_channels(handle, params=None):
             # Skip adult category if disabled.
             if not show_adult and cat["id"] == 1:
                 continue
-            label = cat["name"]
-            # Mark empty categories (like Favourites if not set up).
+            # Skip empty categories - the sweet.tv API doesn't expose
+            # favourites via this endpoint, so the Favourite category
+            # is always empty here.
             if not cat["channel_list"]:
-                label = "%s [COLOR gray](empty)[/COLOR]" % label
+                continue
             url = "plugin://plugin.video.sweettv/?action=browse_channels&category_id=%s" % cat["id"]
-            li = xbmcgui.ListItem(label)
+            li = xbmcgui.ListItem(cat["name"])
             li.setArt({"icon": cat.get("icon_url") or "DefaultTVShows.png"})
             xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)
 
@@ -200,9 +201,11 @@ def play_channel(handle, params):
         xbmcgui.Dialog().notification("Sweet.TV", "Failed to load stream", xbmcgui.NOTIFICATION_ERROR)
         return
 
-    li = xbmcgui.ListItem(path=stream_url)
-    li.setProperty("inputstream", "inputstream.adaptive")
-    li.setProperty("inputstream.adaptive.stream_headers", "User-Agent=%s" % SweetTVApi.USER_AGENT)
+    # Append User-Agent as URL header (works with Kodi's built-in player).
+    play_url = stream_url + "|User-Agent=" + SweetTVApi.USER_AGENT
+    li = xbmcgui.ListItem(path=play_url)
+    li.setMimeType("application/vnd.apple.mpegurl")
+    li.setContentLookup(False)
 
     if stream_id:
         li.setProperty("sweettv_stream_id", str(stream_id))
@@ -236,9 +239,10 @@ def play_catchup(handle, params):
         xbmcgui.Dialog().notification("Sweet.TV", "Failed to load archive stream", xbmcgui.NOTIFICATION_ERROR)
         return
 
-    li = xbmcgui.ListItem(path=stream_url)
-    li.setProperty("inputstream", "inputstream.adaptive")
-    li.setProperty("inputstream.adaptive.stream_headers", "User-Agent=%s" % SweetTVApi.USER_AGENT)
+    play_url = stream_url + "|User-Agent=" + SweetTVApi.USER_AGENT
+    li = xbmcgui.ListItem(path=play_url)
+    li.setMimeType("application/vnd.apple.mpegurl")
+    li.setContentLookup(False)
 
     if stream_id:
         li.setProperty("sweettv_stream_id", str(stream_id))
