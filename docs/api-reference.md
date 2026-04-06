@@ -16,18 +16,23 @@ All requests are **HTTP POST** with JSON body. Even read operations like getting
 ## Required Headers
 
 ```
-Content-type:    application/json
-User-Agent:      Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-Origin:          https://sweet.tv
-Referer:         https://sweet.tv
-Accept-language: sk
-x-device:        1;22;0;2;3.7.1
-Authorization:   Bearer <access_token>     (omitted for SigninService/Start.json and SigninService/GetStatus.json)
+Content-type:      application/json
+User-Agent:        Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+Origin:            https://sweet.tv
+Referer:           https://sweet.tv/
+Accept-language:   sk-SK,sk;q=0.9,en-US;q=0.8,en;q=0.7
+Content-type:      application/json
+x-device:          1;22;39;2;7.4.50
+x-device-id:       <device_id (uuid)>
+x-accept-language: sk
+Authorization:     Bearer <access_token>   (omitted for SigninService/Start.json and SigninService/GetStatus.json)
 ```
 
-The `x-device` header value and the `versionString` inside `device_info` (see below) must match — both should say `3.7.1`.
+The `x-device` header encodes `app_type;device_type;sub_type;app_subtype;version`. The `versionString` inside `device_info` (see below) must match the version segment.
 
-For fetching the actual HLS playlist (not the API), use the same headers but **drop** `Content-type` and `x-device`.
+**Important**: an older `x-device` value (e.g. `1;22;0;2;3.7.1`) will work for live TV and channels but will get **empty responses** from the movie endpoints. The website currently sends `1;22;39;2;7.4.50` and that's what unlocks movies.
+
+For fetching the actual HLS playlist (not the API), use the same headers but **drop** `Content-type`, `x-device`, and `x-device-id`.
 
 ## Authentication
 
@@ -67,10 +72,10 @@ Sent with `SigninService/Start.json` and `AuthenticationService/Token.json`:
   "type": "DT_AndroidTV",
   "mac": "aa:bb:cc:dd:ee:ff",
   "application": { "type": "AT_SWEET_TV_Player" },
-  "sub_type": 0,
+  "sub_type": 39,
   "firmware": {
-    "versionCode": 1301,
-    "versionString": "3.7.1"
+    "versionCode": 1,
+    "versionString": "7.4.50"
   },
   "uuid": "<device_id>",
   "supported_drm": { "widevine_modular": true },
@@ -232,23 +237,50 @@ Request:
 { "stream_id": 123456 }
 ```
 
+## Movies — How They Actually Stream
+
+This is the part that took the longest to figure out. **Movies on sweet.tv are not served as VOD files.** They're scheduled as EPG events on premium movie channels (e.g. "Premium Comedy HD", "Top Movies HD") and streamed via the same `TvService/OpenStream` catchup mechanism that the live TV channels use.
+
+The flow:
+
+1. List movies via `MovieService/GetGenreMovies` or `MovieService/GetCollectionMovies` → get an array of movie IDs.
+2. Bulk-hydrate via `MovieService/GetMovieInfo` (poster, title, year, rating). The bulk response does **not** include `channel_id`/`epg_id`.
+3. When the user clicks play, call `MovieService/GetMovieInfo` again **for that single movie** with `need_extended_info: true`. The response now includes `channel_id` and `epg_id` — the catchup coordinates of the broadcast on a movie channel.
+4. Call `TvService/OpenStream` with that `channel_id` + `epg_id` (the same way you'd play any catchup event).
+5. The returned HLS playlist is the movie.
+
+The schedule is per-broadcast — sweet.tv airs the same movie at different times on different premium channels, and the API returns whichever airing is currently relevant. If you cache the `(channel_id, epg_id)` pair for too long it will go stale.
+
+### What Doesn't Work
+
+`MovieService/GetLink.json` is **dead** for AVOD content. It always returns `{ "code": 5, "message": "Link not found" }` regardless of `preferred_link_type`. Older code (and the Enigma2 reference plugin) called this endpoint, which is why movies stopped working at some point.
+
+Paid SVOD/TVOD movies (anything not `accessibility_model: ACCESSIBILITY_MODEL_AVOD`) likely use Widevine DRM via DASH, but we have not reverse-engineered that flow. The addon currently filters them out of the listing entirely.
+
 ### MovieService/GetConfiguration.json
 
-Returns built-in movie genres and collections. Send `{}`.
+Returns the static lookup tables: genres, collections, countries, languages, sort modes, video qualities, etc. Send `{}`.
 
-Response (relevant fields):
+Response keys: `result`, `categories`, `countries`, `genres`, `owners`, `roles`, `sort_modes`, `subgenres`, `video_qualities`, `languages`, `sections`, `cab_sections`, `currencies`.
+
+A genre object looks like:
 
 ```json
 {
-  "result": "OK",
-  "genres":      [ { "id": 1, "title": "Action" }, ... ],
-  "collections": [ { "id": 1, "title": "New Releases", "type": "Movie" }, ... ]
+  "id": 61,
+  "title": "All movies",
+  "slug": "all-movies",
+  "icon_url": "http://staticeu.sweet.tv/...",
+  "banner_url": "http://staticeu.sweet.tv/...",
+  "icon_v2_url": "http://staticeu.sweet.tv/..."
 }
 ```
 
+A built-in collection object has `id`, `title`, and `type` (filter for `type == "Movie"`).
+
 ### MovieService/GetCollections.json
 
-Get user-facing movie collections (different set than the built-in ones in `GetConfiguration`). Request: `{ "type": 1 }`. Returns objects with `id`, `title`, `type`. Filter for `type == "Movie"`.
+Get user-facing movie collections (a different set than the built-ins in `GetConfiguration`). Request: `{ "type": 1 }`. Returns objects with `id`, `title`, `type`. Filter for `type == "Movie"`.
 
 ### MovieService/GetCollectionMovies.json
 
@@ -256,52 +288,90 @@ Get movie IDs in a collection. Request: `{ "collection_id": <int> }`. Returns `{
 
 ### MovieService/GetGenreMovies.json
 
-Same as above but for a genre: `{ "genre_id": <int> }`.
+Same shape as above but for a genre: `{ "genre_id": <int> }`. Returns `{ "result": "OK", "movies": [<id>, ...] }`.
+
+**Important**: with the old `x-device` header (3.7.1) this returns `{ "result": "OK" }` with **no movies array**. You must use the current `x-device` value (`1;22;39;2;7.4.50`) for it to actually return data.
 
 ### MovieService/GetMovieInfo.json
 
-Hydrate a list of movie IDs into full objects.
+Hydrate movie IDs into full objects. **Behaves differently in bulk vs single** — see below.
 
-Request:
+Request (bulk, used for listings):
 
 ```json
 {
-  "movies":              [123, 456],
-  "need_bundle_offers":  false,
+  "movies":              [123, 456, 789],
+  "offset":              0,
+  "limit":               20,
+  "need_extended_info":  false
+}
+```
+
+Bulk response per movie (truncated):
+
+```json
+{
+  "id": 36461,
+  "external_id_pairs": [{"owner_id": 191, "external_id": 36461, "preferred": true}],
+  "title": "Miliardy",
+  "year": 2016,
+  "age_limit": 15,
+  "poster_url": "http://...",
+  "banner_url": "http://...",
+  "rating_imdb": 8.3,
+  "rating_kinopoisk": 6.5,
+  "genres": [13],
+  "available": true,
+  "tagline": "",
+  "slug": "36461-miliardy",
+  "audio_tracks": [{"index": 24, "language": "Čeština", "sound_scheme": "Stereo", "iso_code": "cze"}],
+  "released": true,
+  "availability_info": "Zadarmo",
+  "availability_info_color": "#1EBF85",
+  "blurred_poster_url": "http://...",
+  "promo_purchase_enabled": true,
+  "scores": {"1": {"provider": "IMDB", "value": 8.3, "rating_count": 117470}},
+  "accessibility_model": "ACCESSIBILITY_MODEL_AVOD"
+}
+```
+
+Use `accessibility_model` to filter — only `ACCESSIBILITY_MODEL_AVOD` is playable without DRM.
+
+Request (single movie, used to get playback coordinates):
+
+```json
+{
+  "movies":              ["34205"],
+  "offset":              0,
   "need_extended_info":  true
 }
 ```
 
-Response:
+Single-movie response includes everything from the bulk response **plus** the critical fields:
 
 ```json
 {
-  "result": "OK",
-  "movies": [
-    {
-      "external_id_pairs": [
-        { "external_id": 123, "owner_id": 7 }
-      ],
-      "title": "...",
-      "description": "...",
-      "poster_url": "...",
-      "rating_imdb": 7.8,
-      "duration": 5400,
-      "year": "2024",
-      "available": true,
-      "trailer_url": "..."
-    }
-  ]
+  "channel_id":     2005,
+  "epg_id":         904970253,
+  "duration":       5940,
+  "description":    "...",
+  "people":         [...],
+  "video_qualities": [{"id": 2, "name": "", "height": 720, "file_size": "2664000000"}],
+  "subtitles":      [{"language": "Čeština", "iso_code": "cze", "forced": false}],
+  "recommended_movies": [...],
+  "statistics":     {"like_count": 7, "dislike_count": 1}
 }
 ```
 
-The `external_id` and `owner_id` from `external_id_pairs[0]` are what you pass to `GetLink`.
+`channel_id` and `epg_id` are the catchup coordinates passed to `TvService/OpenStream` for playback. **These fields are NOT returned by the bulk request**, even with `need_extended_info: true` — only single-movie requests get them.
+
+The `external_id_pairs[0].external_id` is the movie ID and `owner_id` identifies the content provider; both are needed for tracking and `MovieService/GetLink` calls (though as noted, GetLink is currently dead).
 
 ### MovieService/GetLink.json
 
-Get a playable URL for a movie.
+**Currently broken / unused for AVOD.** Always returns `{ "code": 5, "message": "Link not found" }`. Listed here for completeness — the Enigma2 plugin and older versions of this addon called it.
 
-Request:
+The intended request format was:
 
 ```json
 {
@@ -313,17 +383,7 @@ Request:
 }
 ```
 
-Response:
-
-```json
-{
-  "status": "OK",
-  "link_type": "HLS",         // or "DASH"
-  "url": "https://..."
-}
-```
-
-DASH means Widevine — you'd need inputstream.adaptive with DRM keys (we don't currently support this). HLS plays with the built-in player or inputstream.adaptive.
+If you find a working invocation, please open an issue.
 
 ### SearchService/Search.json
 

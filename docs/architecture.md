@@ -104,8 +104,8 @@ Routing roughly:
 | browse_archive   | Show channels with catchup                                |
 | archive_day      | Show day picker, then programs for that day               |
 | play_catchup     | Resolve archive HLS URL for an EPG event                  |
-| browse_movies    | Movie genres / collections                                |
-| play_movie       | Resolve movie HLS/DASH URL                                |
+| browse_movies    | Movie genres / collections (AVOD only)                    |
+| play_movie       | Resolve movie to channel catchup, then return HLS URL     |
 | search           | Search both movies and EPG records                        |
 | pair_device      | Run the device pairing dialog                             |
 | unpair_device    | Logout and clear tokens                                   |
@@ -296,6 +296,26 @@ In the **addon UI** browse mode, switching is just navigating back and clicking 
 ### The Ad Preroll
 
 This is the gotcha that broke playback for two days. See [API Reference: Ad Preroll Gotcha](api-reference.md#the-ad-preroll-gotcha). Short version: don't use `inputstream.adaptive` with sweet.tv master playlists; pick a variant URL and let Kodi's built-in HLS player handle it.
+
+### Movie Playback (AVOD only)
+
+Movies on sweet.tv aren't true VOD — they're EPG events on premium movie channels. The addon plays them via the same catchup flow as the archive section.
+
+Step-by-step:
+
+1. **User clicks a movie** in `Add-ons → Sweet.TV → Movies → <genre>`.
+2. Kodi resolves `plugin://plugin.video.sweettv/?action=play_movie&movie_id=34205&owner_id=163`.
+3. `addon.py play_movie()` calls `api.get_movie_link(movie_id, owner_id)`:
+   - Calls `MovieService/GetMovieInfo` for the **single** movie ID. The single-movie response includes `channel_id` and `epg_id` (the bulk listing call doesn't return these).
+   - Calls `TvService/OpenStream` with that `channel_id` + `epg_id` — same path as catchup playback.
+   - Returns the resolved HLS variant URL + `stream_id`.
+4. From here it's identical to live channel playback: ListItem → built-in HLS player → service.py tracks `stream_id` → `CloseStream` on stop.
+
+The catchup `(channel_id, epg_id)` pair changes per-broadcast, so we can't cache it client-side. Every play_movie click triggers a fresh `GetMovieInfo` call, which is fine — the latency is well under a second.
+
+Movies that aren't `accessibility_model: ACCESSIBILITY_MODEL_AVOD` (i.e. paid SVOD/TVOD) are filtered out of the listing entirely. They likely use Widevine-protected DASH which we don't support.
+
+See [API Reference: Movies](api-reference.md#movies--how-they-actually-stream) for the full API call sequence.
 
 ## Persistence Locations
 
