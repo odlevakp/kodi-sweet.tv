@@ -28,17 +28,6 @@ A Kodi addon for [sweet.tv](https://sweet.tv) streaming service that provides a 
   - **IPTV Manager** (`service.iptv.manager`) — bridges addon data to PVR
   - **PVR IPTV Simple Client** (`pvr.iptvsimple`) — provides native TV section
 
-### Tested platforms
-
-| Platform                | Status                  |
-|-------------------------|-------------------------|
-| Linux Mint (Flatpak Kodi 21) | Primary dev/test target — works |
-| Android TV Kodi         | Untested                |
-| LibreELEC / standard Linux | Untested                |
-| Windows / macOS Kodi    | Untested                |
-
-The addon should work on any Kodi 21 install in principle. Reports from other platforms welcome.
-
 ## Installation
 
 ### Step 1: Install Dependencies
