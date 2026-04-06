@@ -10,11 +10,11 @@ A Kodi addon for [sweet.tv](https://sweet.tv) streaming service that provides a 
 
 - **Live TV** - Watch sweet.tv channels directly in Kodi's TV section
 - **EPG Guide** - Full electronic program guide integrated with Kodi's TV guide
-- **Channel Groups** - Sweet.TV categories (Sports, Movies, Kids, etc.) and your favourites become PVR channel groups
+- **Channel Groups** - Sweet.TV categories (Sports, Movies, Kids, etc.) and your pinned channels become PVR channel groups
 - **Archive/Catchup** - Watch previously aired programs (per-channel availability, up to 7 days)
 - **Free Movies** - Browse free (ad-supported) movies by genre or collection. Paid SVOD/TVOD movies are not supported.
 - **Search** - Search across movies and EPG records
-- **Favourites** - Mark channels as favourites with a context menu, stored locally
+- **Pinned Channels** - Pin channels via context menu, stored locally per Kodi install
 - **Stream Quality** - Configurable maximum bitrate
 - **Adult Content Filter** - Toggle adult channel visibility
 - **Device Management** - View and remove registered devices
@@ -54,7 +54,7 @@ In Kodi:
 
 ### Step 4: Configure IPTV Manager + PVR Simple Client (optional, recommended)
 
-This step is **optional** — the addon is fully usable from **Add-ons → Video add-ons → Sweet.TV** without it (browse channels, archive, movies, search). But integrating with IPTV Manager + PVR IPTV Simple Client gives you the **full native Kodi TV experience**: channels and EPG in Kodi's TV section, channel groups (sweet.tv categories + your favourites), and catchup directly from the TV guide. Strongly recommended if you want this addon to feel like a real TV app.
+This step is **optional** — the addon is fully usable from **Add-ons → Video add-ons → Sweet.TV** without it (browse channels, archive, movies, search). But integrating with IPTV Manager + PVR IPTV Simple Client gives you the **full native Kodi TV experience**: channels and EPG in Kodi's TV section, channel groups (sweet.tv categories + your pinned channels), and catchup directly from the TV guide. Strongly recommended if you want this addon to feel like a real TV app.
 
 1. **Add-ons → My add-ons → Services → IPTV Manager → Configure**
 2. Under **IPTV Simple** category, click **"Configure IPTV Simple automatically"**
@@ -81,7 +81,7 @@ The auto-configure may not work on all Kodi installations. Configure manually:
 
 ### Browse Channels (Addon UI)
 
-**Add-ons → Video add-ons → Sweet.TV → Live TV** — browse by category, mark favourites with the context menu.
+**Add-ons → Video add-ons → Sweet.TV → Live TV** — browse by category, pin channels via the context menu.
 
 ### Watch in TV Section
 
@@ -90,11 +90,11 @@ After completing Step 4 above, channels appear in Kodi's main **TV** menu with:
 - EPG (current + upcoming programs)
 - Catchup playback for supported channels
 
-### Favourites
+### Pinned Channels
 
-While browsing channels in the addon UI, open the context menu on any channel and select **Add to Favourites**. A **Favourites** category appears at the top of the Live TV list. Favourites are stored locally per Kodi install.
+While browsing channels in the addon UI, open the context menu on any channel and select **Pin Channel**. A **Pinned Channels** category appears at the top of the Live TV list. Pinned channels are stored locally per Kodi install.
 
-After the next IPTV Manager refresh, your favourites also appear as a **Favourites** channel group in Kodi's native TV section.
+After the next IPTV Manager refresh, your pinned channels also appear as a **Pinned** channel group in Kodi's native TV section.
 
 ### Movies
 
@@ -123,7 +123,7 @@ The addon menu (under **Add-ons → Video add-ons → Sweet.TV**) shows:
 
 | Item                     | What it does                                                       |
 |--------------------------|--------------------------------------------------------------------|
-| Live TV                  | Browse channels by sweet.tv category, mark favourites              |
+| Live TV                  | Browse channels by sweet.tv category, pin channels                 |
 | Archive                  | Browse catchup channels and pick a day/program                     |
 | Movies                   | Browse free (AVOD) movies by genre or collection                   |
 | Search                   | Search across movies and EPG                                       |

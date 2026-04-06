@@ -78,9 +78,9 @@ def get_channels():
             continue
 
         groups = list(ch_to_groups.get(ch["id"], []))
-        # Add Favourites group if user has marked this channel.
+        # Add Pinned group if user has pinned this channel.
         if ch["id"] in fav_ids:
-            groups.insert(0, "Favourites")
+            groups.insert(0, "Pinned")
         # Fall back to "Sweet.TV" if a channel has no groups at all.
         if not groups:
             groups = ["Sweet.TV"]

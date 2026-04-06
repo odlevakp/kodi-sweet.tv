@@ -30,8 +30,8 @@ msgid "Search"
 msgstr "Hledat"
 
 msgctxt "#30104"
-msgid "Favourites"
-msgstr "Oblíbené"
+msgid "Pinned Channels"
+msgstr "Připnuté kanály"
 
 # Pairing
 msgctxt "#30200"
@@ -89,20 +89,20 @@ msgstr "Nepodařilo se načíst film"
 
 # Favourites
 msgctxt "#30400"
-msgid "Add to Favourites"
-msgstr "Přidat do oblíbených"
+msgid "Pin Channel"
+msgstr "Připnout kanál"
 
 msgctxt "#30401"
-msgid "Remove from Favourites"
-msgstr "Odebrat z oblíbených"
+msgid "Unpin Channel"
+msgstr "Odepnout kanál"
 
 msgctxt "#30402"
-msgid "Added to Favourites"
-msgstr "Přidáno do oblíbených"
+msgid "Channel pinned"
+msgstr "Kanál připnut"
 
 msgctxt "#30403"
-msgid "Removed from Favourites"
-msgstr "Odebráno z oblíbených"
+msgid "Channel unpinned"
+msgstr "Kanál odepnut"
 
 # Browse
 msgctxt "#30500"

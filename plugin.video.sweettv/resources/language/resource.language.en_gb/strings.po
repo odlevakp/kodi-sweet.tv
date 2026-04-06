@@ -30,7 +30,7 @@ msgid "Search"
 msgstr ""
 
 msgctxt "#30104"
-msgid "Favourites"
+msgid "Pinned Channels"
 msgstr ""
 
 # Pairing
@@ -89,19 +89,19 @@ msgstr ""
 
 # Favourites
 msgctxt "#30400"
-msgid "Add to Favourites"
+msgid "Pin Channel"
 msgstr ""
 
 msgctxt "#30401"
-msgid "Remove from Favourites"
+msgid "Unpin Channel"
 msgstr ""
 
 msgctxt "#30402"
-msgid "Added to Favourites"
+msgid "Channel pinned"
 msgstr ""
 
 msgctxt "#30403"
-msgid "Removed from Favourites"
+msgid "Channel unpinned"
 msgstr ""
 
 # Browse
