@@ -14,6 +14,7 @@ import xbmcplugin
 
 from resources.lib.sweettv_api import SweetTVApi, _log
 from resources.lib.iptv_manager import IPTVManager
+from resources.lib import favourites
 
 
 def main():
@@ -65,6 +66,14 @@ def main():
         play_movie(handle, params)
     elif action == "search":
         search(handle, params)
+    elif action == "fav_add":
+        favourites.add(params.get("channel_id", [""])[0])
+        xbmcgui.Dialog().notification("Sweet.TV", "Added to Favourites")
+        xbmc.executebuiltin("Container.Refresh")
+    elif action == "fav_remove":
+        favourites.remove(params.get("channel_id", [""])[0])
+        xbmcgui.Dialog().notification("Sweet.TV", "Removed from Favourites")
+        xbmc.executebuiltin("Container.Refresh")
     else:
         _log("Unknown action: %s" % action, level=xbmc.LOGWARNING)
         show_main_menu(handle)
@@ -110,9 +119,17 @@ def browse_channels(handle, params=None):
     addon = xbmcaddon.Addon()
     show_adult = addon.getSettingBool("show_adult")
     channels, categories = api.get_channels()
+    fav_ids = favourites.load()
 
     # If no category selected, show category list.
     if category_id is None:
+        # Inject Favourites at the top if user has any.
+        if fav_ids:
+            url = "plugin://plugin.video.sweettv/?action=browse_channels&category_id=favourites"
+            li = xbmcgui.ListItem("Favourites")
+            li.setArt({"icon": "DefaultFavourites.png"})
+            xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)
+
         for cat in categories:
             # Skip adult category if disabled.
             if not show_adult and cat["id"] == 1:
@@ -130,16 +147,18 @@ def browse_channels(handle, params=None):
         xbmcplugin.endOfDirectory(handle)
         return
 
-    # Filter channels by category using the API's channel_list.
-    cat_id = int(category_id)
-    selected_cat = next((c for c in categories if c["id"] == cat_id), None)
-    if selected_cat and selected_cat["channel_list"]:
-        ch_ids = set(selected_cat["channel_list"])
-        # Preserve API order from channel_list.
-        ch_by_id = {int(ch["id"]): ch for ch in channels}
-        channels = [ch_by_id[cid] for cid in selected_cat["channel_list"] if cid in ch_by_id]
+    # Filter channels by category.
+    if category_id == "favourites":
+        ch_by_id = {ch["id"]: ch for ch in channels}
+        channels = [ch_by_id[fid] for fid in fav_ids if fid in ch_by_id]
     else:
-        channels = []
+        cat_id = int(category_id)
+        selected_cat = next((c for c in categories if c["id"] == cat_id), None)
+        if selected_cat and selected_cat["channel_list"]:
+            ch_by_id = {int(ch["id"]): ch for ch in channels}
+            channels = [ch_by_id[cid] for cid in selected_cat["channel_list"] if cid in ch_by_id]
+        else:
+            channels = []
 
     # Get current EPG for channel descriptions.
     channel_ids = [int(ch["id"]) for ch in channels]
@@ -170,6 +189,17 @@ def browse_channels(handle, params=None):
         li.setInfo("video", info)
         li.setArt({"icon": ch.get("logo", ""), "thumb": img})
         li.setProperty("IsPlayable", "true")
+
+        # Context menu: add/remove from favourites.
+        if ch["id"] in fav_ids:
+            ctx_label = "Remove from Favourites"
+            ctx_action = "fav_remove"
+        else:
+            ctx_label = "Add to Favourites"
+            ctx_action = "fav_add"
+        ctx_url = "plugin://plugin.video.sweettv/?action=%s&channel_id=%s" % (ctx_action, ch["id"])
+        li.addContextMenuItems([(ctx_label, "RunPlugin(%s)" % ctx_url)])
+
         xbmcplugin.addDirectoryItem(handle, url, li, isFolder=False)
 
     xbmcplugin.endOfDirectory(handle)
