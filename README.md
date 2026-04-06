@@ -52,9 +52,9 @@ In Kodi:
 5. Enter the pairing code and click **Activate**
 6. The addon will detect the pairing automatically
 
-### Step 4: Configure IPTV Manager + PVR Simple Client
+### Step 4: Configure IPTV Manager + PVR Simple Client (optional, recommended)
 
-This step makes channels appear in Kodi's native **TV** section.
+This step is **optional** — the addon is fully usable from **Add-ons → Video add-ons → Sweet.TV** without it (browse channels, archive, movies, search). But integrating with IPTV Manager + PVR IPTV Simple Client gives you the **full native Kodi TV experience**: channels and EPG in Kodi's TV section, channel groups (sweet.tv categories + your favourites), and catchup directly from the TV guide. Strongly recommended if you want this addon to feel like a real TV app.
 
 1. **Add-ons → My add-ons → Services → IPTV Manager → Configure**
 2. Under **IPTV Simple** category, click **"Configure IPTV Simple automatically"**
