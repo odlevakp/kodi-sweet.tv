@@ -15,6 +15,7 @@ import xbmcplugin
 from resources.lib.sweettv_api import SweetTVApi, _log
 from resources.lib.iptv_manager import IPTVManager
 from resources.lib import favourites
+from resources.lib.strings import M, t as _t
 
 
 def main():
@@ -68,11 +69,11 @@ def main():
         search(handle, params)
     elif action == "fav_add":
         favourites.add(params.get("channel_id", [""])[0])
-        xbmcgui.Dialog().notification("Sweet.TV", "Added to Favourites")
+        xbmcgui.Dialog().notification("Sweet.TV", _t(M.FAV_ADDED))
         xbmc.executebuiltin("Container.Refresh")
     elif action == "fav_remove":
         favourites.remove(params.get("channel_id", [""])[0])
-        xbmcgui.Dialog().notification("Sweet.TV", "Removed from Favourites")
+        xbmcgui.Dialog().notification("Sweet.TV", _t(M.FAV_REMOVED))
         xbmc.executebuiltin("Container.Refresh")
     else:
         _log("Unknown action: %s" % action, level=xbmc.LOGWARNING)
@@ -86,10 +87,10 @@ def show_main_menu(handle):
     """Show the addon's main navigation menu."""
     addon = xbmcaddon.Addon()
     items = [
-        ("Live TV", "browse_channels", "DefaultTVShows.png", True),
-        ("Archive", "browse_archive", "DefaultYear.png", True),
-        ("Movies", "browse_movies", "DefaultMovies.png", True),
-        ("Search", "search", "DefaultAddonsSearch.png", True),
+        (_t(M.LIVE_TV), "browse_channels", "DefaultTVShows.png", True),
+        (_t(M.ARCHIVE), "browse_archive", "DefaultYear.png", True),
+        (_t(M.MOVIES), "browse_movies", "DefaultMovies.png", True),
+        (_t(M.SEARCH), "search", "DefaultAddonsSearch.png", True),
     ]
 
     for label, action, icon, is_folder in items:
@@ -113,7 +114,7 @@ def browse_channels(handle, params=None):
 
     api = SweetTVApi()
     if not api.is_logged_in():
-        xbmcgui.Dialog().ok("Sweet.TV", "Not logged in. Please pair your device first.")
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.NOT_LOGGED_IN))
         return
 
     addon = xbmcaddon.Addon()
@@ -126,7 +127,7 @@ def browse_channels(handle, params=None):
         # Inject Favourites at the top if user has any.
         if fav_ids:
             url = "plugin://plugin.video.sweettv/?action=browse_channels&category_id=favourites"
-            li = xbmcgui.ListItem("Favourites")
+            li = xbmcgui.ListItem(_t(M.FAVOURITES))
             li.setArt({"icon": "DefaultFavourites.png"})
             xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)
 
@@ -192,10 +193,10 @@ def browse_channels(handle, params=None):
 
         # Context menu: add/remove from favourites.
         if ch["id"] in fav_ids:
-            ctx_label = "Remove from Favourites"
+            ctx_label = _t(M.FAV_REMOVE)
             ctx_action = "fav_remove"
         else:
-            ctx_label = "Add to Favourites"
+            ctx_label = _t(M.FAV_ADD)
             ctx_action = "fav_add"
         ctx_url = "plugin://plugin.video.sweettv/?action=%s&channel_id=%s" % (ctx_action, ch["id"])
         li.addContextMenuItems([(ctx_label, "RunPlugin(%s)" % ctx_url)])
@@ -216,7 +217,7 @@ def play_channel(handle, params):
 
     api = SweetTVApi()
     if not api.is_logged_in():
-        xbmcgui.Dialog().ok("Sweet.TV", "Not logged in. Please pair your device first.")
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.NOT_LOGGED_IN))
         return
 
     addon = xbmcaddon.Addon()
@@ -255,7 +256,7 @@ def play_catchup(handle, params):
 
     api = SweetTVApi()
     if not api.is_logged_in():
-        xbmcgui.Dialog().ok("Sweet.TV", "Not logged in. Please pair your device first.")
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.NOT_LOGGED_IN))
         return
 
     addon = xbmcaddon.Addon()
@@ -287,7 +288,7 @@ def browse_archive(handle, params):
     """Show list of channels that have archive/catchup support."""
     api = SweetTVApi()
     if not api.is_logged_in():
-        xbmcgui.Dialog().ok("Sweet.TV", "Not logged in. Please pair your device first.")
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.NOT_LOGGED_IN))
         return
 
     addon = xbmcaddon.Addon()
@@ -586,27 +587,17 @@ def pair_device():
     api = SweetTVApi()
 
     if api.is_logged_in():
-        if not xbmcgui.Dialog().yesno(
-            "Sweet.TV",
-            "Already paired. Do you want to re-pair?"
-        ):
+        if not xbmcgui.Dialog().yesno("Sweet.TV", _t(M.PAIR_ALREADY)):
             return
         api.logout()
 
     code = api.get_signin_code()
     if not code:
-        xbmcgui.Dialog().ok("Sweet.TV", "Failed to get pairing code. Please try again.")
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.PAIR_FAILED_CODE))
         return
 
     dialog = xbmcgui.DialogProgress()
-    dialog.create(
-        "Sweet.TV - Device Pairing",
-        "Your pairing code is: [B]%s[/B]\n\n"
-        "Go to sweet.tv, log in to your account,\n"
-        "navigate to My Devices, enter this code,\n"
-        "and click Activate.\n\n"
-        "Waiting for pairing..." % code,
-    )
+    dialog.create(_t(M.PAIR_TITLE), _t(M.PAIR_INSTRUCTIONS).replace("{code}", code))
 
     # Poll for up to 5 minutes.
     timeout = 300
@@ -622,24 +613,24 @@ def pair_device():
 
         if api.check_signin_status(code):
             dialog.close()
-            xbmcgui.Dialog().ok("Sweet.TV", "Device paired successfully!")
+            xbmcgui.Dialog().ok("Sweet.TV", _t(M.PAIR_SUCCESS))
             return
 
         xbmc.sleep(interval * 1000)
         elapsed += interval
 
     dialog.close()
-    xbmcgui.Dialog().ok("Sweet.TV", "Pairing timed out. Please try again.")
+    xbmcgui.Dialog().ok("Sweet.TV", _t(M.PAIR_TIMEOUT))
 
 
 def unpair_device():
     """Logout and clear credentials."""
-    if not xbmcgui.Dialog().yesno("Sweet.TV", "Are you sure you want to unpair this device?"):
+    if not xbmcgui.Dialog().yesno("Sweet.TV", _t(M.UNPAIR_CONFIRM)):
         return
 
     api = SweetTVApi()
     api.logout()
-    xbmcgui.Dialog().ok("Sweet.TV", "Device unpaired successfully.")
+    xbmcgui.Dialog().ok("Sweet.TV", _t(M.UNPAIR_SUCCESS))
 
 
 # -- Device management ---------------------------------------------------
