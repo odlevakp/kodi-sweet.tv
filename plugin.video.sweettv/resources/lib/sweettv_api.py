@@ -306,8 +306,9 @@ class SweetTVApi:
             return [], []
 
         categories = []
+        _log("Categories raw response: %s" % data.get("categories"), level=xbmc.LOGINFO)
         for cat in data.get("categories") or []:
-            _log("Category raw data: %s" % cat)
+            _log("Category raw data: %s" % cat, level=xbmc.LOGINFO)
             cat_name = (
                 cat.get("name")
                 or cat.get("caption")
