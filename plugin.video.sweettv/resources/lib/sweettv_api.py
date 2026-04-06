@@ -305,10 +305,6 @@ class SweetTVApi:
             _log("Failed to load channels: %s" % data, level=xbmc.LOGERROR)
             return [], []
 
-        # Log first channel raw data once to discover available image fields.
-        if data.get("list"):
-            _log("Channel raw sample: %s" % data["list"][0], level=xbmc.LOGINFO)
-
         categories = []
         for cat in data.get("categories") or []:
             categories.append(
@@ -333,6 +329,7 @@ class SweetTVApi:
                     "slug": ch.get("slug", ""),
                     "number": ch.get("number", 0),
                     "logo": ch.get("icon_url", ""),
+                    "banner": ch.get("banner_url", ""),
                     "adult": (
                         1 in ch.get("category", [])
                         or "1" in ch.get("category", [])

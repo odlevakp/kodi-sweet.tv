@@ -15,7 +15,10 @@
       "Bash(git commit -m ':*)",
       "Bash(make build:*)",
       "Bash(make repo:*)",
-      "Bash(make repo-index:*)"
+      "Bash(make repo-index:*)",
+      "Bash(ssh 10.10.10.110 'grep -i \"sweettv\\\\|category\" ~/.var/app/tv.kodi.Kodi/data/temp/kodi.log | tail -50')",
+      "Bash(ssh 10.10.10.110 'tail -100 ~/.var/app/tv.kodi.Kodi/data/temp/kodi.log | grep -i \"sweettv\\\\|inputstream\\\\|error\\\\|warn\"')",
+      "Bash(ssh 10.10.10.110 'grep \"ads-badtest\" ~/.var/app/tv.kodi.Kodi/data/temp/kodi.log | head -5')"
     ],
     "deny": [
       "Bash(rm -rf /)",
