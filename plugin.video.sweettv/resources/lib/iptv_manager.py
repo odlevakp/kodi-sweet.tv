@@ -150,6 +150,9 @@ def get_epg():
         channel_key = "sweettv-%s" % ch_id
         epg_result[channel_key] = []
 
+        # Strip "sweettv-" prefix to get the bare channel id for catchup URL.
+        bare_channel_id = ch_id
+
         for event in events:
             start = datetime.utcfromtimestamp(int(event["time_start"]))
             stop = datetime.utcfromtimestamp(int(event["time_stop"]))
@@ -159,6 +162,14 @@ def get_epg():
                 "stop": stop.strftime("%Y-%m-%d %H:%M:%S"),
                 "title": event.get("text", ""),
                 "episode-num": str(event.get("id", "")),
+                # IPTV Manager passes 'stream' through as catchup-id in XMLTV.
+                # PVR Simple Client uses it when the user picks "Play from EPG"
+                # for a past program. The URL re-enters our addon with both
+                # channel_id and epg_id so play_catchup can resolve the stream.
+                "stream": (
+                    "plugin://plugin.video.sweettv/?action=play_catchup"
+                    "&channel_id=%s&epg_id=%s" % (bare_channel_id, event["id"])
+                ),
             }
 
             if event.get("preview_url"):

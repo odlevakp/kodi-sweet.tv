@@ -106,7 +106,16 @@ Movie titles show year and IMDB rating in grey: `Title [2019] ★4.9`. For descr
 
 ### Archive / Catchup
 
-**Add-ons → Video add-ons → Sweet.TV → Archive** — pick a channel, then a day, then a program.
+Two ways to watch past programs:
+
+1. **Addon UI**: **Add-ons → Video add-ons → Sweet.TV → Archive** — pick a channel, then a day, then a program.
+2. **TV section (PVR catchup)**: open the **TV Guide**, navigate to a past program on a catchup-enabled channel, press OK, and pick **Play recording**. This requires catchup to be enabled in PVR IPTV Simple Client (see below).
+
+#### Enabling catchup in PVR Simple Client
+
+**Add-ons → My add-ons → PVR clients → PVR IPTV Simple Client → Configure → Catchup**, then set **Enable catchup** to On. Restart Kodi after changing this.
+
+If catchup is enabled but past programs don't play, ensure IPTV Manager has refreshed at least once after upgrading the addon (the EPG file needs the catchup-id attributes which only the new addon writes).
 
 ## Main Menu
 
