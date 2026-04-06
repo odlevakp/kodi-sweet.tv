@@ -1,6 +1,15 @@
 ADDON_ID   := plugin.video.sweettv
 REPO_ID    := repository.sweettv
-VERSION    := $(shell gsed -n '/^       version=/s/.*version="\([^"]*\)".*/\1/p' $(ADDON_ID)/addon.xml)
+TODAY      := $(shell date +%Y.%m.%d)
+CURRENT    := $(shell gsed -n '/^       version=/s/.*version="\([^"]*\)".*/\1/p' $(ADDON_ID)/addon.xml)
+# If today's date matches current version base, increment the suffix.
+# Otherwise start fresh at today.0.
+VERSION    := $(shell python3 -c "\
+cur='$(CURRENT)'; today='$(TODAY)';\
+parts=cur.split('.');\
+base='.'.join(parts[:3]);\
+suffix=int(parts[3]) if len(parts)>3 else 0;\
+print(f'{today}.{suffix+1}' if base==today else f'{today}.0')")
 ZIP_NAME   := $(ADDON_ID)-$(VERSION).zip
 REPO_ZIP   := $(REPO_ID)-1.0.0.zip
 DIST_DIR   := dist
