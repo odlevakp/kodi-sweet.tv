@@ -239,6 +239,7 @@ def browse_channels(handle, params=None):
 def play_channel(handle, params):
     """Play a live TV channel."""
     channel_id = params.get("channel_id", [None])[0]
+    _log("play_channel called channel_id=%s" % channel_id, level=xbmc.LOGINFO)
     if not channel_id:
         return
 
@@ -250,11 +251,13 @@ def play_channel(handle, params):
     addon = xbmcaddon.Addon()
     max_bitrate_str = addon.getSetting("max_bitrate")
     max_bitrate = _parse_bitrate(max_bitrate_str)
+    _log("play_channel: max_bitrate setting=%r parsed=%s" % (max_bitrate_str, max_bitrate), level=xbmc.LOGINFO)
 
     # Resolve to a specific variant - the master playlist contains an ad
     # preroll from ads-badtest.sweet.tv that's unreachable, so we pick a
     # variant directly which serves the actual stream.
     stream_url, stream_id = api.get_live_link(channel_id, max_bitrate=max_bitrate)
+    _log("play_channel: get_live_link returned url=%s stream_id=%s" % (stream_url, stream_id), level=xbmc.LOGINFO)
     if not stream_url:
         xbmcgui.Dialog().notification("Sweet.TV", "Failed to load stream", xbmcgui.NOTIFICATION_ERROR)
         return
@@ -430,7 +433,7 @@ def browse_movies(handle, params):
     _log("browse_movies called with cat=%s" % cat, level=xbmc.LOGINFO)
 
     if cat is None:
-        for label, cat_id in [("By Genre", "genres"), ("By Collection", "collections")]:
+        for label, cat_id in [(_t(M.BY_GENRE), "genres"), (_t(M.BY_COLLECTION), "collections")]:
             url = "plugin://plugin.video.sweettv/?action=browse_movies&cat=%s" % cat_id
             li = xbmcgui.ListItem(label)
             xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)

@@ -50,20 +50,46 @@ class SweetTVApi:
 
     # -- Headers and device info ------------------------------------------
 
+    # Languages sweet.tv API is known to support. Anything else gets mapped to 'sk'.
+    _SUPPORTED_LANGS = ("sk", "cs", "uk", "ru", "en")
+
+    @classmethod
+    def _api_lang(cls):
+        """Pick a language code for API requests.
+
+        Honors the api_lang setting if set to a specific language;
+        otherwise derives from Kodi's UI language with sk as fallback.
+        """
+        try:
+            override = (xbmcaddon.Addon().getSetting("api_lang") or "").strip().lower()
+        except Exception:
+            override = ""
+        if override and override != "auto" and override in cls._SUPPORTED_LANGS:
+            return override
+        try:
+            kodi_lang = (xbmc.getLanguage(xbmc.ISO_639_1) or "").lower()
+        except Exception:
+            kodi_lang = ""
+        if kodi_lang in cls._SUPPORTED_LANGS:
+            return kodi_lang
+        return "sk"
+
     @property
     def _common_headers(self):
         """Headers for API calls."""
+        lang = self._api_lang()
+        accept_lang = "%s-%s,%s;q=0.9,en;q=0.7" % (lang, lang.upper(), lang)
         headers = {
             "User-Agent": self.USER_AGENT,
             "Origin": "https://sweet.tv",
             "Referer": "https://sweet.tv/",
             "Accept-encoding": "gzip",
-            "Accept-language": "sk-SK,sk;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Accept-language": accept_lang,
             "Content-type": "application/json",
             # Match the website's current x-device value (sub_type=39, v7.4.50).
             "x-device": "1;22;39;2;7.4.50",
             "x-device-id": self.device_id or "",
-            "x-accept-language": "sk",
+            "x-accept-language": lang,
         }
         if self.access_token:
             headers["Authorization"] = "Bearer " + self.access_token
@@ -72,12 +98,13 @@ class SweetTVApi:
     @property
     def _stream_headers(self):
         """Headers for stream fetching (no content-type or x-device)."""
+        lang = self._api_lang()
         return {
             "User-Agent": self.USER_AGENT,
             "Origin": "https://sweet.tv",
             "Referer": "https://sweet.tv",
             "Accept-encoding": "gzip",
-            "Accept-language": "en",
+            "Accept-language": "%s,en;q=0.7" % lang,
         }
 
     @property
@@ -437,15 +464,16 @@ class SweetTVApi:
 
     def open_stream(self, channel_id, epg_id=None):
         """Open a stream for a channel. Returns (stream_url, stream_id) or (None, None)."""
+        # Match the website's payload exactly. Sending without_auth/accept_scheme
+        # routes us to a stripped CDN path that returns a media playlist with
+        # only audio variants instead of a proper master playlist.
         req_data = {
-            "without_auth": True,
-            "channel_id": channel_id,
-            "accept_scheme": ["HTTP_HLS"],
+            "channel_id": int(channel_id),
             "multistream": True,
         }
 
         if epg_id:
-            req_data["epg_id"] = epg_id
+            req_data["epg_id"] = int(epg_id)
 
         data = self._call_api("TvService/OpenStream.json", data=req_data)
 
@@ -493,6 +521,8 @@ class SweetTVApi:
                 level=xbmc.LOGERROR,
             )
             return []
+
+        _log("HLS playlist (%d bytes): %s" % (len(resp.text), resp.text[:500]), level=xbmc.LOGINFO)
 
         if max_bitrate and int(max_bitrate) > 0:
             max_bps = int(max_bitrate) * 1_000_000
@@ -543,19 +573,38 @@ class SweetTVApi:
     def get_live_link(self, channel_id, epg_id=None, max_bitrate=None):
         """Get playable stream URL for a channel.
 
-        Opens stream, resolves HLS variants, returns best URL and stream_id.
+        Calls OpenStream to get the playlist URL. Sweet.tv may return either
+        a master playlist (which we parse to pick a variant within the
+        bitrate cap) or a direct media playlist (which we play as-is).
         """
-        master_url, stream_id = self.open_stream(channel_id, epg_id)
-        if not master_url:
+        _log("get_live_link channel_id=%r epg_id=%r" % (channel_id, epg_id), level=xbmc.LOGINFO)
+        try:
+            playlist_url, stream_id = self.open_stream(channel_id, epg_id)
+        except Exception as e:
+            import traceback
+            _log("open_stream exception: %s\n%s" % (e, traceback.format_exc()), level=xbmc.LOGERROR)
+            return None, None
+        _log("get_live_link: open_stream returned url=%s stream_id=%s" % (playlist_url, stream_id), level=xbmc.LOGINFO)
+        if not playlist_url:
             return None, None
 
-        streams = self.resolve_hls_streams(master_url, max_bitrate)
-        if not streams:
+        try:
+            streams = self.resolve_hls_streams(playlist_url, max_bitrate)
+        except Exception as e:
+            import traceback
+            _log("resolve_hls_streams exception: %s\n%s" % (e, traceback.format_exc()), level=xbmc.LOGERROR)
             self.close_stream(stream_id)
             return None, None
 
-        # Return the highest quality stream within the bitrate limit.
-        return streams[0]["url"], stream_id
+        if streams:
+            # Master playlist with variants - pick the highest within the cap.
+            _log("get_live_link: %d variants resolved, picking highest" % len(streams), level=xbmc.LOGINFO)
+            return streams[0]["url"], stream_id
+
+        # No variants found - sweet.tv returned a direct media playlist
+        # (#EXT-X-TARGETDURATION ... segment list). Play the URL directly.
+        _log("get_live_link: no variants, treating URL as direct media playlist", level=xbmc.LOGINFO)
+        return playlist_url, stream_id
 
     # -- Movies -----------------------------------------------------------
 

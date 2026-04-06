@@ -268,6 +268,64 @@ msgctxt "#30812"
 msgid "Show Subscription Info"
 msgstr "Zobrazit informace o předplatném"
 
+# Language override.
+msgctxt "#30808"
+msgid "API Language"
+msgstr "Jazyk API"
+
+msgctxt "#30908"
+msgid "Language code sent to sweet.tv API. Affects descriptions, category names and EPG titles. 'Auto' uses your Kodi UI language if supported, otherwise Slovak."
+msgstr "Jazykový kód posílaný do sweet.tv API. Ovlivňuje popisy, názvy kategorií a tituly EPG. 'Auto' použije jazyk Kodi, pokud je podporován, jinak slovenštinu."
+
+msgctxt "#30820"
+msgid "Auto"
+msgstr "Automaticky"
+
+msgctxt "#30821"
+msgid "Slovak"
+msgstr "Slovenština"
+
+msgctxt "#30822"
+msgid "Czech"
+msgstr "Čeština"
+
+msgctxt "#30823"
+msgid "English"
+msgstr "Angličtina"
+
+msgctxt "#30824"
+msgid "Ukrainian"
+msgstr "Ukrajinština"
+
+msgctxt "#30825"
+msgid "Russian"
+msgstr "Ruština"
+
+# Bitrate options
+msgctxt "#30830"
+msgid "Unlimited"
+msgstr "Neomezený"
+
+msgctxt "#30831"
+msgid "8 Mbit/s"
+msgstr "8 Mbit/s"
+
+msgctxt "#30832"
+msgid "6 Mbit/s"
+msgstr "6 Mbit/s"
+
+msgctxt "#30833"
+msgid "4 Mbit/s"
+msgstr "4 Mbit/s"
+
+msgctxt "#30834"
+msgid "3 Mbit/s"
+msgstr "3 Mbit/s"
+
+msgctxt "#30835"
+msgid "2 Mbit/s"
+msgstr "2 Mbit/s"
+
 # Settings help text (descriptions shown in the footer)
 msgctxt "#30900"
 msgid "General settings: account pairing and stream quality."

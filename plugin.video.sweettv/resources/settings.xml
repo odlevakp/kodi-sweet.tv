@@ -21,16 +21,33 @@
           <default>Unlimited</default>
           <constraints>
             <options>
-              <option>Unlimited</option>
-              <option>8 Mbit/s</option>
-              <option>6 Mbit/s</option>
-              <option>4 Mbit/s</option>
-              <option>3 Mbit/s</option>
-              <option>2 Mbit/s</option>
+              <option label="30830">Unlimited</option>
+              <option label="30831">8 Mbit/s</option>
+              <option label="30832">6 Mbit/s</option>
+              <option label="30833">4 Mbit/s</option>
+              <option label="30834">3 Mbit/s</option>
+              <option label="30835">2 Mbit/s</option>
             </options>
           </constraints>
           <control type="list" format="string">
             <heading>30803</heading>
+          </control>
+        </setting>
+        <setting id="api_lang" type="string" label="30808" help="30908">
+          <level>0</level>
+          <default>auto</default>
+          <constraints>
+            <options>
+              <option label="30820">auto</option>
+              <option label="30821">sk</option>
+              <option label="30822">cs</option>
+              <option label="30823">en</option>
+              <option label="30824">uk</option>
+              <option label="30825">ru</option>
+            </options>
+          </constraints>
+          <control type="list" format="string">
+            <heading>30808</heading>
           </control>
         </setting>
       </group>
