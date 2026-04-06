@@ -584,7 +584,10 @@ def _list_movies(handle, movies):
             % (movie["id"], movie["owner_id"])
         )
         li = xbmcgui.ListItem(title)
-        info = {"title": movie["title"]}
+        # Use the decorated title (with year/rating suffix) so Kodi shows
+        # it in views that pull from info.title rather than the ListItem
+        # label. SortTitle is the bare title so alphabetical sort works.
+        info = {"title": title, "sorttitle": movie["title"]}
         if movie.get("year"):
             info["year"] = movie["year"]
         if movie.get("rating"):
@@ -608,6 +611,11 @@ def _list_movies(handle, movies):
         xbmcplugin.addDirectoryItem(handle, url, li, isFolder=False)
 
     xbmcplugin.setContent(handle, "movies")
+    # Offer sort methods - VIDEO_SORT_TITLE_IGNORE_THE uses info.sorttitle
+    # (the bare title) so the [year] suffix doesn't affect ordering.
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE)
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
     xbmcplugin.endOfDirectory(handle)
 
 
