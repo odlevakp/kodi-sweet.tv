@@ -140,9 +140,11 @@ If you open the addon and aren't paired yet, the pairing dialog launches automat
 | Pair Device               | Run the device pairing flow                            | —         |
 | Unpair Device (Logout)    | Clear stored credentials                               | —         |
 | Maximum Bitrate           | Cap on stream bandwidth                                | Unlimited |
+| API Language              | Language sent to sweet.tv API (Auto / sk / cs / en …)  | Auto      |
 | Show Adult Channels       | Toggle adult content visibility                        | Off       |
 | EPG Days to Load          | Number of days of EPG data to fetch (1–7)              | 3         |
 | Auto-close Stream on Stop | Call CloseStream on playback stop to free the slot     | On        |
+| Verbose Logging           | Log API responses and stream details (for debugging)   | Off       |
 
 Each setting shows a longer description in the footer when highlighted.
 

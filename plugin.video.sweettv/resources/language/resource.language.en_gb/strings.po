@@ -215,6 +215,14 @@ msgctxt "#30716"
 msgid "Settings"
 msgstr ""
 
+msgctxt "#30817"
+msgid "Verbose Logging"
+msgstr ""
+
+msgctxt "#30917"
+msgid "Log API responses and stream details to the Kodi log. Useful for diagnosing playback issues. Leave off for normal use - the log gets noisy."
+msgstr ""
+
 msgctxt "#30717"
 msgid "Sweet.TV details"
 msgstr ""

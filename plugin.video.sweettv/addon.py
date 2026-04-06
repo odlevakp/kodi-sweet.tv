@@ -12,7 +12,7 @@ import xbmcaddon
 import xbmcgui
 import xbmcplugin
 
-from resources.lib.sweettv_api import SweetTVApi, _log
+from resources.lib.sweettv_api import SweetTVApi, _log, _vlog
 from resources.lib.iptv_manager import IPTVManager
 from resources.lib import favourites
 from resources.lib.strings import M, t as _t
@@ -37,7 +37,7 @@ def main():
     if action not in _PAIRING_EXEMPT:
         api = SweetTVApi()
         if not api.is_logged_in():
-            _log("Not logged in - launching pairing flow", level=xbmc.LOGINFO)
+            _vlog("Not logged in - launching pairing flow")
             pair_device()
             # If still not logged in (user cancelled), bail out cleanly.
             if not SweetTVApi().is_logged_in():
@@ -239,7 +239,7 @@ def browse_channels(handle, params=None):
 def play_channel(handle, params):
     """Play a live TV channel."""
     channel_id = params.get("channel_id", [None])[0]
-    _log("play_channel called channel_id=%s" % channel_id, level=xbmc.LOGINFO)
+    _vlog("play_channel called channel_id=%s" % channel_id)
     if not channel_id:
         return
 
@@ -251,13 +251,13 @@ def play_channel(handle, params):
     addon = xbmcaddon.Addon()
     max_bitrate_str = addon.getSetting("max_bitrate")
     max_bitrate = _parse_bitrate(max_bitrate_str)
-    _log("play_channel: max_bitrate setting=%r parsed=%s" % (max_bitrate_str, max_bitrate), level=xbmc.LOGINFO)
+    _vlog("play_channel: max_bitrate setting=%r parsed=%s" % (max_bitrate_str, max_bitrate))
 
     # Resolve to a specific variant - the master playlist contains an ad
     # preroll from ads-badtest.sweet.tv that's unreachable, so we pick a
     # variant directly which serves the actual stream.
     stream_url, stream_id = api.get_live_link(channel_id, max_bitrate=max_bitrate)
-    _log("play_channel: get_live_link returned url=%s stream_id=%s" % (stream_url, stream_id), level=xbmc.LOGINFO)
+    _vlog("play_channel: get_live_link returned url=%s stream_id=%s" % (stream_url, stream_id))
     if not stream_url:
         xbmcgui.Dialog().notification("Sweet.TV", "Failed to load stream", xbmcgui.NOTIFICATION_ERROR)
         return
@@ -433,7 +433,7 @@ def archive_day(handle, params):
 def browse_movies(handle, params):
     """Show movie browsing options (by genre, by collection)."""
     cat = params.get("cat", [None])[0]
-    _log("browse_movies called with cat=%s" % cat, level=xbmc.LOGINFO)
+    _vlog("browse_movies called with cat=%s" % cat)
 
     if cat is None:
         for label, cat_id in [(_t(M.BY_GENRE), "genres"), (_t(M.BY_COLLECTION), "collections")]:
@@ -448,19 +448,19 @@ def browse_movies(handle, params):
         _log("browse_movies: not logged in", level=xbmc.LOGWARNING)
         return
 
-    _log("browse_movies: fetching movie configuration", level=xbmc.LOGINFO)
+    _vlog("browse_movies: fetching movie configuration")
     config = api.get_movie_configuration()
     if not config:
         _log("browse_movies: get_movie_configuration returned None", level=xbmc.LOGERROR)
         return
 
-    _log("browse_movies: config keys=%s" % list(config.keys()), level=xbmc.LOGINFO)
+    _vlog("browse_movies: config keys=%s" % list(config.keys()))
 
     if cat == "genres":
         genres = config.get("genres", [])
-        _log("browse_movies: %d genres found" % len(genres), level=xbmc.LOGINFO)
+        _vlog("browse_movies: %d genres found" % len(genres))
         if genres:
-            _log("browse_movies: first genre sample=%s" % genres[0], level=xbmc.LOGINFO)
+            _vlog("browse_movies: first genre sample=%s" % genres[0])
         for genre in genres:
             gid = genre.get("id")
             gtitle = genre.get("title") or genre.get("name") or genre.get("caption") or str(gid)
@@ -470,11 +470,11 @@ def browse_movies(handle, params):
     elif cat == "collections":
         builtin = config.get("collections", [])
         user_collections = api.get_movie_collections()
-        _log("browse_movies: %d builtin collections, %d user collections" % (len(builtin), len(user_collections)), level=xbmc.LOGINFO)
+        _vlog("browse_movies: %d builtin collections, %d user collections" % (len(builtin), len(user_collections)))
         if builtin:
-            _log("browse_movies: first builtin sample=%s" % builtin[0], level=xbmc.LOGINFO)
+            _vlog("browse_movies: first builtin sample=%s" % builtin[0])
         if user_collections:
-            _log("browse_movies: first user collection sample=%s" % user_collections[0], level=xbmc.LOGINFO)
+            _vlog("browse_movies: first user collection sample=%s" % user_collections[0])
         for col in builtin + user_collections:
             cid = col.get("id")
             ctitle = col.get("title") or col.get("name") or col.get("caption") or str(cid)
@@ -488,7 +488,7 @@ def browse_movies(handle, params):
 def movie_genre(handle, params):
     """Show movies in a genre."""
     genre_id = params.get("genre_id", [None])[0]
-    _log("movie_genre called with genre_id=%s" % genre_id, level=xbmc.LOGINFO)
+    _vlog("movie_genre called with genre_id=%s" % genre_id)
     if not genre_id:
         return
 
@@ -498,14 +498,14 @@ def movie_genre(handle, params):
         return
 
     movies = api.get_movie_genre(genre_id)
-    _log("movie_genre: %d movies returned" % len(movies), level=xbmc.LOGINFO)
+    _vlog("movie_genre: %d movies returned" % len(movies))
     _list_movies(handle, movies)
 
 
 def movie_collection(handle, params):
     """Show movies in a collection."""
     collection_id = params.get("collection_id", [None])[0]
-    _log("movie_collection called with collection_id=%s" % collection_id, level=xbmc.LOGINFO)
+    _vlog("movie_collection called with collection_id=%s" % collection_id)
     if not collection_id:
         return
 
@@ -515,7 +515,7 @@ def movie_collection(handle, params):
         return
 
     movies = api.get_movie_collection(collection_id)
-    _log("movie_collection: %d movies returned" % len(movies), level=xbmc.LOGINFO)
+    _vlog("movie_collection: %d movies returned" % len(movies))
     _list_movies(handle, movies)
 
 
@@ -523,7 +523,7 @@ def play_movie(handle, params):
     """Play a movie."""
     movie_id = params.get("movie_id", [None])[0]
     owner_id = params.get("owner_id", [None])[0]
-    _log("play_movie called movie_id=%s owner_id=%s" % (movie_id, owner_id), level=xbmc.LOGINFO)
+    _vlog("play_movie called movie_id=%s owner_id=%s" % (movie_id, owner_id))
     if not movie_id or not owner_id:
         _log("play_movie: missing movie_id or owner_id, params=%s" % params, level=xbmc.LOGERROR)
         return
@@ -534,7 +534,7 @@ def play_movie(handle, params):
         return
 
     url, link_type = api.get_movie_link(movie_id, owner_id)
-    _log("play_movie: GetLink returned url=%s link_type=%s" % (url, link_type), level=xbmc.LOGINFO)
+    _vlog("play_movie: GetLink returned url=%s link_type=%s" % (url, link_type))
     if not url:
         xbmcgui.Dialog().notification(
             "Sweet.TV",

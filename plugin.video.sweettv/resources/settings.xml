@@ -82,6 +82,11 @@
           <default>true</default>
           <control type="toggle"/>
         </setting>
+        <setting id="verbose_logging" type="boolean" label="30817" help="30917">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
       </group>
     </category>
 

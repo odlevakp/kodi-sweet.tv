@@ -522,7 +522,7 @@ class SweetTVApi:
             )
             return []
 
-        _log("HLS playlist (%d bytes): %s" % (len(resp.text), resp.text[:500]), level=xbmc.LOGINFO)
+        _vlog("HLS playlist (%d bytes): %s" % (len(resp.text), resp.text[:500]))
 
         if max_bitrate and int(max_bitrate) > 0:
             max_bps = int(max_bitrate) * 1_000_000
@@ -577,14 +577,14 @@ class SweetTVApi:
         a master playlist (which we parse to pick a variant within the
         bitrate cap) or a direct media playlist (which we play as-is).
         """
-        _log("get_live_link channel_id=%r epg_id=%r" % (channel_id, epg_id), level=xbmc.LOGINFO)
+        _vlog("get_live_link channel_id=%r epg_id=%r" % (channel_id, epg_id))
         try:
             playlist_url, stream_id = self.open_stream(channel_id, epg_id)
         except Exception as e:
             import traceback
             _log("open_stream exception: %s\n%s" % (e, traceback.format_exc()), level=xbmc.LOGERROR)
             return None, None
-        _log("get_live_link: open_stream returned url=%s stream_id=%s" % (playlist_url, stream_id), level=xbmc.LOGINFO)
+        _vlog("get_live_link: open_stream returned url=%s stream_id=%s" % (playlist_url, stream_id))
         if not playlist_url:
             return None, None
 
@@ -598,12 +598,12 @@ class SweetTVApi:
 
         if streams:
             # Master playlist with variants - pick the highest within the cap.
-            _log("get_live_link: %d variants resolved, picking highest" % len(streams), level=xbmc.LOGINFO)
+            _vlog("get_live_link: %d variants resolved, picking highest" % len(streams))
             return streams[0]["url"], stream_id
 
         # No variants found - sweet.tv returned a direct media playlist
         # (#EXT-X-TARGETDURATION ... segment list). Play the URL directly.
-        _log("get_live_link: no variants, treating URL as direct media playlist", level=xbmc.LOGINFO)
+        _vlog("get_live_link: no variants, treating URL as direct media playlist")
         return playlist_url, stream_id
 
     # -- Movies -----------------------------------------------------------
@@ -611,7 +611,7 @@ class SweetTVApi:
     def get_movie_configuration(self):
         """Get movie genres and built-in collections."""
         data = self._call_api("MovieService/GetConfiguration.json", data={})
-        _log("GetConfiguration response keys=%s result=%s" % (list(data.keys()), data.get("result")), level=xbmc.LOGINFO)
+        _vlog("GetConfiguration response keys=%s result=%s" % (list(data.keys()), data.get("result")))
         if data.get("result") != "OK":
             _log("GetConfiguration full response: %s" % data, level=xbmc.LOGERROR)
             return None
@@ -622,7 +622,7 @@ class SweetTVApi:
         data = self._call_api(
             "MovieService/GetCollections.json", data={"type": 1}
         )
-        _log("GetCollections response keys=%s result=%s" % (list(data.keys()), data.get("result")), level=xbmc.LOGINFO)
+        _vlog("GetCollections response keys=%s result=%s" % (list(data.keys()), data.get("result")))
         if data.get("result") != "OK":
             _log("GetCollections full response: %s" % data, level=xbmc.LOGERROR)
             return []
@@ -634,7 +634,7 @@ class SweetTVApi:
             "MovieService/GetCollectionMovies.json",
             data={"collection_id": int(collection_id)},
         )
-        _log("GetCollectionMovies(%s) result=%s movies_count=%d" % (collection_id, data.get("result"), len(data.get("movies") or [])), level=xbmc.LOGINFO)
+        _vlog("GetCollectionMovies(%s) result=%s movies_count=%d" % (collection_id, data.get("result"), len(data.get("movies") or [])))
         if data.get("result") != "OK":
             _log("GetCollectionMovies full response: %s" % data, level=xbmc.LOGERROR)
             return []
@@ -649,7 +649,7 @@ class SweetTVApi:
             "MovieService/GetGenreMovies.json",
             data={"genre_id": int(genre_id)},
         )
-        _log("GetGenreMovies(%s) keys=%s movies=%d" % (genre_id, list(data.keys()), len(data.get("movies") or [])), level=xbmc.LOGINFO)
+        _vlog("GetGenreMovies(%s) keys=%s movies=%d" % (genre_id, list(data.keys()), len(data.get("movies") or [])))
         if data.get("result") != "OK":
             return []
         movie_ids = data.get("movies")
@@ -667,13 +667,13 @@ class SweetTVApi:
                 "need_extended_info": True,
             },
         )
-        _log("GetMovieInfo(%d ids) result=%s movies_count=%d" % (len(movie_ids), data.get("result"), len(data.get("movies") or [])), level=xbmc.LOGINFO)
+        _vlog("GetMovieInfo(%d ids) result=%s movies_count=%d" % (len(movie_ids), data.get("result"), len(data.get("movies") or [])))
         if data.get("result") != "OK":
             _log("GetMovieInfo full response: %s" % data, level=xbmc.LOGERROR)
             return []
         if data.get("movies"):
             sample = data["movies"][0]
-            _log("GetMovieInfo FULL sample: %s" % sample, level=xbmc.LOGINFO)
+            _vlog("GetMovieInfo FULL sample: %s" % sample)
 
         movies = []
         for movie in data.get("movies") or []:
@@ -715,7 +715,7 @@ class SweetTVApi:
         movie = movies[0]
         channel_id = movie.get("channel_id")
         epg_id = movie.get("epg_id")
-        _log("get_movie_link: movie=%s channel_id=%s epg_id=%s" % (movie_id, channel_id, epg_id), level=xbmc.LOGINFO)
+        _vlog("get_movie_link: movie=%s channel_id=%s epg_id=%s" % (movie_id, channel_id, epg_id))
 
         if not channel_id or not epg_id:
             _log("get_movie_link: no channel_id/epg_id for movie %s" % movie_id, level=xbmc.LOGERROR)
@@ -793,4 +793,27 @@ class SweetTVApi:
 
 def _log(msg, level=xbmc.LOGDEBUG):
     """Log a message to the Kodi log."""
+    xbmc.log("[plugin.video.sweettv] %s" % msg, level=level)
+
+
+# Verbose logging is opt-in via the addon setting. When disabled, _vlog
+# calls are emitted at DEBUG level (effectively hidden in normal Kodi
+# operation). When enabled, they're upgraded to INFO so they show in the
+# default log without needing Kodi-wide debug logging.
+_VERBOSE_LOGGING = None
+
+
+def _verbose_enabled():
+    global _VERBOSE_LOGGING
+    if _VERBOSE_LOGGING is None:
+        try:
+            _VERBOSE_LOGGING = xbmcaddon.Addon().getSettingBool("verbose_logging")
+        except Exception:
+            _VERBOSE_LOGGING = False
+    return _VERBOSE_LOGGING
+
+
+def _vlog(msg):
+    """Verbose log - only visible when the verbose_logging setting is on."""
+    level = xbmc.LOGINFO if _verbose_enabled() else xbmc.LOGDEBUG
     xbmc.log("[plugin.video.sweettv] %s" % msg, level=level)
