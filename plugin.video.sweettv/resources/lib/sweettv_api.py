@@ -18,13 +18,14 @@ class SweetTVApi:
 
     API_BASE = "https://api.sweet.tv/"
     BILLING_BASE = "https://billing.sweet.tv/"
-    # Vanilla Linux Chrome UA - sweet.tv uses this to detect "device subtype".
-    # Putting Linux here avoids being labelled "MACOS" in the device list.
+    # Reverted to vanilla Windows Chrome UA. The Linux UA seemed harmless
+    # but caused live TV streams to be routed to a CDN that returns a
+    # media-only playlist instead of a master playlist with video variants.
+    # Live TV broke until we changed it back. Not a hill worth dying on.
     USER_AGENT = (
-        "Mozilla/5.0 (X11; Linux x86_64) "
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/146.0.0.0 Safari/537.36 "
-        "Kodi/sweettv-addon"
+        "Chrome/131.0.0.0 Safari/537.36"
     )
 
     def __init__(self):
