@@ -296,14 +296,18 @@ class SweetTVApi:
                 "need_categories": True,
                 "need_offsets": False,
                 "need_hash": True,
-                "need_icons": False,
-                "need_big_icons": False,
+                "need_icons": True,
+                "need_big_icons": True,
             },
         )
 
         if data.get("status") != "OK":
             _log("Failed to load channels: %s" % data, level=xbmc.LOGERROR)
             return [], []
+
+        # Log first channel raw data once to discover available image fields.
+        if data.get("list"):
+            _log("Channel raw sample: %s" % data["list"][0], level=xbmc.LOGINFO)
 
         categories = []
         for cat in data.get("categories") or []:
