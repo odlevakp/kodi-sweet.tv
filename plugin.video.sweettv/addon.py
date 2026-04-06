@@ -64,6 +64,8 @@ def main():
         remove_device(params)
     elif action == "subscription_info":
         show_subscription_info()
+    elif action == "open_settings":
+        xbmcaddon.Addon().openSettings()
     elif action == "iptv_channels":
         # IPTV Manager callback.
         port = int(params.get("port", [0])[0])
@@ -111,6 +113,7 @@ def show_main_menu(handle):
         (_t(M.SEARCH), "search", "DefaultAddonsSearch.png", True),
         (_t(M.REGISTERED_DEVICES), "manage_devices", "DefaultNetwork.png", True),
         (_t(M.SUBSCRIPTION_TITLE), "subscription_info", "DefaultIconInfo.png", False),
+        (_t(M.OPEN_SETTINGS), "open_settings", "DefaultAddonService.png", False),
     ]
 
     for label, action, icon, is_folder in items:
@@ -709,6 +712,17 @@ def manage_devices(handle):
 
     from datetime import datetime
 
+    # Identify "this device": the one with our exact model string and the
+    # most recent date_added (in case of multiple matches from re-pairings).
+    this_model = SweetTVApi._device_model()
+    this_token = None
+    candidates = [
+        d for d in devices if (d.get("model") or "").strip() == this_model
+    ]
+    if candidates:
+        candidates.sort(key=lambda d: int(d.get("date_added", 0)), reverse=True)
+        this_token = candidates[0].get("token_id")
+
     for dev in devices:
         date_str = datetime.fromtimestamp(int(dev.get("date_added", 0))).strftime("%d.%m.%Y %H:%M")
         # Build a friendly device label: prefer model, fall back to subtype/type.
@@ -721,15 +735,22 @@ def manage_devices(handle):
             name = "%s (%s)" % (subtype, dtype) if dtype else subtype
         else:
             name = dtype or "?"
-        label = "%s — %s: %s" % (name, _t(M.SUB_DEVICE_ADDED), date_str)
+        is_this = dev.get("token_id") == this_token
+        if is_this:
+            label = "[B]%s %s[/B] — %s: %s" % (
+                name, _t(M.SUB_THIS_DEVICE), _t(M.SUB_DEVICE_ADDED), date_str,
+            )
+        else:
+            label = "%s — %s: %s" % (name, _t(M.SUB_DEVICE_ADDED), date_str)
         url = (
             "plugin://plugin.video.sweettv/"
             "?action=remove_device&token_id=%s" % dev.get("token_id", "")
         )
         li = xbmcgui.ListItem(label)
-        li.setInfo("video", {"plot": _t(M.SUB_DEVICE_SELECT_REMOVE)})
+        li.setArt({"icon": "DefaultNetwork.png", "thumb": "DefaultNetwork.png"})
         xbmcplugin.addDirectoryItem(handle, url, li, isFolder=False)
 
+    xbmcplugin.setContent(handle, "files")
     xbmcplugin.endOfDirectory(handle)
 
 

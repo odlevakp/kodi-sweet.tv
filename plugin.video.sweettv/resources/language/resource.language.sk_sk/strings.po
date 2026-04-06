@@ -207,6 +207,14 @@ msgctxt "#30714"
 msgid "Select to remove this device"
 msgstr "Vyberte pre odstránenie tohto zariadenia"
 
+msgctxt "#30715"
+msgid "[THIS DEVICE]"
+msgstr "[TOTO ZARIADENIE]"
+
+msgctxt "#30716"
+msgid "Settings"
+msgstr "Nastavenia"
+
 # Settings labels
 msgctxt "#30800"
 msgid "General"

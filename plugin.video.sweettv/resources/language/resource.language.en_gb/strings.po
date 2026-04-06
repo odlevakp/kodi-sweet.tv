@@ -207,6 +207,14 @@ msgctxt "#30714"
 msgid "Select to remove this device"
 msgstr ""
 
+msgctxt "#30715"
+msgid "[THIS DEVICE]"
+msgstr ""
+
+msgctxt "#30716"
+msgid "Settings"
+msgstr ""
+
 # Settings labels
 msgctxt "#30800"
 msgid "General"

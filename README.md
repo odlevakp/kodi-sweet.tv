@@ -106,6 +106,22 @@ Only free (AVOD, ad-supported) movies are listed and playable. Paid movies use W
 
 **Add-ons → Video add-ons → Sweet.TV → Archive** — pick a channel, then a day, then a program.
 
+## Main Menu
+
+The addon menu (under **Add-ons → Video add-ons → Sweet.TV**) shows:
+
+| Item                     | What it does                                                       |
+|--------------------------|--------------------------------------------------------------------|
+| Live TV                  | Browse channels by sweet.tv category, mark favourites              |
+| Archive                  | Browse catchup channels and pick a day/program                     |
+| Movies                   | Browse free (AVOD) movies by genre or collection                   |
+| Search                   | Search across movies and EPG                                       |
+| Registered Devices       | List devices linked to your account; current device highlighted   |
+| Subscription Information | Show plan, active services with expiry, balance                    |
+| Settings                 | Open the addon settings dialog                                     |
+
+If you open the addon and aren't paired yet, the pairing dialog launches automatically.
+
 ## Settings
 
 | Setting                   | Description                                            | Default   |
@@ -116,8 +132,8 @@ Only free (AVOD, ad-supported) movies are listed and playable. Paid movies use W
 | Show Adult Channels       | Toggle adult content visibility                        | Off       |
 | EPG Days to Load          | Number of days of EPG data to fetch (1–7)              | 3         |
 | Auto-close Stream on Stop | Call CloseStream on playback stop to free the slot     | On        |
-| Manage Registered Devices | View/remove devices linked to your sweet.tv account    | —         |
-| Show Subscription Info    | Display subscription details (raw API fields for now)  | —         |
+
+Each setting shows a longer description in the footer when highlighted.
 
 ## Architecture
 

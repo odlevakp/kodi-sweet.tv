@@ -94,25 +94,34 @@ When Kodi (or IPTV Manager, or PVR Simple Client) opens any `plugin://plugin.vid
 
 Each invocation is a new Python process. **Nothing is shared between invocations except the addon's profile directory** (`~/.kodi/userdata/addon_data/plugin.video.sweettv/`), which holds tokens and the favourites file.
 
+**Auto-pairing on first use**: before dispatching to the action handler, `main()` checks if the user is logged in. If not, and the action isn't one that should bypass this (IPTV Manager callbacks, the pair/unpair actions themselves, fav add/remove), it launches the pairing flow immediately. This means a fresh install can be opened without seeing an empty/error state — the pairing dialog appears right away.
+
+The main menu shows seven items: Live TV, Archive, Movies, Search, Registered Devices, Subscription Information, and Settings. The Settings item shortcuts to the addon's settings dialog via `xbmcaddon.Addon().openSettings()` since action buttons inside the settings window don't reliably open directories.
+
 Routing roughly:
 
-| Action           | What it does                                              |
-|------------------|-----------------------------------------------------------|
-| (none)           | Show the main menu                                        |
-| browse_channels  | Show channel categories or channels in a category         |
-| play_channel     | Resolve and return a live HLS variant URL                 |
-| browse_archive   | Show channels with catchup                                |
-| archive_day      | Show day picker, then programs for that day               |
-| play_catchup     | Resolve archive HLS URL for an EPG event                  |
-| browse_movies    | Movie genres / collections (AVOD only)                    |
-| play_movie       | Resolve movie to channel catchup, then return HLS URL     |
-| search           | Search both movies and EPG records                        |
-| pair_device      | Run the device pairing dialog                             |
-| unpair_device    | Logout and clear tokens                                   |
-| manage_devices   | List/remove registered devices                            |
-| iptv_channels    | IPTV Manager callback — return channel JSON via socket    |
-| iptv_epg         | IPTV Manager callback — return EPG JSON via socket        |
-| fav_add/fav_remove | Add/remove a channel from local favourites              |
+| Action             | What it does                                                              |
+|--------------------|---------------------------------------------------------------------------|
+| (none)             | Show the main menu (auto-launches pair_device if not logged in)           |
+| browse_channels    | Show channel categories or channels in a category                         |
+| play_channel       | Resolve and return a live HLS variant URL                                 |
+| browse_archive     | Show channels with catchup                                                |
+| archive_day        | Show day picker, then programs for that day                               |
+| play_catchup       | Resolve archive HLS URL for an EPG event                                  |
+| browse_movies      | Movie genres / collections (AVOD only)                                    |
+| movie_genre        | List movies in a genre                                                    |
+| movie_collection   | List movies in a collection                                               |
+| play_movie         | Resolve movie to channel catchup, then return HLS URL                     |
+| search             | Search both movies and EPG records                                        |
+| pair_device        | Run the device pairing dialog                                             |
+| unpair_device      | Logout and clear tokens                                                   |
+| manage_devices     | List registered devices, with the current device highlighted              |
+| remove_device      | Confirm and remove a registered device by token_id                        |
+| subscription_info  | Open the subscription details dialog                                      |
+| open_settings      | Open the addon settings window (`xbmcaddon.Addon().openSettings()`)       |
+| iptv_channels      | IPTV Manager callback — return channel JSON via socket                    |
+| iptv_epg           | IPTV Manager callback — return EPG JSON via socket                        |
+| fav_add/fav_remove | Add/remove a channel from local favourites                                |
 
 ### service.py — Background Service
 
