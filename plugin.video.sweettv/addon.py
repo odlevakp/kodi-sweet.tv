@@ -359,14 +359,17 @@ def archive_day(handle, params):
     # If no day selected, show day picker.
     if day_offset < 0:
         now = datetime.now()
+        # Kodi built-in weekday string IDs: Monday=11, Sunday=17.
+        # Python weekday(): Monday=0, Sunday=6 -> map to 11..17.
         for i in range(catchup_days):
             day = now - timedelta(days=i)
             if i == 0:
-                label = "Today - %s" % day.strftime("%d.%m.%Y")
+                day_name = _t(M.TODAY)
             elif i == 1:
-                label = "Yesterday - %s" % day.strftime("%d.%m.%Y")
+                day_name = _t(M.YESTERDAY)
             else:
-                label = day.strftime("%A - %d.%m.%Y")
+                day_name = xbmc.getLocalizedString(11 + day.weekday())
+            label = "%s — %s" % (day_name, day.strftime("%d.%m.%Y"))
 
             url = (
                 "plugin://plugin.video.sweettv/"
