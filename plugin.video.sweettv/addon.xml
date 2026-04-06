@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.sweettv"
        name="Sweet.TV"
-       version="2026.04.06.15"
+       version="2026.04.06.17"
        provider-name="kodi-sweet.tv">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -13,10 +13,6 @@
   </extension>
   <extension point="xbmc.service" library="service.py" start="startup"/>
   <extension point="xbmc.addon.metadata">
-    <iptv_manager>
-      <channels_uri>plugin://plugin.video.sweettv/?action=iptv_channels&amp;port={port}</channels_uri>
-      <epg_uri>plugin://plugin.video.sweettv/?action=iptv_epg&amp;port={port}</epg_uri>
-    </iptv_manager>
     <summary lang="en_GB">Sweet.TV streaming service</summary>
     <description lang="en_GB">Watch Sweet.TV live channels, EPG, archive and movies in Kodi. Integrates with IPTV Manager for native TV experience.</description>
     <disclaimer lang="en_GB">This addon requires a valid Sweet.TV subscription.</disclaimer>

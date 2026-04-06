@@ -17,4 +17,8 @@
     <setting id="manage_devices" type="action" label="Manage Registered Devices" action="RunPlugin(plugin://plugin.video.sweettv/?action=manage_devices)"/>
     <setting id="subscription_info" type="action" label="Show Subscription Info" action="RunPlugin(plugin://plugin.video.sweettv/?action=subscription_info)"/>
   </category>
+  <!-- IPTV Manager integration - hidden settings used by service.iptv.manager. -->
+  <setting id="iptv.enabled" type="bool" default="true" visible="false"/>
+  <setting id="iptv.channels_uri" type="text" default="plugin://plugin.video.sweettv/?action=iptv_channels&amp;port={port}" visible="false"/>
+  <setting id="iptv.epg_uri" type="text" default="plugin://plugin.video.sweettv/?action=iptv_epg&amp;port={port}" visible="false"/>
 </settings>

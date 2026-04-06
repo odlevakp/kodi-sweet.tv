@@ -47,12 +47,13 @@ def get_channels():
 
     Returns dict with "version" and "streams" keys.
     """
+    _log("IPTV Manager channels fetch starting", level=xbmc.LOGINFO)
     addon = xbmcaddon.Addon()
     show_adult = addon.getSettingBool("show_adult")
 
     api = SweetTVApi()
     if not api.is_logged_in():
-        _log("Not logged in, returning empty channel list")
+        _log("Not logged in, returning empty channel list", level=xbmc.LOGINFO)
         return {"version": 1, "streams": []}
 
     channels, _ = api.get_channels()
@@ -97,9 +98,11 @@ def get_epg():
     show_adult = addon.getSettingBool("show_adult")
     epg_days = addon.getSettingInt("epg_days")
 
+    _log("EPG fetch starting, days=%d" % epg_days, level=xbmc.LOGINFO)
+
     api = SweetTVApi()
     if not api.is_logged_in():
-        _log("Not logged in, returning empty EPG")
+        _log("Not logged in, returning empty EPG", level=xbmc.LOGINFO)
         return {"version": 1, "epg": {}}
 
     channels, _ = api.get_channels()
@@ -113,7 +116,9 @@ def get_epg():
                 continue
         channel_ids.append(int(ch["id"]))
 
+    _log("Fetching EPG for %d channels x %d days" % (len(channel_ids), epg_days), level=xbmc.LOGINFO)
     epg_data = api.get_epg_multi_day(channel_ids, days=epg_days)
+    _log("EPG fetched: %d channels with data" % len(epg_data), level=xbmc.LOGINFO)
     epg_result = {}
 
     for ch_id, events in epg_data.items():
