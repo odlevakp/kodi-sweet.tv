@@ -173,7 +173,7 @@ Notes:
 
 - Category id `1` = adult content. Filter client-side based on user setting.
 - Category id `1000` = "All" — every channel ends up here.
-- Category id `12` = "Favorite" but `channel_list` is always empty in the API response (sweet.tv tracks favourites elsewhere). Implement favourites client-side if you want them.
+- Category id `12` = "Favorite" but `channel_list` is always empty in the API response (sweet.tv tracks favourites elsewhere). Implement client-side if you want pinned/favourite channels.
 - Category sort order is in the `order` field, not the array position.
 - Channel ordering for display should respect `number` (the channel preset number).
 

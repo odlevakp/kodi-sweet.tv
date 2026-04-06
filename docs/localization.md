@@ -32,7 +32,7 @@ The numeric IDs are organized into ranges by topic. Settings IDs (30800-30899) a
 | 30100-30199 | Main menu items                 |
 | 30200-30299 | Device pairing flow             |
 | 30300-30399 | Errors                          |
-| 30400-30499 | Favourites                      |
+| 30400-30499 | Pinned channels (legacy: Favourites) |
 | 30500-30599 | Browse / search prompts         |
 | 30600-30699 | Device management               |
 | 30700-30799 | Subscription                    |

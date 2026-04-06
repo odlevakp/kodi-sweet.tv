@@ -18,7 +18,7 @@ How the Sweet.TV addon fits together with Kodi, IPTV Manager, and PVR IPTV Simpl
 │   │  service.py  │    │    addon.py    │    │  resources/lib/          │  │
 │   │  (background │◄───┤  URL router    │◄───┤    sweettv_api.py        │  │
 │   │   service)   │    │  + UI builder  │    │    iptv_manager.py       │  │
-│   └──────┬───────┘    └────────┬───────┘    │    favourites.py         │  │
+│   └──────┬───────┘    └────────┬───────┘    │    favourites.py (pins)  │  │
 │          │                     │            │    strings.py            │  │
 │          │                     │            └──────────────────────────┘  │
 └──────────┼─────────────────────┼────────────────────────────────────────────┘
@@ -80,7 +80,7 @@ plugin.video.sweettv/
     └── lib/
         ├── sweettv_api.py            ← all sweet.tv API calls
         ├── iptv_manager.py           ← M3U/XMLTV generation for IPTV Manager
-        ├── favourites.py             ← client-side favourite channels
+        ├── favourites.py             ← client-side pinned channels (legacy module name)
         └── strings.py                ← localization constants (M.PAIR_TITLE etc.)
 ```
 
@@ -92,7 +92,7 @@ See the [API Reference](api-reference.md) for what `sweettv_api.py` actually cal
 
 When Kodi (or IPTV Manager, or PVR Simple Client) opens any `plugin://plugin.video.sweettv/?...` URL, it spawns `addon.py` as a fresh process. The script reads `sys.argv[2]` (query string), dispatches to a handler based on the `action` parameter, builds a directory listing or resolves a playable URL, and exits.
 
-Each invocation is a new Python process. **Nothing is shared between invocations except the addon's profile directory** (`~/.kodi/userdata/addon_data/plugin.video.sweettv/`), which holds tokens and the favourites file.
+Each invocation is a new Python process. **Nothing is shared between invocations except the addon's profile directory** (`~/.kodi/userdata/addon_data/plugin.video.sweettv/`), which holds tokens and the pinned channels file (`favourites.json`).
 
 **Auto-pairing on first use**: before dispatching to the action handler, `main()` checks if the user is logged in. If not, and the action isn't one that should bypass this (IPTV Manager callbacks, the pair/unpair actions themselves, fav add/remove), it launches the pairing flow immediately. This means a fresh install can be opened without seeing an empty/error state — the pairing dialog appears right away.
 
@@ -122,7 +122,7 @@ Routing roughly:
 | open_settings      | Open the addon settings window (`xbmcaddon.Addon().openSettings()`)       |
 | iptv_channels      | IPTV Manager callback — return channel JSON via socket                    |
 | iptv_epg           | IPTV Manager callback — return EPG JSON via socket                        |
-| fav_add/fav_remove | Add/remove a channel from local favourites                                |
+| fav_add/fav_remove | Pin/unpin a channel (legacy action name from when this was called Favourites) |
 
 ### service.py — Background Service
 
@@ -149,14 +149,16 @@ This file contains zero Kodi-specific code (other than `xbmc.log`). It could in 
 
 Two top-level functions: `get_channels()` and `get_epg()`. Each builds a JSON dict in IPTV Manager's format and returns it. The actual sending over the socket is done by the `IPTVManager` class.
 
-- `get_channels()` calls `sweettv_api.get_channels()` to get the channel list and categories, then for each available channel builds a stream dict with name, logo, group(s), catchup info. **Groups are computed from sweet.tv categories joined with `;`** so PVR Simple Client creates one channel group per category. The user's local favourites get an additional `Favourites` group prepended.
+- `get_channels()` calls `sweettv_api.get_channels()` to get the channel list and categories, then for each available channel builds a stream dict with name, logo, group(s), catchup info. **Groups are computed from sweet.tv categories joined with `;`** so PVR Simple Client creates one channel group per category. The user's pinned channels get an additional `Pinned` group prepended.
 - `get_epg()` calls `sweettv_api.get_epg_multi_day()` for the configured number of days (default 3) and returns the events keyed by `sweettv-<channel_id>` (matching the channel `id` in `get_channels`).
 
-### favourites.py — Local Favourite Channels
+### favourites.py — Local Pinned Channels
 
-Client-side, JSON-file-backed list of favourite channel IDs stored at `~/.kodi/userdata/addon_data/plugin.video.sweettv/favourites.json`. The sweet.tv API has a "Favorite" category but it's always empty in the channel response — sweet.tv tracks favourites elsewhere (probably their official app's user state, not exposed via this API).
+Client-side, JSON-file-backed list of pinned channel IDs stored at `~/.kodi/userdata/addon_data/plugin.video.sweettv/favourites.json`. The module is still called `favourites.py` because the user-facing feature was originally named "Favourites" — it was renamed to "Pinned Channels" to avoid colliding with Kodi's built-in Favourites menu, but the storage file and module name kept their old names for backward compatibility (so existing pins survive the rename).
 
-Functions: `load()`, `save()`, `add(id)`, `remove(id)`, `is_favourite(id)`. Used by both `addon.py` (context menu, Favourites category in browse_channels) and `iptv_manager.py` (Favourites channel group).
+The sweet.tv API has a "Favorite" category but it's always empty in the channel response — sweet.tv tracks user favourites elsewhere (probably in their official app's state), not exposed via this API. We use a local list as a workaround.
+
+Functions: `load()`, `save()`, `add(id)`, `remove(id)`, `is_favourite(id)`. Used by both `addon.py` (context menu, Pinned Channels category in browse_channels) and `iptv_manager.py` (Pinned channel group).
 
 ### strings.py — Localization Constants
 
@@ -229,7 +231,7 @@ Channels payload:
       "id": "sweettv-847",
       "logo": "http://staticeu.sweet.tv/...png",
       "preset": 1,
-      "group": "National;HD channels;Sweet.TV;Favourites",
+      "group": "National;HD channels;Sweet.TV;Pinned",
       "is_catchup": true,
       "catchup_source": "plugin://plugin.video.sweettv/?action=play_catchup&channel_id=847&epg_id={catchup-id}",
       "catchup_days": 7
@@ -332,7 +334,7 @@ See [API Reference: Movies](api-reference.md#movies--how-they-actually-stream) f
 | What                    | Where                                                                                |
 |-------------------------|--------------------------------------------------------------------------------------|
 | Tokens (access/refresh) | `~/.kodi/userdata/addon_data/plugin.video.sweettv/login.json`                        |
-| Favourites              | `~/.kodi/userdata/addon_data/plugin.video.sweettv/favourites.json`                   |
+| Pinned channels         | `~/.kodi/userdata/addon_data/plugin.video.sweettv/favourites.json`                   |
 | Addon settings          | `~/.kodi/userdata/addon_data/plugin.video.sweettv/settings.xml`                      |
 | Generated M3U           | `~/.kodi/userdata/addon_data/service.iptv.manager/playlist.m3u8`                     |
 | Generated EPG           | `~/.kodi/userdata/addon_data/service.iptv.manager/epg.xml`                           |

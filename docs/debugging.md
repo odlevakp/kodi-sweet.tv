@@ -257,15 +257,15 @@ PVR Simple Client only reads the M3U/EPG at startup or when explicitly told to r
 
 4. **"Not logged in"** dialog — token expired and refresh failed. Re-pair the device.
 
-### Favourites Empty or Wrong
+### Pinned Channels Empty or Wrong
 
-Favourites are stored in `~/.kodi/userdata/addon_data/plugin.video.sweettv/favourites.json` as a JSON list of channel ID strings:
+Pinned channels are stored in `~/.kodi/userdata/addon_data/plugin.video.sweettv/favourites.json` (legacy filename from when the feature was called Favourites) as a JSON list of channel ID strings:
 
 ```json
 ["847", "952", "1364"]
 ```
 
-If the list is corrupted, just delete the file. The addon will recreate it next time you add a favourite.
+If the list is corrupted, just delete the file. The addon will recreate it next time you pin a channel.
 
 ### Translations Not Showing
 
@@ -286,7 +286,7 @@ rm -rf ~/.kodi/userdata/addon_data/plugin.video.sweettv
 rm -rf ~/.kodi/addons/plugin.video.sweettv
 ```
 
-This wipes tokens, favourites, settings, and the addon code itself. **Do not** delete `Addons*.db` from the database directory — that wipes Kodi's knowledge of every installed addon, not just ours. You'd have to reinstall everything.
+This wipes tokens, pinned channels, settings, and the addon code itself. **Do not** delete `Addons*.db` from the database directory — that wipes Kodi's knowledge of every installed addon, not just ours. You'd have to reinstall everything.
 
 After this, restart Kodi and reinstall the Sweet.TV ZIP. You'll need to re-pair.
 
@@ -296,7 +296,7 @@ After this, restart Kodi and reinstall the Sweet.TV ZIP. You'll need to re-pair.
 rm ~/.kodi/userdata/addon_data/plugin.video.sweettv/login.json
 ```
 
-Settings and favourites are preserved.
+Settings and pinned channels are preserved.
 
 ### Force IPTV Manager to re-poll
 
