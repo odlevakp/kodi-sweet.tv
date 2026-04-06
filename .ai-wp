@@ -5,46 +5,107 @@ Build a Kodi addon for sweet.tv that provides native TV experience (live channel
 
 ## Phases
 
-### Phase 1: Core Live TV + EPG [IN PROGRESS]
+### Phase 1: Core Live TV + EPG [IN PROGRESS - tested on Linux Mint Flatpak Kodi]
 - [x] Analyze Enigma2 reference plugin for API understanding
 - [x] Plan architecture and discuss with user
-- [ ] Set up repo structure (README, configs, addon skeleton)
-- [ ] Implement sweet.tv API client (auth, channels, EPG, streams)
-- [ ] Implement IPTV Manager integration
-- [ ] Build addon entry point and URL router
-- [ ] Create settings UI
-- [ ] Implement device pairing flow
-- [ ] Implement live stream playback with lifecycle management
-- [ ] Test and validate
+- [x] Set up repo structure (README, configs, addon skeleton)
+- [x] Implement sweet.tv API client (auth, channels, EPG, streams)
+- [x] Implement IPTV Manager integration (channels + EPG via socket)
+- [x] Build addon entry point and URL router
+- [x] Create settings UI (bitrate, adult filter, pairing)
+- [x] Implement device pairing flow with on-screen dialogs
+- [x] Implement live stream playback (uses inputstream.adaptive directly with master HLS playlist)
+- [x] Live TV channel browsing with categories
+- [ ] Verify channels appear in Kodi's native TV section via IPTV Manager
+- [ ] Fix category names (currently empty - API field names unknown, debug logging added)
 
-### Phase 2: Archive/Catchup [PLANNED]
-- [ ] Browse channels with archive support
-- [ ] Browse archive by day
-- [ ] Play archived programs
+### Phase 2: Archive/Catchup [WORKING via addon UI]
+- [x] Browse channels with archive support
+- [x] Browse archive by day
+- [x] Play archived programs (works through addon UI)
+- [ ] Catchup integration via PVR (catchup_source in IPTV Manager streams)
 
 ### Phase 3: Parental Lock [PLANNED]
-- [ ] Adult channel filtering
+- [ ] Adult channel filtering (basic show/hide already in place)
 - [ ] PIN protection for adult content
 - [ ] Integration with Kodi parental controls
 
-### Phase 4: Subscription Info [PLANNED]
-- [ ] Fetch and display subscription details
-- [ ] Show plan type and expiry
+### Phase 4: Subscription Info [PARTIAL]
+- [x] Generic subscription info dialog (shows raw API fields)
+- [ ] Display days remaining on subscription
+- [ ] Need to log GetUserInfo response to know exact field names
 
-### Phase 5: Additional Features [PLANNED]
-- [ ] VOD/Movies (genres, collections, trailers)
-- [ ] Search (movies + EPG records)
-- [ ] Device management
-- [ ] Quality selection
-- [ ] Slovak localization
+### Phase 5: Additional Features [PARTIAL]
+- [x] VOD/Movies (genres, collections, trailers)
+- [x] Search (movies + EPG records)
+- [x] Device management (list/remove)
+- [ ] Quality selection in stream
+- [ ] Slovak localization (English strings.po in place, ready for translation)
 - [ ] Favorites/recently watched
+
+### Build & Distribution [DONE]
+- [x] Makefile with build/release/clean/version targets
+- [x] Date-based versioning (YYYY.MM.DD with .N suffix for intra-day rebuilds)
+- [x] GitHub releases via `make release`
+- [x] Repository addon (repository.sweettv) for auto-updates
+- [x] addons.xml + addons.xml.md5 generation in `repo/`
+- [ ] GitHub Pages hosting for repo (using raw GitHub URLs for now)
+
+## Known Issues / Lessons Learned
+- IPTV Manager and PVR Simple Client CANNOT be declared as Kodi dependencies — install fails. Users must install them manually from Kodi's repo.
+- Kodi rejects ZIP install if same version is already installed — must bump version on each rebuild.
+- Manual HLS variant parsing was unreliable — passing master playlist directly to inputstream.adaptive works for all channels.
+- After failed installs, sometimes need to clear `~/.var/app/tv.kodi.Kodi/data/addons/plugin.video.sweettv` and `addon_data/plugin.video.sweettv`.
 
 ## Technical Decisions
 - IPTV Manager for native TV section (user choice)
 - Kodi 21+ only, no legacy support
 - English first, localization later
-- Device pairing auth (not username/password - API requirement)
+- Device pairing auth (not username/password — API requirement)
+- inputstream.adaptive handles HLS quality selection (not us)
+- GNU sed (gsed) used in Makefile, not BSD sed
+
+## Architecture
+
+```
+sweet.tv API
+    ↕
+sweettv_api.py (auth, channels, EPG, streams, movies, search)
+    ↕
+addon.py (URL router) + service.py (stream cleanup, IPTV Manager bridge)
+    ↕
+IPTV Manager (channels + EPG via socket)
+    ↕
+PVR IPTV Simple Client
+    ↕
+Kodi TV Section
+```
+
+## File Layout
+```
+plugin.video.sweettv/
+  addon.xml          - manifest with IPTV Manager config
+  addon.py           - URL router and all action handlers
+  service.py         - background service for stream lifecycle
+  resources/
+    settings.xml     - addon settings
+    language/.../strings.po
+    lib/
+      sweettv_api.py - API client
+      iptv_manager.py - IPTV Manager socket integration
+
+repository.sweettv/
+  addon.xml          - Kodi repo pointer to raw GitHub
+
+repo/
+  addons.xml         - generated by `make repo-index`
+  addons.xml.md5
+
+Makefile             - build, release, version targets
+```
 
 ## Reference
-- Enigma2 plugin: tmp/archivczsk-doplnky/plugin_video_sweettv/
+- Enigma2 plugin: tmp/archivczsk-doplnky/plugin_video_sweettv/ (gitignored)
 - sweet.tv API: https://api.sweet.tv/ (all POST, JSON)
+- IPTV Manager: https://github.com/add-ons/service.iptv.manager
+- PVR Simple Client: https://github.com/kodi-pvr/pvr.iptvsimple

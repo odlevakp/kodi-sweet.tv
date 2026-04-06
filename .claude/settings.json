@@ -11,7 +11,11 @@
       "Bash(mkdir *)",
       "Bash(python3 *)",
       "Bash(pip *)",
-      "Agent"
+      "Agent",
+      "Bash(git commit -m ':*)",
+      "Bash(make build:*)",
+      "Bash(make repo:*)",
+      "Bash(make repo-index:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
