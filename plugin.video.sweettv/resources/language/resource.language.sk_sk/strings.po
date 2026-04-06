@@ -207,3 +207,7 @@ msgstr "Spravovať registrované zariadenia"
 msgctxt "#30812"
 msgid "Show Subscription Info"
 msgstr "Zobraziť informácie o predplatnom"
+
+msgctxt "#30813"
+msgid "Show Movies Not in Subscription"
+msgstr "Zobraziť filmy mimo predplatného"

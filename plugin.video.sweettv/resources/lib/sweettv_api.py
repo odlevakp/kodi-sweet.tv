@@ -52,11 +52,14 @@ class SweetTVApi:
         headers = {
             "User-Agent": self.USER_AGENT,
             "Origin": "https://sweet.tv",
-            "Referer": "https://sweet.tv",
+            "Referer": "https://sweet.tv/",
             "Accept-encoding": "gzip",
-            "Accept-language": "en",
+            "Accept-language": "sk-SK,sk;q=0.9,en-US;q=0.8,en;q=0.7",
             "Content-type": "application/json",
-            "x-device": "1;22;0;2;3.7.1",
+            # Match the website's current x-device value (sub_type=39, v7.4.50).
+            "x-device": "1;22;39;2;7.4.50",
+            "x-device-id": self.device_id or "",
+            "x-accept-language": "sk",
         }
         if self.access_token:
             headers["Authorization"] = "Bearer " + self.access_token
@@ -84,8 +87,8 @@ class SweetTVApi:
             "type": "DT_AndroidTV",
             "mac": mac,
             "application": {"type": "AT_SWEET_TV_Player"},
-            "sub_type": 0,
-            "firmware": {"versionCode": 1301, "versionString": "3.7.1"},
+            "sub_type": 39,
+            "firmware": {"versionCode": 1, "versionString": "7.4.50"},
             "uuid": self.device_id,
             "supported_drm": {"widevine_modular": True},
             "screen_info": {
@@ -541,7 +544,9 @@ class SweetTVApi:
     def get_movie_configuration(self):
         """Get movie genres and built-in collections."""
         data = self._call_api("MovieService/GetConfiguration.json", data={})
+        _log("GetConfiguration response keys=%s result=%s" % (list(data.keys()), data.get("result")), level=xbmc.LOGINFO)
         if data.get("result") != "OK":
+            _log("GetConfiguration full response: %s" % data, level=xbmc.LOGERROR)
             return None
         return data
 
@@ -550,7 +555,9 @@ class SweetTVApi:
         data = self._call_api(
             "MovieService/GetCollections.json", data={"type": 1}
         )
+        _log("GetCollections response keys=%s result=%s" % (list(data.keys()), data.get("result")), level=xbmc.LOGINFO)
         if data.get("result") != "OK":
+            _log("GetCollections full response: %s" % data, level=xbmc.LOGERROR)
             return []
         return [c for c in (data.get("collection") or []) if c["type"] == "Movie"]
 
@@ -560,7 +567,9 @@ class SweetTVApi:
             "MovieService/GetCollectionMovies.json",
             data={"collection_id": int(collection_id)},
         )
+        _log("GetCollectionMovies(%s) result=%s movies_count=%d" % (collection_id, data.get("result"), len(data.get("movies") or [])), level=xbmc.LOGINFO)
         if data.get("result") != "OK":
+            _log("GetCollectionMovies full response: %s" % data, level=xbmc.LOGERROR)
             return []
         movie_ids = data.get("movies")
         if not movie_ids:
@@ -573,6 +582,7 @@ class SweetTVApi:
             "MovieService/GetGenreMovies.json",
             data={"genre_id": int(genre_id)},
         )
+        _log("GetGenreMovies(%s) keys=%s movies=%d" % (genre_id, list(data.keys()), len(data.get("movies") or [])), level=xbmc.LOGINFO)
         if data.get("result") != "OK":
             return []
         movie_ids = data.get("movies")
@@ -590,8 +600,13 @@ class SweetTVApi:
                 "need_extended_info": True,
             },
         )
+        _log("GetMovieInfo(%d ids) result=%s movies_count=%d" % (len(movie_ids), data.get("result"), len(data.get("movies") or [])), level=xbmc.LOGINFO)
         if data.get("result") != "OK":
+            _log("GetMovieInfo full response: %s" % data, level=xbmc.LOGERROR)
             return []
+        if data.get("movies"):
+            sample = data["movies"][0]
+            _log("GetMovieInfo FULL sample: %s" % sample, level=xbmc.LOGINFO)
 
         movies = []
         for movie in data.get("movies") or []:
@@ -603,36 +618,53 @@ class SweetTVApi:
                     "title": movie.get("title", ""),
                     "plot": movie.get("description", ""),
                     "poster": movie.get("poster_url", ""),
+                    "banner": movie.get("banner_url", ""),
                     "rating": movie.get("rating_imdb"),
                     "duration": movie.get("duration"),
                     "year": int(movie["year"]) if movie.get("year") else None,
                     "available": movie.get("available", False),
-                    "trailer": movie.get("trailer_url"),
+                    # AVOD movies stream as channel catchups via OpenStream.
+                    # GetMovieInfo with need_extended_info returns the channel
+                    # broadcast where the movie is currently available.
+                    "channel_id": movie.get("channel_id"),
+                    "epg_id": movie.get("epg_id"),
+                    "accessibility_model": movie.get("accessibility_model", ""),
                 }
             )
         return movies
 
     def get_movie_link(self, movie_id, owner_id):
-        """Get playable URL for a movie."""
-        data = self._call_api(
-            "MovieService/GetLink.json",
-            data={
-                "audio_track": -1,
-                "movie_id": int(movie_id),
-                "owner_id": int(owner_id),
-                "preferred_link_type": 1,
-                "subtitle": "all",
-            },
-        )
-        if data.get("status") != "OK":
+        """Get playable URL for a movie.
+
+        Movies are served as channel catchups via TvService/OpenStream.
+        We fetch movie info to get the (channel_id, epg_id) coordinates
+        of the broadcast that contains the movie, then call open_stream.
+        """
+        movies = self.get_movie_info([int(movie_id)])
+        if not movies:
+            _log("get_movie_link: GetMovieInfo returned nothing for %s" % movie_id, level=xbmc.LOGERROR)
             return None, None
-        if data.get("link_type") not in ("HLS", "DASH"):
-            _log(
-                "Unsupported movie stream type: %s" % data.get("link_type"),
-                level=xbmc.LOGERROR,
-            )
+
+        movie = movies[0]
+        channel_id = movie.get("channel_id")
+        epg_id = movie.get("epg_id")
+        _log("get_movie_link: movie=%s channel_id=%s epg_id=%s" % (movie_id, channel_id, epg_id), level=xbmc.LOGINFO)
+
+        if not channel_id or not epg_id:
+            _log("get_movie_link: no channel_id/epg_id for movie %s" % movie_id, level=xbmc.LOGERROR)
             return None, None
-        return data["url"], data["link_type"]
+
+        master_url, stream_id = self.open_stream(int(channel_id), epg_id=int(epg_id))
+        if not master_url:
+            return None, None
+
+        # Resolve to a variant to skip the ad preroll, like live channels do.
+        streams = self.resolve_hls_streams(master_url)
+        if not streams:
+            self.close_stream(stream_id)
+            return None, None
+
+        return streams[0]["url"], "HLS"
 
     # -- Search -----------------------------------------------------------
 

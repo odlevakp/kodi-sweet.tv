@@ -400,6 +400,7 @@ def archive_day(handle, params):
 def browse_movies(handle, params):
     """Show movie browsing options (by genre, by collection)."""
     cat = params.get("cat", [None])[0]
+    _log("browse_movies called with cat=%s" % cat, level=xbmc.LOGINFO)
 
     if cat is None:
         for label, cat_id in [("By Genre", "genres"), ("By Collection", "collections")]:
@@ -411,22 +412,41 @@ def browse_movies(handle, params):
 
     api = SweetTVApi()
     if not api.is_logged_in():
+        _log("browse_movies: not logged in", level=xbmc.LOGWARNING)
         return
 
+    _log("browse_movies: fetching movie configuration", level=xbmc.LOGINFO)
     config = api.get_movie_configuration()
     if not config:
+        _log("browse_movies: get_movie_configuration returned None", level=xbmc.LOGERROR)
         return
 
+    _log("browse_movies: config keys=%s" % list(config.keys()), level=xbmc.LOGINFO)
+
     if cat == "genres":
-        for genre in config.get("genres", []):
-            url = "plugin://plugin.video.sweettv/?action=movie_genre&genre_id=%s" % genre["id"]
-            li = xbmcgui.ListItem(genre["title"])
+        genres = config.get("genres", [])
+        _log("browse_movies: %d genres found" % len(genres), level=xbmc.LOGINFO)
+        if genres:
+            _log("browse_movies: first genre sample=%s" % genres[0], level=xbmc.LOGINFO)
+        for genre in genres:
+            gid = genre.get("id")
+            gtitle = genre.get("title") or genre.get("name") or genre.get("caption") or str(gid)
+            url = "plugin://plugin.video.sweettv/?action=movie_genre&genre_id=%s" % gid
+            li = xbmcgui.ListItem(gtitle)
             xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)
     elif cat == "collections":
-        collections = config.get("collections", []) + api.get_movie_collections()
-        for col in collections:
-            url = "plugin://plugin.video.sweettv/?action=movie_collection&collection_id=%s" % col["id"]
-            li = xbmcgui.ListItem(col["title"])
+        builtin = config.get("collections", [])
+        user_collections = api.get_movie_collections()
+        _log("browse_movies: %d builtin collections, %d user collections" % (len(builtin), len(user_collections)), level=xbmc.LOGINFO)
+        if builtin:
+            _log("browse_movies: first builtin sample=%s" % builtin[0], level=xbmc.LOGINFO)
+        if user_collections:
+            _log("browse_movies: first user collection sample=%s" % user_collections[0], level=xbmc.LOGINFO)
+        for col in builtin + user_collections:
+            cid = col.get("id")
+            ctitle = col.get("title") or col.get("name") or col.get("caption") or str(cid)
+            url = "plugin://plugin.video.sweettv/?action=movie_collection&collection_id=%s" % cid
+            li = xbmcgui.ListItem(ctitle)
             xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)
 
     xbmcplugin.endOfDirectory(handle)
@@ -435,28 +455,34 @@ def browse_movies(handle, params):
 def movie_genre(handle, params):
     """Show movies in a genre."""
     genre_id = params.get("genre_id", [None])[0]
+    _log("movie_genre called with genre_id=%s" % genre_id, level=xbmc.LOGINFO)
     if not genre_id:
         return
 
     api = SweetTVApi()
     if not api.is_logged_in():
+        _log("movie_genre: not logged in", level=xbmc.LOGWARNING)
         return
 
     movies = api.get_movie_genre(genre_id)
+    _log("movie_genre: %d movies returned" % len(movies), level=xbmc.LOGINFO)
     _list_movies(handle, movies)
 
 
 def movie_collection(handle, params):
     """Show movies in a collection."""
     collection_id = params.get("collection_id", [None])[0]
+    _log("movie_collection called with collection_id=%s" % collection_id, level=xbmc.LOGINFO)
     if not collection_id:
         return
 
     api = SweetTVApi()
     if not api.is_logged_in():
+        _log("movie_collection: not logged in", level=xbmc.LOGWARNING)
         return
 
     movies = api.get_movie_collection(collection_id)
+    _log("movie_collection: %d movies returned" % len(movies), level=xbmc.LOGINFO)
     _list_movies(handle, movies)
 
 
@@ -464,43 +490,54 @@ def play_movie(handle, params):
     """Play a movie."""
     movie_id = params.get("movie_id", [None])[0]
     owner_id = params.get("owner_id", [None])[0]
+    _log("play_movie called movie_id=%s owner_id=%s" % (movie_id, owner_id), level=xbmc.LOGINFO)
     if not movie_id or not owner_id:
+        _log("play_movie: missing movie_id or owner_id, params=%s" % params, level=xbmc.LOGERROR)
         return
 
     api = SweetTVApi()
     if not api.is_logged_in():
+        _log("play_movie: not logged in", level=xbmc.LOGERROR)
         return
 
     url, link_type = api.get_movie_link(movie_id, owner_id)
+    _log("play_movie: GetLink returned url=%s link_type=%s" % (url, link_type), level=xbmc.LOGINFO)
     if not url:
-        xbmcgui.Dialog().notification("Sweet.TV", "Failed to load movie", xbmcgui.NOTIFICATION_ERROR)
+        xbmcgui.Dialog().notification(
+            "Sweet.TV",
+            "Movie not in your subscription",
+            xbmcgui.NOTIFICATION_WARNING,
+        )
+        # Tell Kodi the resolve failed so it stops the playlist iteration.
+        xbmcplugin.setResolvedUrl(handle, False, xbmcgui.ListItem())
         return
 
-    li = xbmcgui.ListItem(path=url)
-
-    addon = xbmcaddon.Addon()
-    if addon.getSettingBool("use_inputstream"):
-        li.setProperty("inputstream", "inputstream.adaptive")
-        if link_type == "DASH":
-            li.setProperty("inputstream.adaptive.manifest_type", "mpd")
-        else:
-            li.setProperty("inputstream.adaptive.manifest_type", "hls")
+    play_url = url + "|User-Agent=" + SweetTVApi.USER_AGENT
+    li = xbmcgui.ListItem(path=play_url)
+    if link_type == "DASH":
+        li.setMimeType("application/dash+xml")
+    else:
+        li.setMimeType("application/vnd.apple.mpegurl")
+    li.setContentLookup(False)
 
     xbmcplugin.setResolvedUrl(handle, True, li)
 
 
 def _list_movies(handle, movies):
-    """Add movie items to the directory listing."""
-    addon = xbmcaddon.Addon()
-    show_paid = True  # TODO: add setting for this.
+    """Add movie items to the directory listing.
 
+    Only AVOD (free with ads) movies are playable - they're streamed as
+    catchup events on a TV channel via OpenStream. Paid SVOD/TVOD movies
+    use Widevine-protected DASH which we don't support.
+    """
     for movie in movies:
-        if not movie["available"] and not show_paid:
+        # Filter to AVOD only - paid SVOD/TVOD movies use Widevine DASH
+        # which we don't support. The channel_id/epg_id needed for playback
+        # is fetched per-movie at click time (not in this bulk listing).
+        if movie.get("accessibility_model") != "ACCESSIBILITY_MODEL_AVOD":
             continue
 
         title = movie["title"]
-        if not movie["available"]:
-            title = "[COLOR yellow]*[/COLOR] " + title
 
         url = (
             "plugin://plugin.video.sweettv/"
