@@ -1,0 +1,209 @@
+# Sweet.TV Kodi Addon
+# Czech language file
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.sweettv\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-04-06 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Czech\n"
+"Language: cs_CZ\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Main menu
+msgctxt "#30100"
+msgid "Live TV"
+msgstr "Živé vysílání"
+
+msgctxt "#30101"
+msgid "Archive"
+msgstr "Archiv"
+
+msgctxt "#30102"
+msgid "Movies"
+msgstr "Filmy"
+
+msgctxt "#30103"
+msgid "Search"
+msgstr "Hledat"
+
+msgctxt "#30104"
+msgid "Favourites"
+msgstr "Oblíbené"
+
+# Pairing
+msgctxt "#30200"
+msgid "Pair Device"
+msgstr "Spárovat zařízení"
+
+msgctxt "#30201"
+msgid "Sweet.TV - Device Pairing"
+msgstr "Sweet.TV - Párování zařízení"
+
+msgctxt "#30202"
+msgid "Your pairing code is: [B]{code}[/B][CR][CR]Go to sweet.tv, log in to your account,[CR]navigate to My Devices, enter this code,[CR]and click Activate.[CR][CR]Waiting for pairing..."
+msgstr "Váš párovací kód je: [B]{code}[/B][CR][CR]Přejděte na sweet.tv, přihlaste se ke svému účtu,[CR]otevřete sekci Moje zařízení, zadejte tento kód[CR]a klikněte na Aktivovat.[CR][CR]Čekání na spárování..."
+
+msgctxt "#30203"
+msgid "Already paired. Do you want to re-pair?"
+msgstr "Zařízení je již spárováno. Chcete jej spárovat znovu?"
+
+msgctxt "#30204"
+msgid "Failed to get pairing code. Please try again."
+msgstr "Nepodařilo se získat párovací kód. Zkuste to znovu."
+
+msgctxt "#30205"
+msgid "Device paired successfully!"
+msgstr "Zařízení bylo úspěšně spárováno!"
+
+msgctxt "#30206"
+msgid "Pairing timed out. Please try again."
+msgstr "Vypršel čas párování. Zkuste to znovu."
+
+msgctxt "#30207"
+msgid "Are you sure you want to unpair this device?"
+msgstr "Opravdu chcete zrušit spárování tohoto zařízení?"
+
+msgctxt "#30208"
+msgid "Device unpaired successfully."
+msgstr "Spárování zařízení bylo zrušeno."
+
+msgctxt "#30209"
+msgid "Not logged in. Please pair your device first."
+msgstr "Nejste přihlášeni. Nejprve spárujte své zařízení."
+
+# Errors
+msgctxt "#30300"
+msgid "Failed to load stream"
+msgstr "Nepodařilo se načíst stream"
+
+msgctxt "#30301"
+msgid "Failed to load archive stream"
+msgstr "Nepodařilo se načíst archivní stream"
+
+msgctxt "#30302"
+msgid "Failed to load movie"
+msgstr "Nepodařilo se načíst film"
+
+# Favourites
+msgctxt "#30400"
+msgid "Add to Favourites"
+msgstr "Přidat do oblíbených"
+
+msgctxt "#30401"
+msgid "Remove from Favourites"
+msgstr "Odebrat z oblíbených"
+
+msgctxt "#30402"
+msgid "Added to Favourites"
+msgstr "Přidáno do oblíbených"
+
+msgctxt "#30403"
+msgid "Removed from Favourites"
+msgstr "Odebráno z oblíbených"
+
+# Browse
+msgctxt "#30500"
+msgid "Search Sweet.TV"
+msgstr "Hledat na Sweet.TV"
+
+msgctxt "#30501"
+msgid "By Genre"
+msgstr "Podle žánru"
+
+msgctxt "#30502"
+msgid "By Collection"
+msgstr "Podle kolekce"
+
+msgctxt "#30503"
+msgid "Today"
+msgstr "Dnes"
+
+msgctxt "#30504"
+msgid "Yesterday"
+msgstr "Včera"
+
+# Device management
+msgctxt "#30600"
+msgid "Registered Devices"
+msgstr "Registrovaná zařízení"
+
+msgctxt "#30601"
+msgid "No devices found."
+msgstr "Nenalezena žádná zařízení."
+
+msgctxt "#30602"
+msgid "Remove this device?"
+msgstr "Odebrat toto zařízení?"
+
+msgctxt "#30603"
+msgid "Device removed."
+msgstr "Zařízení bylo odebráno."
+
+msgctxt "#30604"
+msgid "Select to remove this device"
+msgstr "Vyberte pro odebrání tohoto zařízení"
+
+# Subscription
+msgctxt "#30700"
+msgid "Sweet.TV - Subscription"
+msgstr "Sweet.TV - Předplatné"
+
+msgctxt "#30701"
+msgid "Failed to load subscription info."
+msgstr "Nepodařilo se načíst informace o předplatném."
+
+# Settings labels
+msgctxt "#30800"
+msgid "General"
+msgstr "Obecné"
+
+msgctxt "#30801"
+msgid "Pair Device"
+msgstr "Spárovat zařízení"
+
+msgctxt "#30802"
+msgid "Unpair Device (Logout)"
+msgstr "Zrušit spárování (Odhlásit)"
+
+msgctxt "#30803"
+msgid "Maximum Bitrate"
+msgstr "Maximální datový tok"
+
+msgctxt "#30804"
+msgid "Channels"
+msgstr "Kanály"
+
+msgctxt "#30805"
+msgid "Show Adult Channels"
+msgstr "Zobrazit kanály pro dospělé"
+
+msgctxt "#30806"
+msgid "EPG Days to Load"
+msgstr "Počet dní EPG k načtení"
+
+msgctxt "#30807"
+msgid "Playback"
+msgstr "Přehrávání"
+
+msgctxt "#30808"
+msgid "Use Inputstream Adaptive"
+msgstr "Použít Inputstream Adaptive"
+
+msgctxt "#30809"
+msgid "Auto-close Stream on Stop"
+msgstr "Automaticky uzavřít stream při zastavení"
+
+msgctxt "#30810"
+msgid "Advanced"
+msgstr "Pokročilé"
+
+msgctxt "#30811"
+msgid "Manage Registered Devices"
+msgstr "Spravovat registrovaná zařízení"
+
+msgctxt "#30812"
+msgid "Show Subscription Info"
+msgstr "Zobrazit informace o předplatném"
