@@ -21,21 +21,79 @@ A Kodi addon for [sweet.tv](https://sweet.tv) streaming service that provides a 
 
 - Kodi 21 (Omega) or later
 - Active sweet.tv subscription
-
-Dependencies (auto-installed when you install the addon):
-- [IPTV Manager](https://github.com/add-ons/service.iptv.manager) - bridges addon data to PVR
-- [PVR IPTV Simple Client](https://github.com/kodi-pvr/pvr.iptvsimple) - provides native TV section
-- [inputstream.adaptive](https://github.com/xbmc/inputstream.adaptive) - HLS stream playback
+- The following addons (must be installed manually from Kodi's official repo):
+  - **IPTV Manager** (`service.iptv.manager`) — bridges addon data to PVR
+  - **PVR IPTV Simple Client** (`pvr.iptvsimple`) — provides native TV section
 
 ## Installation
 
-1. Download `plugin.video.sweettv-YYYY.MM.DD.zip` from the [latest release](https://github.com/odlevakp/kodi-sweet.tv/releases/latest)
-2. In Kodi, go to **Settings -> Add-ons -> Install from ZIP file**
-3. Select the downloaded ZIP — dependencies are installed automatically
-4. Open the addon from **Add-ons -> Video add-ons -> Sweet.TV**
-5. Go to addon settings and click **Pair Device**
-6. Follow the on-screen instructions to pair at sweet.tv
-7. **Restart Kodi** — channels will appear in the **TV** section
+### Step 1: Install Dependencies
+
+In Kodi:
+
+1. **Add-ons → Search** (magnifying glass icon) → search for **"IPTV Manager"** → Install
+2. **Add-ons → My add-ons → PVR clients → PVR IPTV Simple Client** → Enable (it's bundled with Kodi)
+
+### Step 2: Install Sweet.TV Addon
+
+1. Download `plugin.video.sweettv-YYYY.MM.DD.N.zip` from the [latest release](https://github.com/odlevakp/kodi-sweet.tv/releases/latest)
+2. In Kodi: **Settings → Add-ons → Install from ZIP file** → select the ZIP
+3. Open the addon: **Add-ons → Video add-ons → Sweet.TV**
+
+### Step 3: Pair Your Device
+
+1. In the Sweet.TV addon settings, click **Pair Device**
+2. The addon shows a pairing code
+3. On your computer or phone, go to [sweet.tv](https://sweet.tv) and log in
+4. Navigate to your profile → **My Devices**
+5. Enter the pairing code and click **Activate**
+6. The addon will detect the pairing automatically
+
+### Step 4: Configure IPTV Manager + PVR Simple Client
+
+This step makes channels appear in Kodi's native **TV** section.
+
+1. **Add-ons → My add-ons → Services → IPTV Manager → Configure**
+2. Under **IPTV Simple** category, click **"Configure IPTV Simple automatically"**
+3. Under **Sources** category, click **"Force refresh now"**
+4. Wait until it stops spinning — IPTV Manager fetches channels and EPG from Sweet.TV
+5. **Restart Kodi**
+
+After restart, channels will appear under the **TV** menu with full EPG support.
+
+#### If channels still don't appear
+
+The auto-configure may not work on all Kodi installations. Configure manually:
+
+1. **Add-ons → My add-ons → PVR clients → PVR IPTV Simple Client → Configure**
+2. **General** tab:
+   - Location: **Local Path**
+   - M3U Play List Path: `special://userdata/addon_data/service.iptv.manager/playlist.m3u8`
+3. **EPG Settings** tab:
+   - Location: **Local Path**
+   - XMLTV Path: `special://userdata/addon_data/service.iptv.manager/epg.xml`
+4. Restart Kodi.
+
+## Usage
+
+### Browse Channels (Addon UI)
+
+**Add-ons → Video add-ons → Sweet.TV → Live TV** — browse by category, mark favourites with the context menu.
+
+### Watch in TV Section
+
+After completing Step 4 above, channels appear in Kodi's main **TV** menu with:
+- Live channel guide
+- EPG (current + upcoming programs)
+- Catchup playback for supported channels
+
+### Favourites
+
+While browsing channels in the addon UI, open the context menu on any channel and select **Add to Favourites**. A **Favourites** category appears at the top of the Live TV list. Favourites are stored locally per Kodi install.
+
+### Archive / Catchup
+
+**Add-ons → Video add-ons → Sweet.TV → Archive** — pick a channel, then a day, then a program.
 
 ## Device Pairing
 

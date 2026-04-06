@@ -13,6 +13,7 @@ import xbmc
 import xbmcaddon
 
 from .sweettv_api import SweetTVApi, _log
+from . import favourites
 
 
 class IPTVManager:
@@ -56,12 +57,33 @@ def get_channels():
         _log("Not logged in, returning empty channel list", level=xbmc.LOGINFO)
         return {"version": 1, "streams": []}
 
-    channels, _ = api.get_channels()
-    streams = []
+    channels, categories = api.get_channels()
+    fav_ids = set(favourites.load())
 
+    # Build a channel_id -> [category_name, ...] mapping from category channel_lists.
+    # Skip the "All" category (id 1000) since it would group everything together.
+    ch_to_groups = {}
+    for cat in categories:
+        if cat["id"] == 1000:
+            continue
+        # Skip adult category if disabled.
+        if not show_adult and cat["id"] == 1:
+            continue
+        for cid in cat["channel_list"] or []:
+            ch_to_groups.setdefault(str(cid), []).append(cat["name"])
+
+    streams = []
     for ch in channels:
         if not show_adult and ch["adult"]:
             continue
+
+        groups = list(ch_to_groups.get(ch["id"], []))
+        # Add Favourites group if user has marked this channel.
+        if ch["id"] in fav_ids:
+            groups.insert(0, "Favourites")
+        # Fall back to "Sweet.TV" if a channel has no groups at all.
+        if not groups:
+            groups = ["Sweet.TV"]
 
         stream = {
             "name": ch["name"],
@@ -69,7 +91,7 @@ def get_channels():
             "id": "sweettv-%s" % ch["id"],
             "logo": ch["logo"],
             "preset": ch["number"],
-            "group": "Sweet.TV",
+            "group": ";".join(groups),
         }
 
         # Add catchup support if available.
