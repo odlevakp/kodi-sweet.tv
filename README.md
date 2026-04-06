@@ -22,11 +22,22 @@ A Kodi addon for [sweet.tv](https://sweet.tv) streaming service that provides a 
 
 ## Requirements
 
-- Kodi 21 (Omega) or later
+- **Kodi version**: targets **Kodi 21 (Omega)**, the only version actively tested. The addon declares `xbmc.python 3.0.0` so it should also load on Kodi 19 (Matrix) and 20 (Nexus), but the new settings schema and some Kodi APIs may not behave identically on older versions. If you run into issues on Kodi < 21, please open an issue.
 - Active sweet.tv subscription
 - The following addons (must be installed manually from Kodi's official repo):
   - **IPTV Manager** (`service.iptv.manager`) — bridges addon data to PVR
   - **PVR IPTV Simple Client** (`pvr.iptvsimple`) — provides native TV section
+
+### Tested platforms
+
+| Platform                | Status                  |
+|-------------------------|-------------------------|
+| Linux Mint (Flatpak Kodi 21) | Primary dev/test target — works |
+| Android TV Kodi         | Untested                |
+| LibreELEC / standard Linux | Untested                |
+| Windows / macOS Kodi    | Untested                |
+
+The addon should work on any Kodi 21 install in principle. Reports from other platforms welcome.
 
 ## Installation
 
