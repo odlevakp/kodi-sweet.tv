@@ -150,6 +150,13 @@ This addon includes a Kodi repository for automatic updates:
 
 Based on the [Enigma2 sweet.tv plugin](https://github.com/archivczsk/archivczsk-doplnky/tree/main/plugin_video_sweettv) for API reference.
 
+### Documentation
+
+- [Architecture](docs/architecture.md) — how the addon, IPTV Manager, and PVR Simple Client fit together
+- [API Reference](docs/api-reference.md) — sweet.tv API endpoints, auth flow, and gotchas
+- [Localization](docs/localization.md) — how strings, translations, and the `M.NAME` constants work
+- [Debugging](docs/debugging.md) — log locations, common issues, and recovery steps
+
 ### Prerequisites
 
 - GNU sed (`brew install coreutils` on macOS for `gsed`)
