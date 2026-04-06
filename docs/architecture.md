@@ -348,10 +348,10 @@ Inside the addon Python code, prefer `xbmcvfs.translatePath('special://userdata/
 
 There are two confusingly named directories in the repo root that work together to enable Kodi auto-updates:
 
-| Directory             | What it is                          | Where it lives                                  |
-|-----------------------|-------------------------------------|-------------------------------------------------|
-| `repository.sweettv/` | A small Kodi addon (just `addon.xml`) | Bundled into a ZIP, installed once by the user |
-| `repo/`               | `addons.xml` + `addons.xml.md5`     | Hosted via raw GitHub URLs                     |
+| Directory             | What it is                            | Where it lives                                  |
+|-----------------------|---------------------------------------|-------------------------------------------------|
+| `repository.sweettv/` | A small Kodi addon (just `addon.xml`) | Bundled into a ZIP, installed once by the user  |
+| `repo/`               | `addons.xml` + `addons.xml.md5`       | Hosted via raw GitHub URLs                      |
 
 ### How it works
 
