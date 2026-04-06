@@ -102,6 +102,8 @@ After the next IPTV Manager refresh, your favourites also appear as a **Favourit
 
 Only free (AVOD, ad-supported) movies are listed and playable. Paid movies use Widevine DRM which this addon does not support.
 
+Movie titles show year and IMDB rating in grey: `Title [2019] ★4.9`. For description, duration, and full details, right-click any movie and pick **Sweet.TV details**.
+
 ### Archive / Catchup
 
 **Add-ons → Video add-ons → Sweet.TV → Archive** — pick a channel, then a day, then a program.

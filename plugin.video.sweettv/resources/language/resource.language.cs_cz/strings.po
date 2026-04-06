@@ -215,6 +215,10 @@ msgctxt "#30716"
 msgid "Settings"
 msgstr "Nastavení"
 
+msgctxt "#30717"
+msgid "Sweet.TV details"
+msgstr "Sweet.TV detaily"
+
 # Settings labels
 msgctxt "#30800"
 msgid "General"

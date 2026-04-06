@@ -365,6 +365,8 @@ Single-movie response includes everything from the bulk response **plus** the cr
 
 `channel_id` and `epg_id` are the catchup coordinates passed to `TvService/OpenStream` for playback. **These fields are NOT returned by the bulk request**, even with `need_extended_info: true` — only single-movie requests get them.
 
+The same is true for `description`, `duration`, `people`, `subtitles`, `video_qualities`, `recommended_movies`, and `statistics`. The bulk response is intentionally trimmed for fast list rendering. The addon uses bulk for movie listings (showing only title/year/rating/poster) and falls back to a single-movie call when the user requests details via the **Sweet.TV details** context menu — that fetches description, duration, etc. on demand.
+
 The `external_id_pairs[0].external_id` is the movie ID and `owner_id` identifies the content provider; both are needed for tracking and `MovieService/GetLink` calls (though as noted, GetLink is currently dead).
 
 ### MovieService/GetLink.json

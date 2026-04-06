@@ -86,6 +86,8 @@ def main():
         movie_collection(handle, params)
     elif action == "play_movie":
         play_movie(handle, params)
+    elif action == "movie_info":
+        show_movie_info(params)
     elif action == "search":
         search(handle, params)
     elif action == "fav_add":
@@ -564,6 +566,15 @@ def _list_movies(handle, movies):
 
         title = movie["title"]
 
+        # Append year / rating as grey suffix.
+        suffix_bits = []
+        if movie.get("year"):
+            suffix_bits.append("[%s]" % movie["year"])
+        if movie.get("rating"):
+            suffix_bits.append("★%s" % movie["rating"])
+        if suffix_bits:
+            title = "%s [COLOR gray]%s[/COLOR]" % (title, " ".join(suffix_bits))
+
         url = (
             "plugin://plugin.video.sweettv/"
             "?action=play_movie&movie_id=%s&owner_id=%s"
@@ -571,21 +582,68 @@ def _list_movies(handle, movies):
         )
         li = xbmcgui.ListItem(title)
         info = {"title": movie["title"]}
-        if movie.get("plot"):
-            info["plot"] = movie["plot"]
         if movie.get("year"):
             info["year"] = movie["year"]
-        if movie.get("duration"):
-            info["duration"] = movie["duration"]
         if movie.get("rating"):
             info["rating"] = float(movie["rating"])
         li.setInfo("video", info)
         if movie.get("poster"):
             li.setArt({"poster": movie["poster"], "thumb": movie["poster"]})
         li.setProperty("IsPlayable", "true")
+
+        # Context menu: show full details (description etc.) on demand.
+        # Bulk GetMovieInfo doesn't return description, so we fetch it
+        # lazily via a single-movie call when the user explicitly asks.
+        info_url = (
+            "plugin://plugin.video.sweettv/"
+            "?action=movie_info&movie_id=%s" % movie["id"]
+        )
+        li.addContextMenuItems([
+            (_t(M.MOVIE_INFO), "RunPlugin(%s)" % info_url),
+        ])
+
         xbmcplugin.addDirectoryItem(handle, url, li, isFolder=False)
 
+    xbmcplugin.setContent(handle, "movies")
     xbmcplugin.endOfDirectory(handle)
+
+
+def show_movie_info(params):
+    """Fetch single-movie info and show full details in a textviewer dialog."""
+    movie_id = params.get("movie_id", [None])[0]
+    if not movie_id:
+        return
+
+    api = SweetTVApi()
+    if not api.is_logged_in():
+        return
+
+    movies = api.get_movie_info([int(movie_id)])
+    if not movies:
+        xbmcgui.Dialog().notification("Sweet.TV", _t(M.MOVIE_FAILED), xbmcgui.NOTIFICATION_ERROR)
+        return
+
+    m = movies[0]
+    lines = []
+    if m.get("title"):
+        lines.append(m["title"])
+        lines.append("")
+
+    meta_bits = []
+    if m.get("year"):
+        meta_bits.append(str(m["year"]))
+    if m.get("duration"):
+        meta_bits.append("%d min" % (m["duration"] // 60))
+    if m.get("rating"):
+        meta_bits.append("IMDB %s" % m["rating"])
+    if meta_bits:
+        lines.append("  •  ".join(meta_bits))
+        lines.append("")
+
+    if m.get("plot"):
+        lines.append(m["plot"])
+
+    xbmcgui.Dialog().textviewer(m.get("title", "Sweet.TV"), "\n".join(lines))
 
 
 # -- Search --------------------------------------------------------------

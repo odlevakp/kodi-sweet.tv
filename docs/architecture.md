@@ -112,6 +112,7 @@ Routing roughly:
 | movie_genre        | List movies in a genre                                                    |
 | movie_collection   | List movies in a collection                                               |
 | play_movie         | Resolve movie to channel catchup, then return HLS URL                     |
+| movie_info         | Fetch single-movie details (description, duration) and show in textviewer |
 | search             | Search both movies and EPG records                                        |
 | pair_device        | Run the device pairing dialog                                             |
 | unpair_device      | Logout and clear tokens                                                   |
