@@ -344,6 +344,40 @@ See [API Reference: Movies](api-reference.md#movies--how-they-actually-stream) f
 
 Inside the addon Python code, prefer `xbmcvfs.translatePath('special://userdata/...')` instead of hardcoding paths.
 
+## Update Distribution: `repository.sweettv` and `repo/`
+
+There are two confusingly named directories in the repo root that work together to enable Kodi auto-updates:
+
+| Directory             | What it is                          | Where it lives                                  |
+|-----------------------|-------------------------------------|-------------------------------------------------|
+| `repository.sweettv/` | A small Kodi addon (just `addon.xml`) | Bundled into a ZIP, installed once by the user |
+| `repo/`               | `addons.xml` + `addons.xml.md5`     | Hosted via raw GitHub URLs                     |
+
+### How it works
+
+1. The user downloads `repository.sweettv-1.0.0.zip` from a GitHub release **once** and installs it via *Install from ZIP*.
+2. That addon's `addon.xml` declares an `xbmc.addon.repository` extension point pointing to `https://raw.githubusercontent.com/odlevakp/kodi-sweet.tv/main/repo/addons.xml` and a `<datadir>` pointing to the GitHub Releases download URL.
+3. Kodi periodically fetches `repo/addons.xml` from raw GitHub. That file is the index — it contains the inlined `<addon>` element of every addon we publish, including the current version of `plugin.video.sweettv`.
+4. If Kodi sees a newer version than what's installed, it downloads the addon ZIP from the GitHub Releases URL and updates the user's install.
+5. From then on, every `make release` regenerates `repo/addons.xml` (via `make repo-index`), commits it, and pushes — Kodi notices the version bump on the next poll and updates automatically.
+
+### Why two directories?
+
+- **`repository.sweettv/`** is the **installable pointer**. It tells Kodi "look here for updates". Users install it once.
+- **`repo/`** is the **content** Kodi looks at. It changes every release; the repository addon never does.
+
+The names are unfortunately both "repo" — `repository.sweettv/` follows Kodi's `repository.<name>/` naming convention for repo addons, and `repo/` is the conventional name for the content directory.
+
+### Files that participate in a release
+
+- `plugin.video.sweettv/addon.xml` — bumped to the new version by `make build`.
+- `repo/addons.xml` — regenerated to reflect the new version.
+- `repo/addons.xml.md5` — checksum so Kodi can detect changes cheaply.
+- `dist/plugin.video.sweettv-YYYY.MM.DD.N.zip` — uploaded as a GitHub release asset.
+- `dist/repository.sweettv-1.0.0.zip` — also in the release for new users.
+
+The Makefile's `release` target does all of this in one shot via `gh release create`.
+
 ## What's Not Cached
 
 - **Channel list and EPG** — fetched fresh from sweet.tv on every `iptv_channels` / `iptv_epg` call. There's no in-memory cache because every plugin invocation is a fresh Python process. Adding a disk cache with TTL would be straightforward but hasn't been needed yet — the channel list call returns in ~500ms.
