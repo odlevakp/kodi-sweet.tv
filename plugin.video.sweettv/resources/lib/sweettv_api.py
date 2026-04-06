@@ -306,22 +306,17 @@ class SweetTVApi:
             return [], []
 
         categories = []
-        _log("Categories raw response: %s" % data.get("categories"), level=xbmc.LOGINFO)
         for cat in data.get("categories") or []:
-            _log("Category raw data: %s" % cat, level=xbmc.LOGINFO)
-            cat_name = (
-                cat.get("name")
-                or cat.get("caption")
-                or cat.get("title")
-                or cat.get("label")
-                or str(cat.get("id", ""))
-            )
             categories.append(
                 {
                     "id": cat.get("id"),
-                    "name": cat_name,
+                    "name": cat.get("caption", ""),
+                    "order": cat.get("order", 0),
+                    "channel_list": cat.get("channel_list") or [],
+                    "icon_url": cat.get("icon_url", ""),
                 }
             )
+        categories.sort(key=lambda c: c["order"])
 
         channels = []
         for ch in data.get("list") or []:

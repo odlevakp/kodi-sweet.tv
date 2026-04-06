@@ -111,33 +111,34 @@ def browse_channels(handle, params=None):
     show_adult = addon.getSettingBool("show_adult")
     channels, categories = api.get_channels()
 
-    # If no category selected, show "All Channels" + category list.
+    # If no category selected, show category list.
     if category_id is None:
-        # All channels option.
-        url = "plugin://plugin.video.sweettv/?action=browse_channels&category_id=all"
-        li = xbmcgui.ListItem("All Channels")
-        li.setArt({"icon": "DefaultTVShows.png"})
-        xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)
-
         for cat in categories:
             # Skip adult category if disabled.
             if not show_adult and cat["id"] == 1:
                 continue
+            label = cat["name"]
+            # Mark empty categories (like Favourites if not set up).
+            if not cat["channel_list"]:
+                label = "%s [COLOR gray](empty)[/COLOR]" % label
             url = "plugin://plugin.video.sweettv/?action=browse_channels&category_id=%s" % cat["id"]
-            li = xbmcgui.ListItem(cat["name"])
-            li.setArt({"icon": "DefaultTVShows.png"})
+            li = xbmcgui.ListItem(label)
+            li.setArt({"icon": cat.get("icon_url") or "DefaultTVShows.png"})
             xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)
 
         xbmcplugin.endOfDirectory(handle)
         return
 
-    # Filter channels by category.
-    if category_id != "all":
-        cat_id = int(category_id)
-        channels = [
-            ch for ch in channels
-            if cat_id in ch["categories"] or str(cat_id) in ch["categories"]
-        ]
+    # Filter channels by category using the API's channel_list.
+    cat_id = int(category_id)
+    selected_cat = next((c for c in categories if c["id"] == cat_id), None)
+    if selected_cat and selected_cat["channel_list"]:
+        ch_ids = set(selected_cat["channel_list"])
+        # Preserve API order from channel_list.
+        ch_by_id = {int(ch["id"]): ch for ch in channels}
+        channels = [ch_by_id[cid] for cid in selected_cat["channel_list"] if cid in ch_by_id]
+    else:
+        channels = []
 
     # Get current EPG for channel descriptions.
     channel_ids = [int(ch["id"]) for ch in channels]
