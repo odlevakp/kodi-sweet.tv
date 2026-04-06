@@ -5,7 +5,7 @@ Build a Kodi addon for sweet.tv that provides native TV experience (live channel
 
 ## Phases
 
-### Phase 1: Core Live TV + EPG [IN PROGRESS - tested on Linux Mint Flatpak Kodi]
+### Phase 1: Core Live TV + EPG [DONE]
 - [x] Analyze Enigma2 reference plugin for API understanding
 - [x] Plan architecture and discuss with user
 - [x] Set up repo structure (README, configs, addon skeleton)
@@ -14,55 +14,80 @@ Build a Kodi addon for sweet.tv that provides native TV experience (live channel
 - [x] Build addon entry point and URL router
 - [x] Create settings UI (bitrate, adult filter, pairing)
 - [x] Implement device pairing flow with on-screen dialogs
-- [x] Implement live stream playback (uses inputstream.adaptive directly with master HLS playlist)
-- [x] Live TV channel browsing with categories
-- [ ] Verify channels appear in Kodi's native TV section via IPTV Manager
-- [ ] Fix category names (currently empty - API field names unknown, debug logging added)
+- [x] Auto-launch pairing on first use
+- [x] Implement live stream playback (Kodi built-in HLS player, not inputstream.adaptive)
+- [x] Live TV channel browsing with sweet.tv categories
+- [x] Channels appear in Kodi's native TV section via IPTV Manager
+- [x] PVR channel groups from sweet.tv categories + Pinned Channels
+- [x] Bitrate cap setting
 
-### Phase 2: Archive/Catchup [WORKING via addon UI]
-- [x] Browse channels with archive support
-- [x] Browse archive by day
-- [x] Play archived programs (works through addon UI)
-- [ ] Catchup integration via PVR (catchup_source in IPTV Manager streams)
+### Phase 2: Archive/Catchup [DONE]
+- [x] Browse channels with archive support via addon UI
+- [x] Browse archive by day (with localized day names)
+- [x] Play archived programs through addon UI
+- [x] PVR catchup playback from TV guide (catchup-id in XMLTV EPG)
 
-### Phase 3: Parental Lock [PLANNED]
-- [ ] Adult channel filtering (basic show/hide already in place)
+### Phase 3: Parental Lock [PARTIAL]
+- [x] Adult channel filtering (show/hide via setting)
 - [ ] PIN protection for adult content
 - [ ] Integration with Kodi parental controls
 
-### Phase 4: Subscription Info [PARTIAL]
-- [x] Generic subscription info dialog (shows raw API fields)
-- [ ] Display days remaining on subscription
-- [ ] Need to log GetUserInfo response to know exact field names
+### Phase 4: Subscription Info [DONE]
+- [x] Subscription Information dialog with parsed data
+- [x] Account status, plan, active services
+- [x] Days remaining on each service
+- [x] Balance, parental control state
 
-### Phase 5: Additional Features [PARTIAL]
-- [x] VOD/Movies (genres, collections, trailers)
+### Phase 5: Additional Features [DONE / ongoing]
+- [x] VOD/Movies (genres, collections) - AVOD only, served as channel catchups
+- [x] Movies sorted alphabetically by default with year/rating sort options
+- [x] Movie titles show [year] ★rating in grey
+- [x] "Sweet.TV details" context menu fetches full info on demand
 - [x] Search (movies + EPG records)
-- [x] Device management (list/remove)
-- [ ] Quality selection in stream
-- [ ] Slovak localization (English strings.po in place, ready for translation)
-- [ ] Favorites/recently watched
+- [x] Device management (list + remove + "[THIS DEVICE]" marker)
+- [x] Pinned Channels (was Favourites, renamed to avoid Kodi name collision)
+- [x] Localization: English, Slovak, Czech
+- [x] API Language override setting (Auto / sk / cs / en / uk / ru)
+- [x] Localized bitrate option labels
+- [x] Localized day picker labels (Today / Yesterday / weekdays via Kodi built-in strings)
+- [x] Settings menu item in main menu
+- [x] Settings v1 schema with help text in footer
+- [ ] Quality selection in stream (could be added; bitrate cap exists)
+- [ ] Recently watched / continue watching
 
 ### Build & Distribution [DONE]
 - [x] Makefile with build/release/clean/version targets
-- [x] Date-based versioning (YYYY.MM.DD with .N suffix for intra-day rebuilds)
+- [x] Date-based versioning YYYY.MM.DD.N with auto-increment
 - [x] GitHub releases via `make release`
 - [x] Repository addon (repository.sweettv) for auto-updates
 - [x] addons.xml + addons.xml.md5 generation in `repo/`
 - [ ] GitHub Pages hosting for repo (using raw GitHub URLs for now)
 
+### Documentation [DONE]
+- [x] README with feature list, install steps, settings table
+- [x] docs/architecture.md - module structure, data flow, IPTV Manager handshake
+- [x] docs/api-reference.md - all endpoints, gotchas (movies via catchup, ad preroll, GetMovieInfo bulk vs single)
+- [x] docs/localization.md - string ID system, how to add languages
+- [x] docs/debugging.md - log locations, common issues, recovery steps
+
 ## Known Issues / Lessons Learned
-- IPTV Manager and PVR Simple Client CANNOT be declared as Kodi dependencies — install fails. Users must install them manually from Kodi's repo.
-- Kodi rejects ZIP install if same version is already installed — must bump version on each rebuild.
-- Manual HLS variant parsing was unreliable — passing master playlist directly to inputstream.adaptive works for all channels.
-- After failed installs, sometimes need to clear `~/.var/app/tv.kodi.Kodi/data/addons/plugin.video.sweettv` and `addon_data/plugin.video.sweettv`.
+- IPTV Manager and PVR Simple Client CANNOT be declared as Kodi dependencies — install fails. Users must install them manually.
+- PVR Simple Client catchup must be enabled in its settings to use catchup from the TV guide.
+- Kodi rejects ZIP install if same version is already installed — Makefile auto-bumps the suffix.
+- Sweet.tv API: bulk GetMovieInfo never returns description/duration/channel_id/epg_id; need single-movie call.
+- Sweet.tv API: MovieService/GetLink is dead for AVOD content; movies stream via TvService/OpenStream as channel catchups.
+- The Linux User-Agent triggered an alternate CDN that returned a media playlist instead of a master playlist; reverted to Windows UA.
+- The new x-device header (1;22;39;2;7.4.50) is needed for movies; the old (1;22;0;2;3.7.1) returned empty movie lists.
+- Sweet.tv inserts an ad preroll from the unreachable host ads-badtest.sweet.tv. inputstream.adaptive can't recover from it; Kodi's built-in HLS player tolerates it.
+- The HLS playlist URL from OpenStream is single-use and expires quickly; can't be cached.
+- After clearing addon state on Linux Mint Flatpak, NEVER delete Addons*.db — that wipes all installed addons, not just ours.
 
 ## Technical Decisions
-- IPTV Manager for native TV section (user choice)
+- IPTV Manager for native TV section (user choice over rolling our own PVR backend)
 - Kodi 21+ only, no legacy support
-- English first, localization later
+- Localization: M.NAME constants in strings.py (not bare numeric IDs in code)
 - Device pairing auth (not username/password — API requirement)
-- inputstream.adaptive handles HLS quality selection (not us)
+- Built-in HLS player for streams (NOT inputstream.adaptive — chokes on the ad preroll)
 - GNU sed (gsed) used in Makefile, not BSD sed
 
 ## Architecture
@@ -84,15 +109,18 @@ Kodi TV Section
 ## File Layout
 ```
 plugin.video.sweettv/
-  addon.xml          - manifest with IPTV Manager config
+  addon.xml          - manifest, dependencies
   addon.py           - URL router and all action handlers
   service.py         - background service for stream lifecycle
+  icon.png           - addon icon
   resources/
-    settings.xml     - addon settings
-    language/.../strings.po
+    settings.xml     - addon settings (Kodi 21 v1 schema)
+    language/        - en_gb, sk_sk, cs_cz strings.po
     lib/
-      sweettv_api.py - API client
-      iptv_manager.py - IPTV Manager socket integration
+      sweettv_api.py    - API client
+      iptv_manager.py   - IPTV Manager socket integration
+      favourites.py     - pinned channels (legacy module name)
+      strings.py        - M.NAME localization constants
 
 repository.sweettv/
   addon.xml          - Kodi repo pointer to raw GitHub
@@ -100,6 +128,12 @@ repository.sweettv/
 repo/
   addons.xml         - generated by `make repo-index`
   addons.xml.md5
+
+docs/
+  architecture.md
+  api-reference.md
+  localization.md
+  debugging.md
 
 Makefile             - build, release, version targets
 ```
