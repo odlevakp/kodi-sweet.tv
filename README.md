@@ -8,17 +8,22 @@ A Kodi addon for [sweet.tv](https://sweet.tv) streaming service that provides a 
 
 ## Features
 
-- **Live TV** - Watch sweet.tv channels directly in Kodi's TV section
+- **Live TV** - Watch sweet.tv channels directly in Kodi's TV section, or browse from the addon UI
+- **Browse by category** - Sweet.tv categories (Sports, Movies, Kids, etc.) in both Live TV and Archive
 - **EPG Guide** - Full electronic program guide integrated with Kodi's TV guide
-- **Channel Groups** - Sweet.TV categories (Sports, Movies, Kids, etc.) and your pinned channels become PVR channel groups
-- **Archive/Catchup** - Watch previously aired programs (per-channel availability, up to 7 days)
-- **Free Movies** - Browse free (ad-supported) movies by genre or collection. Paid SVOD/TVOD movies are not supported.
+- **PVR Channel Groups** - Sweet.tv categories and your pinned channels become PVR channel groups
+- **Archive/Catchup** - Watch previously aired programs (per-channel availability, up to 7 days). Browse from the addon UI or play directly from the TV guide via PVR catchup
+- **Free Movies** - Browse free (ad-supported) movies by genre or collection. Sortable by title/year/rating. Paid SVOD/TVOD movies are not supported.
+- **Movie details on demand** - "Sweet.TV details" context menu shows description, duration and full info
 - **Search** - Search across movies and EPG records
-- **Pinned Channels** - Pin channels via context menu, stored locally per Kodi install
+- **Pinned Channels** - Pin channels via context menu, reorder them with Move Up/Down. Stored locally and synced to a PVR channel group
 - **Stream Quality** - Configurable maximum bitrate
-- **Adult Content Filter** - Toggle adult channel visibility
-- **Device Management** - View and remove registered devices
-- **Localization** - English, Slovak, and Czech UI
+- **Adult Content Filter** - Optional PIN gate (asked once per Kodi session)
+- **Device Management** - View and remove registered devices, current device is highlighted
+- **Subscription Information** - Plan, services, expiry, balance
+- **One-click PVR Configuration** - Settings action to configure PVR IPTV Simple Client automatically
+- **Localization** - English, Slovak, and Czech UI; API language can be overridden separately
+- **Auto-pairing** - First-run pairing dialog launches automatically
 
 ## Requirements
 
@@ -57,16 +62,15 @@ In Kodi:
 This step is **optional** — the addon is fully usable from **Add-ons → Video add-ons → Sweet.TV** without it (browse channels, archive, movies, search). But integrating with IPTV Manager + PVR IPTV Simple Client gives you the **full native Kodi TV experience**: channels and EPG in Kodi's TV section, channel groups (sweet.tv categories + your pinned channels), and catchup directly from the TV guide. Strongly recommended if you want this addon to feel like a real TV app.
 
 1. **Add-ons → My add-ons → Services → IPTV Manager → Configure**
-2. Under **IPTV Simple** category, click **"Configure IPTV Simple automatically"**
-3. Under **Sources** category, click **"Force refresh now"**
-4. Wait until it stops spinning — IPTV Manager fetches channels and EPG from Sweet.TV
-5. **Restart Kodi**
+2. Under **Sources** category, click **"Force refresh now"** — IPTV Manager fetches channels and EPG from Sweet.TV
+3. Open the **Sweet.TV addon settings → General** and click **"Configure PVR IPTV Simple Client"**. This sets the M3U/EPG paths, enables catchup, and renames the PVR instance to Sweet.TV in one click. (PVR Simple Client must be installed first.)
+4. **Restart Kodi**
 
-After restart, channels will appear under the **TV** menu with full EPG support.
+After restart, channels appear under the **TV** menu with full EPG support and catchup playback from the guide.
 
-#### If channels still don't appear
+#### Manual fallback
 
-The auto-configure may not work on all Kodi installations. Configure manually:
+If the one-click action doesn't work for your install, configure PVR IPTV Simple Client by hand:
 
 1. **Add-ons → My add-ons → PVR clients → PVR IPTV Simple Client → Configure**
 2. **General** tab:
@@ -75,7 +79,8 @@ The auto-configure may not work on all Kodi installations. Configure manually:
 3. **EPG Settings** tab:
    - Location: **Local Path**
    - XMLTV Path: `special://userdata/addon_data/service.iptv.manager/epg.xml`
-4. Restart Kodi.
+4. **Catchup** tab: enable catchup
+5. Restart Kodi.
 
 ## Usage
 
@@ -92,9 +97,11 @@ After completing Step 4 above, channels appear in Kodi's main **TV** menu with:
 
 ### Pinned Channels
 
-While browsing channels in the addon UI, open the context menu on any channel and select **Pin Channel**. A **Pinned Channels** category appears at the top of the Live TV list. Pinned channels are stored locally per Kodi install.
+While browsing channels in the addon UI, open the context menu on any channel and select **Pin Channel**. A **Pinned Channels** category appears at the top of the Live TV list. The same category is offered when browsing the Archive too.
 
-After the next IPTV Manager refresh, your pinned channels also appear as a **Pinned** channel group in Kodi's native TV section.
+In the Pinned Channels view, the context menu offers **Move Up** and **Move Down** to reorder them. Pinned channels are stored locally per Kodi install.
+
+After the next IPTV Manager refresh, your pinned channels also appear as a **Pinned Channels** group in Kodi's native TV section.
 
 ### Movies
 

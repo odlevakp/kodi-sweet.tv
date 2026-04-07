@@ -37,7 +37,7 @@ def main():
     _PAIRING_EXEMPT = {
         "pair_device", "unpair_device",
         "iptv_channels", "iptv_epg",
-        "fav_add", "fav_remove",
+        "fav_add", "fav_remove", "fav_up", "fav_down",
     }
     if action not in _PAIRING_EXEMPT:
         api = SweetTVApi()
@@ -104,6 +104,12 @@ def main():
     elif action == "fav_remove":
         favourites.remove(params.get("channel_id", [""])[0])
         xbmcgui.Dialog().notification("Sweet.TV", _t(M.FAV_REMOVED))
+        xbmc.executebuiltin("Container.Refresh")
+    elif action == "fav_up":
+        favourites.move(params.get("channel_id", [""])[0], -1)
+        xbmc.executebuiltin("Container.Refresh")
+    elif action == "fav_down":
+        favourites.move(params.get("channel_id", [""])[0], 1)
         xbmc.executebuiltin("Container.Refresh")
     else:
         _log("Unknown action: %s" % action, level=xbmc.LOGWARNING)
@@ -228,15 +234,20 @@ def browse_channels(handle, params=None):
         li.setArt({"icon": ch.get("logo", ""), "thumb": img})
         li.setProperty("IsPlayable", "true")
 
-        # Context menu: add/remove from favourites.
+        # Context menu: pin/unpin and (in Pinned view) reorder.
+        ctx_items = []
         if ch["id"] in fav_ids:
-            ctx_label = _t(M.FAV_REMOVE)
-            ctx_action = "fav_remove"
+            unpin_url = "plugin://plugin.video.sweettv/?action=fav_remove&channel_id=%s" % ch["id"]
+            ctx_items.append((_t(M.FAV_REMOVE), "RunPlugin(%s)" % unpin_url))
+            if category_id == "favourites":
+                up_url = "plugin://plugin.video.sweettv/?action=fav_up&channel_id=%s" % ch["id"]
+                down_url = "plugin://plugin.video.sweettv/?action=fav_down&channel_id=%s" % ch["id"]
+                ctx_items.append((_t(M.FAV_MOVE_UP), "RunPlugin(%s)" % up_url))
+                ctx_items.append((_t(M.FAV_MOVE_DOWN), "RunPlugin(%s)" % down_url))
         else:
-            ctx_label = _t(M.FAV_ADD)
-            ctx_action = "fav_add"
-        ctx_url = "plugin://plugin.video.sweettv/?action=%s&channel_id=%s" % (ctx_action, ch["id"])
-        li.addContextMenuItems([(ctx_label, "RunPlugin(%s)" % ctx_url)])
+            pin_url = "plugin://plugin.video.sweettv/?action=fav_add&channel_id=%s" % ch["id"]
+            ctx_items.append((_t(M.FAV_ADD), "RunPlugin(%s)" % pin_url))
+        li.addContextMenuItems(ctx_items)
 
         xbmcplugin.addDirectoryItem(handle, url, li, isFolder=False)
 
@@ -325,22 +336,80 @@ def play_catchup(handle, params):
 
 
 def browse_archive(handle, params):
-    """Show list of channels that have archive/catchup support."""
+    """Show archive channel categories or channels with archive support."""
+    category_id = params.get("category_id", [None])[0]
+
     api = SweetTVApi()
     if not api.is_logged_in():
         xbmcgui.Dialog().ok("Sweet.TV", _t(M.NOT_LOGGED_IN))
         return
 
-    addon = xbmcaddon.Addon()
+    _maybe_prompt_adult_pin()
+
     show_adult = show_adult_allowed()
-    channels, _ = api.get_channels()
+    channels, categories = api.get_channels()
+    fav_ids = favourites.load()
 
-    for ch in channels:
-        if not show_adult and ch["adult"]:
-            continue
-        if ch["catchup_days"] <= 0:
-            continue
+    # Filter to channels with catchup support only.
+    catchup_channels = [
+        ch for ch in channels
+        if ch["catchup_days"] > 0 and (show_adult or not ch["adult"])
+    ]
+    catchup_ids = {ch["id"] for ch in catchup_channels}
 
+    # If no category selected, show category list.
+    if category_id is None:
+        # Pinned channels that have catchup.
+        pinned_with_catchup = [fid for fid in fav_ids if fid in catchup_ids]
+        if pinned_with_catchup:
+            url = "plugin://plugin.video.sweettv/?action=browse_archive&category_id=favourites"
+            li = xbmcgui.ListItem(_t(M.FAVOURITES))
+            li.setArt({"icon": "DefaultFavourites.png"})
+            xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)
+
+        # All channels with catchup.
+        url = "plugin://plugin.video.sweettv/?action=browse_archive&category_id=all"
+        li = xbmcgui.ListItem(_t(M.ARCHIVE_ALL))
+        li.setArt({"icon": "DefaultTVShows.png"})
+        xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)
+
+        for cat in categories:
+            if not show_adult and cat["id"] == 1:
+                continue
+            if not cat["channel_list"]:
+                continue
+            # Skip categories with no catchup channels.
+            cat_catchup_count = sum(
+                1 for cid in cat["channel_list"] if str(cid) in catchup_ids
+            )
+            if cat_catchup_count == 0:
+                continue
+            url = "plugin://plugin.video.sweettv/?action=browse_archive&category_id=%s" % cat["id"]
+            li = xbmcgui.ListItem(cat["name"])
+            li.setArt({"icon": cat.get("icon_url") or "DefaultTVShows.png"})
+            xbmcplugin.addDirectoryItem(handle, url, li, isFolder=True)
+
+        xbmcplugin.endOfDirectory(handle)
+        return
+
+    # Category selected — list channels in it that have catchup.
+    if category_id == "favourites":
+        ch_by_id = {ch["id"]: ch for ch in catchup_channels}
+        listed_channels = [ch_by_id[fid] for fid in fav_ids if fid in ch_by_id]
+    elif category_id == "all":
+        listed_channels = catchup_channels
+    else:
+        cat_id = int(category_id)
+        selected_cat = next((c for c in categories if c["id"] == cat_id), None)
+        if selected_cat and selected_cat["channel_list"]:
+            ch_by_id = {int(ch["id"]): ch for ch in catchup_channels}
+            listed_channels = [
+                ch_by_id[cid] for cid in selected_cat["channel_list"] if cid in ch_by_id
+            ]
+        else:
+            listed_channels = []
+
+    for ch in listed_channels:
         url = (
             "plugin://plugin.video.sweettv/"
             "?action=archive_day&channel_id=%s&catchup_days=%d"

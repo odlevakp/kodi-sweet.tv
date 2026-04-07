@@ -18,11 +18,13 @@ This file tracks **what's done and what's left**, nothing else.
 - [x] Live stream playback (Kodi built-in HLS player)
 - [x] Live TV channel browsing with sweet.tv categories
 - [x] Channels appear in Kodi's native TV section via IPTV Manager
-- [x] PVR channel groups from sweet.tv categories + Pinned Channels
+- [x] PVR channel groups from sweet.tv categories + Pinned Channels (localized)
 - [x] Bitrate cap setting
+- [x] One-click PVR Simple Client configuration from addon settings
 
 ### Phase 2: Archive/Catchup [DONE]
 - [x] Browse channels with archive support via addon UI
+- [x] Archive browsing organized by sweet.tv categories + Pinned Channels
 - [x] Browse archive by day (with localized day names)
 - [x] Play archived programs through addon UI
 - [x] PVR catchup playback from TV guide (catchup-id in XMLTV EPG)
@@ -46,14 +48,21 @@ This file tracks **what's done and what's left**, nothing else.
 - [x] Search (movies + EPG records)
 - [x] Device management (list + remove + "[THIS DEVICE]" marker)
 - [x] Pinned Channels (was Favourites, renamed to avoid Kodi name collision)
+- [x] Pinned channels reorder with Move Up / Move Down context menu
 - [x] Localization: English, Slovak, Czech
+- [x] Localized addon summary/description/disclaimer in addon.xml
 - [x] API Language override setting (Auto / sk / cs / en / uk / ru)
 - [x] Localized bitrate option labels
 - [x] Localized day picker labels (Today / Yesterday / weekdays via Kodi built-in strings)
+- [x] Localized Pinned channel group name in PVR
 - [x] Settings menu item in main menu
 - [x] Settings v1 schema with help text in footer
+- [x] Verbose Logging toggle (off by default; diagnostic logs hidden in normal use)
+- [x] One-click "Configure PVR IPTV Simple Client" action in settings
+- [x] Addon icon properly declared via <assets> in addon.xml
 - [ ] Quality selection in stream (could be added; bitrate cap exists)
 - [ ] Recently watched / continue watching
+- [ ] Download for offline viewing (discussed but not implemented)
 
 ### Build & Distribution [DONE]
 - [x] Makefile with build/release/clean/version targets

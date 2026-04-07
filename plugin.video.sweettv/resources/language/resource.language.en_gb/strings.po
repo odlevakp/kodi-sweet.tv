@@ -251,6 +251,18 @@ msgctxt "#30721"
 msgid "PVR IPTV Simple Client configured. Channels and EPG should appear in the TV section after a moment."
 msgstr ""
 
+msgctxt "#30722"
+msgid "All Channels"
+msgstr ""
+
+msgctxt "#30723"
+msgid "Move Up"
+msgstr ""
+
+msgctxt "#30724"
+msgid "Move Down"
+msgstr ""
+
 msgctxt "#30836"
 msgid "Configure PVR IPTV Simple Client"
 msgstr ""

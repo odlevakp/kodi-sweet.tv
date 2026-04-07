@@ -14,6 +14,20 @@ import xbmcaddon
 
 from .sweettv_api import SweetTVApi, _log, _vlog, show_adult_allowed
 from . import favourites
+from .strings import M
+
+
+def _pinned_label():
+    """Return the localized label for the Pinned channel group.
+
+    Falls back to 'Pinned' if the localized string can't be resolved
+    (defensive - should always work in a normal Kodi process).
+    """
+    try:
+        text = xbmcaddon.Addon().getLocalizedString(M.FAVOURITES)
+        return text or "Pinned"
+    except Exception:
+        return "Pinned"
 
 
 class IPTVManager:
@@ -78,9 +92,10 @@ def get_channels():
             continue
 
         groups = list(ch_to_groups.get(ch["id"], []))
-        # Add Pinned group if user has pinned this channel.
+        # Add Pinned group if user has pinned this channel. Use the
+        # localized label so PVR shows it in the user's UI language.
         if ch["id"] in fav_ids:
-            groups.insert(0, "Pinned")
+            groups.insert(0, _pinned_label())
         # Fall back to "Sweet.TV" if a channel has no groups at all.
         if not groups:
             groups = ["Sweet.TV"]

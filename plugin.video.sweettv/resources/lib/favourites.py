@@ -57,3 +57,17 @@ def remove(channel_id):
 def is_favourite(channel_id):
     """Check if a channel is in favourites."""
     return str(channel_id) in load()
+
+
+def move(channel_id, delta):
+    """Move a pinned channel up (delta=-1) or down (delta=+1)."""
+    favs = load()
+    cid = str(channel_id)
+    if cid not in favs:
+        return
+    idx = favs.index(cid)
+    new_idx = idx + delta
+    if new_idx < 0 or new_idx >= len(favs):
+        return
+    favs[idx], favs[new_idx] = favs[new_idx], favs[idx]
+    save(favs)
