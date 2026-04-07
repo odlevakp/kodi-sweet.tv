@@ -964,12 +964,15 @@ def configure_pvr_simple():
 
     # In-place updates to the XML using regex (the file is small and
     # the format is consistent, no need for a full XML parser).
+    # The instance label (kodi_addon_instance_name) lives in this same
+    # file, not in a separate instance-N.xml as I first thought.
     updates = {
         "m3uPathType": "0",
         "m3uPath": "special://userdata/addon_data/service.iptv.manager/playlist.m3u8",
         "epgPathType": "0",
         "epgPath": "special://userdata/addon_data/service.iptv.manager/epg.xml",
         "catchupEnabled": "true",
+        "kodi_addon_instance_name": "Sweet.TV",
     }
 
     new_content = content
@@ -1003,26 +1006,6 @@ def configure_pvr_simple():
         return
 
     _vlog("PVR Simple Client instance settings updated")
-
-    # Try to rename the instance label to "Sweet.TV". The label lives
-    # in instance-N.xml (without "settings-") next to the settings file.
-    instance_label_path = xbmcvfs.translatePath(
-        "special://userdata/addon_data/pvr.iptvsimple/instance-1.xml"
-    )
-    if os.path.exists(instance_label_path):
-        try:
-            with open(instance_label_path, "r", encoding="utf-8") as f:
-                label_xml = f.read()
-            label_xml = re.sub(
-                r'(<setting id="kodi_addon_instance_name"[^>]*>)[^<]*(</setting>)',
-                r'\1Sweet.TV\2',
-                label_xml,
-                count=1,
-            )
-            with open(instance_label_path, "w", encoding="utf-8") as f:
-                f.write(label_xml)
-        except OSError:
-            pass
 
     # Restart PVR Simple Client so the changes take effect.
     def _rpc(method, params):

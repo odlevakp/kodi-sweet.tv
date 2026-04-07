@@ -61,7 +61,7 @@ In Kodi:
 
 This step is **optional** — the addon is fully usable from **Add-ons → Video add-ons → Sweet.TV** without it (browse channels, archive, movies, search). But integrating with IPTV Manager + PVR IPTV Simple Client gives you the **full native Kodi TV experience**: channels and EPG in Kodi's TV section, channel groups (sweet.tv categories + your pinned channels), and catchup directly from the TV guide. Strongly recommended if you want this addon to feel like a real TV app.
 
-**The easy way (recommended):** open the addon settings (**Add-ons → Sweet.TV → Settings**) and click **"Setup PVR Integration"** under General. This installs IPTV Manager and PVR IPTV Simple Client if missing, triggers a channel refresh, and configures PVR Simple Client to read sweet.tv channels and EPG — all in one shot. Restart Kodi when it's done.
+**The easy way (recommended):** open the addon settings (**Add-ons → Sweet.TV → Settings**) and click **"Setup PVR Integration"** under General. This installs IPTV Manager and PVR IPTV Simple Client if missing, triggers a channel refresh, configures PVR Simple Client to read sweet.tv channels and EPG, enables catchup, and renames the PVR instance to **Sweet.TV** — all in one shot. Restart Kodi when it's done.
 
 **The manual way:**
 
