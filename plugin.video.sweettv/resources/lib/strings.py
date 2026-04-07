@@ -80,6 +80,9 @@ class _MessageRegistry:
     OPEN_SETTINGS = 30716
     MOVIE_INFO = 30717
     ADULT_PIN_PROMPT = 30718
+    PVR_NOT_INSTALLED = 30719
+    PVR_NOT_CONFIGURED = 30720
+    PVR_CONFIGURED = 30721
 
     # Settings labels (30800-30899) — these are referenced from settings.xml
     # by ID, no need to use them in Python code.

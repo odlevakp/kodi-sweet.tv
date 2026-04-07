@@ -239,6 +239,26 @@ msgctxt "#30718"
 msgid "Enter PIN to unlock adult content"
 msgstr ""
 
+msgctxt "#30719"
+msgid "PVR IPTV Simple Client is not installed. Install it from the Kodi addon repository first."
+msgstr ""
+
+msgctxt "#30720"
+msgid "PVR IPTV Simple Client has not been configured yet. Its settings will open now - close them, then run this action again."
+msgstr ""
+
+msgctxt "#30721"
+msgid "PVR IPTV Simple Client configured. Channels and EPG should appear in the TV section after a moment."
+msgstr ""
+
+msgctxt "#30836"
+msgid "Configure PVR IPTV Simple Client"
+msgstr ""
+
+msgctxt "#30936"
+msgid "One-click setup: points PVR IPTV Simple Client at the IPTV Manager M3U/EPG files, enables catchup, and renames the instance to Sweet.TV. Run this once after installing the addon."
+msgstr ""
+
 msgctxt "#30819"
 msgid "Adult Content PIN"
 msgstr ""

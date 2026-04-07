@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.sweettv"
        name="Sweet.TV"
-       version="2026.04.07.12"
+       version="2026.04.07.14"
        provider-name="kodi-sweet.tv">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -14,9 +14,18 @@
   <extension point="xbmc.service" library="service.py" start="startup"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en_GB">Sweet.TV streaming service</summary>
+    <summary lang="sk_SK">Sweet.TV streamovacia služba</summary>
+    <summary lang="cs_CZ">Sweet.TV streamovací služba</summary>
     <description lang="en_GB">Watch Sweet.TV live channels, EPG, archive and movies in Kodi. Integrates with IPTV Manager for native TV experience.</description>
+    <description lang="sk_SK">Sledujte živé Sweet.TV kanály, EPG, archív a filmy v Kodi. Integruje sa s IPTV Manager pre natívny TV zážitok.</description>
+    <description lang="cs_CZ">Sledujte živé Sweet.TV kanály, EPG, archiv a filmy v Kodi. Integruje se s IPTV Manager pro nativní TV zážitek.</description>
     <disclaimer lang="en_GB">This addon requires a valid Sweet.TV subscription.</disclaimer>
+    <disclaimer lang="sk_SK">Tento doplnok vyžaduje platné Sweet.TV predplatné.</disclaimer>
+    <disclaimer lang="cs_CZ">Tento doplněk vyžaduje platné Sweet.TV předplatné.</disclaimer>
     <platform>all</platform>
     <license>GPL-3.0</license>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
   </extension>
 </addon>

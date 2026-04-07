@@ -4,6 +4,7 @@
 Handles URL routing for plugin:// calls from Kodi and IPTV Manager.
 """
 
+import os
 import sys
 from urllib.parse import parse_qs, urlparse
 
@@ -11,6 +12,7 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
+import xbmcvfs
 
 from resources.lib.sweettv_api import (
     SweetTVApi, _log, _vlog,
@@ -69,6 +71,8 @@ def main():
         show_subscription_info()
     elif action == "open_settings":
         xbmcaddon.Addon().openSettings()
+    elif action == "configure_pvr":
+        configure_pvr_simple()
     elif action == "iptv_channels":
         # IPTV Manager callback.
         port = int(params.get("port", [0])[0])
@@ -845,6 +849,124 @@ def remove_device(params):
     api.remove_device(token_id)
     xbmcgui.Dialog().ok("Sweet.TV", _t(M.DEVICE_REMOVED))
     xbmc.executebuiltin("Container.Refresh")
+
+
+# -- PVR Simple Client auto-config ---------------------------------------
+
+
+def configure_pvr_simple():
+    """Configure PVR IPTV Simple Client to read from IPTV Manager output.
+
+    Edits pvr.iptvsimple's instance-settings-1.xml directly: sets the M3U
+    and EPG paths to point at IPTV Manager's generated files, enables
+    catchup, and renames the instance label to Sweet.TV. Then restarts
+    PVR Simple Client via JSON-RPC so the changes take effect.
+    """
+    import json
+    import re
+
+    # Check that PVR Simple Client is installed.
+    try:
+        xbmcaddon.Addon("pvr.iptvsimple")
+    except RuntimeError:
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.PVR_NOT_INSTALLED))
+        return
+
+    settings_path = xbmcvfs.translatePath(
+        "special://userdata/addon_data/pvr.iptvsimple/instance-settings-1.xml"
+    )
+
+    if not os.path.exists(settings_path):
+        # PVR Simple has never been opened, so no instance file exists.
+        # Open its settings once to create the instance, then retry.
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.PVR_NOT_CONFIGURED))
+        xbmc.executebuiltin("Addon.OpenSettings(pvr.iptvsimple)")
+        return
+
+    try:
+        with open(settings_path, "r", encoding="utf-8") as f:
+            content = f.read()
+    except OSError as e:
+        _log("configure_pvr_simple: read failed: %s" % e, level=xbmc.LOGERROR)
+        xbmcgui.Dialog().notification("Sweet.TV", str(e), xbmcgui.NOTIFICATION_ERROR)
+        return
+
+    # In-place updates to the XML using regex (the file is small and
+    # the format is consistent, no need for a full XML parser).
+    updates = {
+        "m3uPathType": "0",
+        "m3uPath": "special://userdata/addon_data/service.iptv.manager/playlist.m3u8",
+        "epgPathType": "0",
+        "epgPath": "special://userdata/addon_data/service.iptv.manager/epg.xml",
+        "catchupEnabled": "true",
+    }
+
+    new_content = content
+    for key, value in updates.items():
+        # Match either <setting id="X" default="true">old</setting>
+        # or       <setting id="X">old</setting>
+        # or       <setting id="X" default="true" /> (empty)
+        pattern_full = re.compile(
+            r'<setting id="%s"(?:\s+default="[^"]*")?[^/>]*>[^<]*</setting>' % re.escape(key)
+        )
+        pattern_empty = re.compile(
+            r'<setting id="%s"(?:\s+default="[^"]*")?\s*/>' % re.escape(key)
+        )
+        replacement = '<setting id="%s">%s</setting>' % (key, value)
+        if pattern_full.search(new_content):
+            new_content = pattern_full.sub(replacement, new_content, count=1)
+        elif pattern_empty.search(new_content):
+            new_content = pattern_empty.sub(replacement, new_content, count=1)
+        else:
+            # Setting not present in file. Insert it before </settings>.
+            new_content = new_content.replace(
+                "</settings>", "    " + replacement + "\n</settings>", 1
+            )
+
+    try:
+        with open(settings_path, "w", encoding="utf-8") as f:
+            f.write(new_content)
+    except OSError as e:
+        _log("configure_pvr_simple: write failed: %s" % e, level=xbmc.LOGERROR)
+        xbmcgui.Dialog().notification("Sweet.TV", str(e), xbmcgui.NOTIFICATION_ERROR)
+        return
+
+    _vlog("PVR Simple Client instance settings updated")
+
+    # Try to rename the instance label to "Sweet.TV". The label lives
+    # in instance-N.xml (without "settings-") next to the settings file.
+    instance_label_path = xbmcvfs.translatePath(
+        "special://userdata/addon_data/pvr.iptvsimple/instance-1.xml"
+    )
+    if os.path.exists(instance_label_path):
+        try:
+            with open(instance_label_path, "r", encoding="utf-8") as f:
+                label_xml = f.read()
+            label_xml = re.sub(
+                r'(<setting id="kodi_addon_instance_name"[^>]*>)[^<]*(</setting>)',
+                r'\1Sweet.TV\2',
+                label_xml,
+                count=1,
+            )
+            with open(instance_label_path, "w", encoding="utf-8") as f:
+                f.write(label_xml)
+        except OSError:
+            pass
+
+    # Restart PVR Simple Client so the changes take effect.
+    def _rpc(method, params):
+        xbmc.executeJSONRPC(json.dumps({
+            "jsonrpc": "2.0",
+            "method": method,
+            "params": params,
+            "id": 1,
+        }))
+
+    _rpc("Addons.SetAddonEnabled", {"addonid": "pvr.iptvsimple", "enabled": False})
+    xbmc.sleep(500)
+    _rpc("Addons.SetAddonEnabled", {"addonid": "pvr.iptvsimple", "enabled": True})
+
+    xbmcgui.Dialog().ok("Sweet.TV", _t(M.PVR_CONFIGURED))
 
 
 # -- Subscription info ---------------------------------------------------

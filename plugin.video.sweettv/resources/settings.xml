@@ -50,6 +50,12 @@
             <heading>30808</heading>
           </control>
         </setting>
+        <setting id="configure_pvr" type="action" label="30836" help="30936">
+          <level>0</level>
+          <control type="button" format="action">
+            <data>RunPlugin(plugin://plugin.video.sweettv/?action=configure_pvr)</data>
+          </control>
+        </setting>
       </group>
     </category>
 
