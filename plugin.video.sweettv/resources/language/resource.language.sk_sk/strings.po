@@ -263,6 +263,38 @@ msgctxt "#30724"
 msgid "Move Down"
 msgstr "Posunúť dole"
 
+msgctxt "#30725"
+msgid "This will install IPTV Manager and PVR IPTV Simple Client (if missing), refresh the channel list, and configure everything to plug into Kodi's TV section. Continue?"
+msgstr "Toto nainštaluje IPTV Manager a PVR IPTV Simple Client (ak chýbajú), obnoví zoznam kanálov a všetko nakonfiguruje pre integráciu s Kodi sekciou TV. Pokračovať?"
+
+msgctxt "#30726"
+msgid "Installing dependencies..."
+msgstr "Inštalujem závislosti..."
+
+msgctxt "#30727"
+msgid "Fetching channels and EPG..."
+msgstr "Načítavam kanály a EPG..."
+
+msgctxt "#30728"
+msgid "Configuring PVR Simple Client..."
+msgstr "Konfigurujem PVR Simple Client..."
+
+msgctxt "#30729"
+msgid "Failed to install {addon}. Try installing it manually from the Kodi addon repository, then run this action again."
+msgstr "Inštalácia {addon} zlyhala. Skúste ho nainštalovať ručne z repozitára doplnkov Kodi a spustite túto akciu znova."
+
+msgctxt "#30730"
+msgid "IPTV Manager did not produce the channel list within the timeout. Open IPTV Manager settings and try Force Refresh manually, then run Configure PVR Simple Client."
+msgstr "IPTV Manager nevytvoril zoznam kanálov v stanovenom čase. Otvorte nastavenia IPTV Managera a skúste Force Refresh ručne, potom spustite Konfigurovať PVR Simple Client."
+
+msgctxt "#30837"
+msgid "Setup PVR Integration"
+msgstr "Nastaviť PVR integráciu"
+
+msgctxt "#30937"
+msgid "One-shot full setup: installs IPTV Manager and PVR IPTV Simple Client (if missing), triggers an IPTV Manager refresh, and configures PVR Simple Client to read sweet.tv channels and EPG. Run this on a fresh install."
+msgstr "Plné nastavenie jedným klikom: nainštaluje IPTV Manager a PVR IPTV Simple Client (ak chýbajú), spustí obnovu IPTV Managera a nakonfiguruje PVR Simple Client na čítanie sweet.tv kanálov a EPG. Spustite po čerstvej inštalácii."
+
 msgctxt "#30836"
 msgid "Configure PVR IPTV Simple Client"
 msgstr "Konfigurovať PVR IPTV Simple Client"

@@ -73,6 +73,8 @@ def main():
         xbmcaddon.Addon().openSettings()
     elif action == "configure_pvr":
         configure_pvr_simple()
+    elif action == "setup_pvr":
+        setup_pvr_integration()
     elif action == "iptv_channels":
         # IPTV Manager callback.
         port = int(params.get("port", [0])[0])
@@ -1036,6 +1038,98 @@ def configure_pvr_simple():
     _rpc("Addons.SetAddonEnabled", {"addonid": "pvr.iptvsimple", "enabled": True})
 
     xbmcgui.Dialog().ok("Sweet.TV", _t(M.PVR_CONFIGURED))
+
+
+# -- One-shot full PVR setup ---------------------------------------------
+
+
+def setup_pvr_integration():
+    """Install IPTV Manager + PVR Simple Client, refresh, then configure.
+
+    The full happy-path for a fresh install: trigger Kodi's installer for
+    each missing addon, wait for them to appear, run an IPTV Manager
+    refresh so the M3U/EPG files exist, then run our existing
+    configure_pvr_simple() to point PVR Simple at those files.
+    """
+    import json
+
+    if not xbmcgui.Dialog().yesno("Sweet.TV", _t(M.PVR_SETUP_CONFIRM)):
+        return
+
+    progress = xbmcgui.DialogProgress()
+    progress.create("Sweet.TV", _t(M.PVR_SETUP_INSTALLING))
+
+    def is_installed(addon_id):
+        try:
+            xbmcaddon.Addon(addon_id)
+            return True
+        except RuntimeError:
+            return False
+
+    def wait_for(addon_id, timeout=120):
+        """Trigger install if missing, wait up to timeout seconds."""
+        if is_installed(addon_id):
+            return True
+        progress.update(0, _t(M.PVR_SETUP_INSTALLING) + "\n" + addon_id)
+        xbmc.executebuiltin("InstallAddon(%s)" % addon_id, wait=False)
+        elapsed = 0
+        step = 2
+        while elapsed < timeout:
+            if progress.iscanceled():
+                return False
+            xbmc.sleep(step * 1000)
+            elapsed += step
+            if is_installed(addon_id):
+                # Make sure it's enabled too.
+                xbmc.executeJSONRPC(json.dumps({
+                    "jsonrpc": "2.0",
+                    "method": "Addons.SetAddonEnabled",
+                    "params": {"addonid": addon_id, "enabled": True},
+                    "id": 1,
+                }))
+                return True
+            progress.update(int(elapsed / timeout * 100))
+        return False
+
+    # Step 1: IPTV Manager.
+    if not wait_for("service.iptv.manager"):
+        progress.close()
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.PVR_SETUP_INSTALL_FAILED).format(addon="service.iptv.manager"))
+        return
+
+    # Step 2: PVR Simple Client.
+    if not wait_for("pvr.iptvsimple"):
+        progress.close()
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.PVR_SETUP_INSTALL_FAILED).format(addon="pvr.iptvsimple"))
+        return
+
+    # Step 3: trigger IPTV Manager refresh and wait for the M3U file.
+    progress.update(0, _t(M.PVR_SETUP_REFRESHING))
+    xbmc.executebuiltin("RunScript(service.iptv.manager,refresh)", wait=False)
+
+    m3u_path = xbmcvfs.translatePath(
+        "special://userdata/addon_data/service.iptv.manager/playlist.m3u8"
+    )
+    elapsed = 0
+    timeout = 120
+    while elapsed < timeout:
+        if progress.iscanceled():
+            progress.close()
+            return
+        if os.path.exists(m3u_path) and os.path.getsize(m3u_path) > 0:
+            break
+        xbmc.sleep(2000)
+        elapsed += 2
+        progress.update(int(elapsed / timeout * 100))
+    else:
+        progress.close()
+        xbmcgui.Dialog().ok("Sweet.TV", _t(M.PVR_SETUP_REFRESH_FAILED))
+        return
+
+    # Step 4: configure PVR Simple to read the IPTV Manager output.
+    progress.update(80, _t(M.PVR_SETUP_CONFIGURING))
+    progress.close()
+    configure_pvr_simple()
 
 
 # -- Subscription info ---------------------------------------------------

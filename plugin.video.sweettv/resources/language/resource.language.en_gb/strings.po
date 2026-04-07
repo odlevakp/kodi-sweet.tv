@@ -263,6 +263,38 @@ msgctxt "#30724"
 msgid "Move Down"
 msgstr ""
 
+msgctxt "#30725"
+msgid "This will install IPTV Manager and PVR IPTV Simple Client (if missing), refresh the channel list, and configure everything to plug into Kodi's TV section. Continue?"
+msgstr ""
+
+msgctxt "#30726"
+msgid "Installing dependencies..."
+msgstr ""
+
+msgctxt "#30727"
+msgid "Fetching channels and EPG..."
+msgstr ""
+
+msgctxt "#30728"
+msgid "Configuring PVR Simple Client..."
+msgstr ""
+
+msgctxt "#30729"
+msgid "Failed to install {addon}. Try installing it manually from the Kodi addon repository, then run this action again."
+msgstr ""
+
+msgctxt "#30730"
+msgid "IPTV Manager did not produce the channel list within the timeout. Open IPTV Manager settings and try Force Refresh manually, then run Configure PVR Simple Client."
+msgstr ""
+
+msgctxt "#30837"
+msgid "Setup PVR Integration"
+msgstr ""
+
+msgctxt "#30937"
+msgid "One-shot full setup: installs IPTV Manager and PVR IPTV Simple Client (if missing), triggers an IPTV Manager refresh, and configures PVR Simple Client to read sweet.tv channels and EPG. Run this on a fresh install."
+msgstr ""
+
 msgctxt "#30836"
 msgid "Configure PVR IPTV Simple Client"
 msgstr ""

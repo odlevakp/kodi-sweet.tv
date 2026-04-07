@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.sweettv"
        name="Sweet.TV"
-       version="2026.04.07.16"
+       version="2026.04.07.17"
        provider-name="kodi-sweet.tv">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>

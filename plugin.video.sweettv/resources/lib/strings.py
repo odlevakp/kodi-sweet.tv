@@ -86,6 +86,12 @@ class _MessageRegistry:
     ARCHIVE_ALL = 30722
     FAV_MOVE_UP = 30723
     FAV_MOVE_DOWN = 30724
+    PVR_SETUP_CONFIRM = 30725
+    PVR_SETUP_INSTALLING = 30726
+    PVR_SETUP_REFRESHING = 30727
+    PVR_SETUP_CONFIGURING = 30728
+    PVR_SETUP_INSTALL_FAILED = 30729
+    PVR_SETUP_REFRESH_FAILED = 30730
 
     # Settings labels (30800-30899) — these are referenced from settings.xml
     # by ID, no need to use them in Python code.

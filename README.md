@@ -21,7 +21,7 @@ A Kodi addon for [sweet.tv](https://sweet.tv) streaming service that provides a 
 - **Adult Content Filter** - Optional PIN gate (asked once per Kodi session)
 - **Device Management** - View and remove registered devices, current device is highlighted
 - **Subscription Information** - Plan, services, expiry, balance
-- **One-click PVR Configuration** - Settings action to configure PVR IPTV Simple Client automatically
+- **One-click PVR Setup** - Settings action installs IPTV Manager + PVR IPTV Simple Client and configures them in one shot. A separate "Configure PVR Simple Client" action re-applies just the configuration.
 - **Localization** - English, Slovak, and Czech UI; API language can be overridden separately
 - **Auto-pairing** - First-run pairing dialog launches automatically
 
@@ -61,9 +61,13 @@ In Kodi:
 
 This step is **optional** — the addon is fully usable from **Add-ons → Video add-ons → Sweet.TV** without it (browse channels, archive, movies, search). But integrating with IPTV Manager + PVR IPTV Simple Client gives you the **full native Kodi TV experience**: channels and EPG in Kodi's TV section, channel groups (sweet.tv categories + your pinned channels), and catchup directly from the TV guide. Strongly recommended if you want this addon to feel like a real TV app.
 
+**The easy way (recommended):** open the addon settings (**Add-ons → Sweet.TV → Settings**) and click **"Setup PVR Integration"** under General. This installs IPTV Manager and PVR IPTV Simple Client if missing, triggers a channel refresh, and configures PVR Simple Client to read sweet.tv channels and EPG — all in one shot. Restart Kodi when it's done.
+
+**The manual way:**
+
 1. **Add-ons → My add-ons → Services → IPTV Manager → Configure**
 2. Under **Sources** category, click **"Force refresh now"** — IPTV Manager fetches channels and EPG from Sweet.TV
-3. Open the **Sweet.TV addon settings → General** and click **"Configure PVR IPTV Simple Client"**. This sets the M3U/EPG paths, enables catchup, and renames the PVR instance to Sweet.TV in one click. (PVR Simple Client must be installed first.)
+3. Open the **Sweet.TV addon settings → General** and click **"Configure PVR IPTV Simple Client"**. This sets the M3U/EPG paths, enables catchup, and renames the PVR instance to Sweet.TV. (PVR Simple Client must be installed first.)
 4. **Restart Kodi**
 
 After restart, channels appear under the **TV** menu with full EPG support and catchup playback from the guide.
