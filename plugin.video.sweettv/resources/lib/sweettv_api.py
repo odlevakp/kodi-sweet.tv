@@ -10,6 +10,7 @@ import uuid
 import requests
 import xbmc
 import xbmcaddon
+import xbmcgui
 import xbmcvfs
 
 
@@ -817,3 +818,44 @@ def _vlog(msg):
     """Verbose log - only visible when the verbose_logging setting is on."""
     level = xbmc.LOGINFO if _verbose_enabled() else xbmc.LOGDEBUG
     xbmc.log("[plugin.video.sweettv] %s" % msg, level=level)
+
+
+def show_adult_allowed():
+    """Whether adult channels should be shown right now.
+
+    Returns True only if:
+      - The show_adult setting is on, AND
+      - Either no PIN is configured, OR the user has unlocked it this session.
+
+    The session unlock is stored as a window property so it persists across
+    plugin invocations within the same Kodi session but resets on Kodi restart.
+    """
+    try:
+        addon = xbmcaddon.Addon()
+        if not addon.getSettingBool("show_adult"):
+            return False
+        pin = (addon.getSetting("adult_pin") or "").strip()
+        if not pin:
+            return True
+        return is_adult_unlocked()
+    except Exception:
+        return False
+
+
+_ADULT_UNLOCK_PROP = "sweettv.adult_unlocked"
+
+
+def is_adult_unlocked():
+    """Check the session-scoped 'adult unlocked' flag."""
+    try:
+        return xbmcgui.Window(10000).getProperty(_ADULT_UNLOCK_PROP) == "1"
+    except Exception:
+        return False
+
+
+def set_adult_unlocked(unlocked):
+    """Set the session-scoped 'adult unlocked' flag."""
+    try:
+        xbmcgui.Window(10000).setProperty(_ADULT_UNLOCK_PROP, "1" if unlocked else "")
+    except Exception:
+        pass

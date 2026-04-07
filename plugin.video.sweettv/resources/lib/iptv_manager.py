@@ -12,7 +12,7 @@ from datetime import datetime
 import xbmc
 import xbmcaddon
 
-from .sweettv_api import SweetTVApi, _log, _vlog
+from .sweettv_api import SweetTVApi, _log, _vlog, show_adult_allowed
 from . import favourites
 
 
@@ -50,7 +50,7 @@ def get_channels():
     """
     _vlog("IPTV Manager channels fetch starting")
     addon = xbmcaddon.Addon()
-    show_adult = addon.getSettingBool("show_adult")
+    show_adult = show_adult_allowed()
 
     api = SweetTVApi()
     if not api.is_logged_in():
@@ -117,7 +117,7 @@ def get_epg():
     Returns dict with "version" and "epg" keys.
     """
     addon = xbmcaddon.Addon()
-    show_adult = addon.getSettingBool("show_adult")
+    show_adult = show_adult_allowed()
     epg_days = addon.getSettingInt("epg_days")
 
     _vlog("EPG fetch starting, days=%d" % epg_days)

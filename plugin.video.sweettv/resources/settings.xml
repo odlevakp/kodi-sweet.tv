@@ -60,6 +60,20 @@
           <default>false</default>
           <control type="toggle"/>
         </setting>
+        <setting id="adult_pin" type="string" label="30819" help="30919">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30819</heading>
+            <hidden>true</hidden>
+          </control>
+          <dependencies>
+            <dependency type="visible" setting="show_adult" operator="is">true</dependency>
+          </dependencies>
+        </setting>
         <setting id="epg_days" type="integer" label="30806" help="30906">
           <level>0</level>
           <default>3</default>

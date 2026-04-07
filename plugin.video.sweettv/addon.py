@@ -12,7 +12,10 @@ import xbmcaddon
 import xbmcgui
 import xbmcplugin
 
-from resources.lib.sweettv_api import SweetTVApi, _log, _vlog
+from resources.lib.sweettv_api import (
+    SweetTVApi, _log, _vlog,
+    show_adult_allowed, is_adult_unlocked, set_adult_unlocked,
+)
 from resources.lib.iptv_manager import IPTVManager
 from resources.lib import favourites
 from resources.lib.strings import M, t as _t
@@ -144,8 +147,11 @@ def browse_channels(handle, params=None):
         xbmcgui.Dialog().ok("Sweet.TV", _t(M.NOT_LOGGED_IN))
         return
 
+    # Prompt for adult PIN once per session if needed.
+    _maybe_prompt_adult_pin()
+
     addon = xbmcaddon.Addon()
-    show_adult = addon.getSettingBool("show_adult")
+    show_adult = show_adult_allowed()
     channels, categories = api.get_channels()
     fav_ids = favourites.load()
 
@@ -322,7 +328,7 @@ def browse_archive(handle, params):
         return
 
     addon = xbmcaddon.Addon()
-    show_adult = addon.getSettingBool("show_adult")
+    show_adult = show_adult_allowed()
     channels, _ = api.get_channels()
 
     for ch in channels:
@@ -915,6 +921,31 @@ def show_subscription_info():
 
 
 # -- Helpers -------------------------------------------------------------
+
+
+def _maybe_prompt_adult_pin():
+    """Prompt for the adult PIN if show_adult is on, a PIN is set, and the
+    user hasn't already unlocked this session.
+
+    Wrong PIN or cancel leaves the session locked - the user just sees
+    the addon without adult channels (no error, no scolding).
+    """
+    addon = xbmcaddon.Addon()
+    if not addon.getSettingBool("show_adult"):
+        return
+    pin = (addon.getSetting("adult_pin") or "").strip()
+    if not pin:
+        return
+    if is_adult_unlocked():
+        return
+
+    entered = xbmcgui.Dialog().input(
+        _t(M.ADULT_PIN_PROMPT),
+        type=xbmcgui.INPUT_NUMERIC,
+        option=xbmcgui.ALPHANUM_HIDE_INPUT,
+    )
+    if entered and entered == pin:
+        set_adult_unlocked(True)
 
 
 def _parse_bitrate(setting_value):

@@ -79,6 +79,7 @@ class _MessageRegistry:
     SUB_THIS_DEVICE = 30715
     OPEN_SETTINGS = 30716
     MOVIE_INFO = 30717
+    ADULT_PIN_PROMPT = 30718
 
     # Settings labels (30800-30899) — these are referenced from settings.xml
     # by ID, no need to use them in Python code.

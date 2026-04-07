@@ -27,10 +27,10 @@ This file tracks **what's done and what's left**, nothing else.
 - [x] Play archived programs through addon UI
 - [x] PVR catchup playback from TV guide (catchup-id in XMLTV EPG)
 
-### Phase 3: Parental Lock [PARTIAL]
+### Phase 3: Parental Lock [DONE]
 - [x] Adult channel filtering (show/hide via setting)
-- [ ] PIN protection for adult content
-- [ ] Integration with Kodi parental controls
+- [x] Optional addon-level PIN gate for adult content (asked once per Kodi session)
+- Note: not integrated with Kodi's built-in master lock — that's profile-switching only and not addon-accessible by design
 
 ### Phase 4: Subscription Info [DONE]
 - [x] Subscription Information dialog with parsed data

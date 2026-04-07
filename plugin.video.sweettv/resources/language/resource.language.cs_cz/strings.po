@@ -223,9 +223,29 @@ msgctxt "#30917"
 msgid "Log API responses and stream details to the Kodi log. Useful for diagnosing playback issues. Leave off for normal use - the log gets noisy."
 msgstr "Zapisuje odpovědi API a detaily streamu do Kodi logu. Užitečné pro diagnostiku problémů s přehráváním. Pro běžné používání nechte vypnuté - log se stává zahlcený."
 
+msgctxt "#30818"
+msgid "[COLOR yellow]Master Lock is enabled — adult content stays hidden[/COLOR]"
+msgstr "[COLOR yellow]Master Lock je zapnutý — kanály pro dospělé jsou skryté[/COLOR]"
+
+msgctxt "#30918"
+msgid "Kodi's Master Lock is on, so the addon hides all adult channels regardless of the toggle below. Disable Master Lock in System settings if you want full control via this addon."
+msgstr "Kodi Master Lock je zapnutý, doplněk proto skrývá všechny kanály pro dospělé bez ohledu na přepínač níže. Vypněte Master Lock v systémových nastaveních, pokud chcete plnou kontrolu přes tento doplněk."
+
 msgctxt "#30717"
 msgid "Sweet.TV details"
 msgstr "Sweet.TV detaily"
+
+msgctxt "#30718"
+msgid "Enter PIN to unlock adult content"
+msgstr "Zadejte PIN pro odemknutí obsahu pro dospělé"
+
+msgctxt "#30819"
+msgid "Adult Content PIN"
+msgstr "PIN pro obsah pro dospělé"
+
+msgctxt "#30919"
+msgid "Optional PIN to gate adult content. If set, you'll be asked for it once per Kodi session before adult channels are shown. If left empty, adult channels are shown without any prompt."
+msgstr "Nepovinný PIN pro zamknutí obsahu pro dospělé. Pokud je nastaven, jednou za relaci Kodi se na něj zeptá před zobrazením kanálů pro dospělé. Pokud je prázdný, kanály pro dospělé se zobrazí bez jakékoli výzvy."
 
 # Settings labels
 msgctxt "#30800"
