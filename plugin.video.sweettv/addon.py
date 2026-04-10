@@ -75,6 +75,8 @@ def main():
         configure_pvr_simple()
     elif action == "setup_pvr":
         setup_pvr_integration()
+    elif action == "add_kodi_favourite":
+        add_kodi_favourite(params)
     elif action == "iptv_channels":
         # IPTV Manager callback.
         port = int(params.get("port", [0])[0])
@@ -1031,6 +1033,104 @@ def configure_pvr_simple():
         _rpc("Addons.SetAddonEnabled", {"addonid": "pvr.iptvsimple", "enabled": True})
 
     xbmcgui.Dialog().ok("Sweet.TV", _t(M.PVR_CONFIGURED))
+
+
+# -- Kodi favourites shortcuts --------------------------------------------
+
+
+def add_kodi_favourite(params):
+    """Add a Sweet.TV section shortcut to Kodi's Favourites menu.
+
+    Uses Favourites.AddFavourite JSON-RPC with a custom thumbnail so the
+    entry has an icon instead of the default star.
+    """
+    import json
+
+    target = params.get("target", [None])[0]
+    if not target:
+        return
+
+    # Map target to plugin URL, title, and icon.
+    targets = {
+        "archive": {
+            "title": _t(M.ARCHIVE),
+            "path": "plugin://plugin.video.sweettv/?action=browse_archive",
+            "icon": "DefaultYear.png",
+        },
+        "movies": {
+            "title": _t(M.MOVIES),
+            "path": "plugin://plugin.video.sweettv/?action=browse_movies",
+            "icon": "DefaultMovies.png",
+        },
+    }
+
+    cfg = targets.get(target)
+    if not cfg:
+        return
+
+    # Prefix with "Sweet.TV" so it's recognizable in the favourites list.
+    title = "Sweet.TV: %s" % cfg["title"]
+
+    # Check if this favourite already exists — if so, remove it instead.
+    existing = xbmc.executeJSONRPC(json.dumps({
+        "jsonrpc": "2.0",
+        "method": "Favourites.GetFavourites",
+        "params": {"properties": ["windowparameter"]},
+        "id": 1,
+    }))
+    already_exists = False
+    try:
+        favs = json.loads(existing).get("result", {}).get("favourites") or []
+        for fav in favs:
+            if fav.get("windowparameter") == cfg["path"]:
+                already_exists = True
+                break
+    except (ValueError, TypeError):
+        pass
+
+    if already_exists:
+        # Already in favourites — confirm removal.
+        if not xbmcgui.Dialog().yesno("Sweet.TV", "%s %s" % (title, _t(M.KODI_FAV_ALREADY))):
+            return
+        # AddFavourite with the same title toggles it off.
+        xbmc.executeJSONRPC(json.dumps({
+            "jsonrpc": "2.0",
+            "method": "Favourites.AddFavourite",
+            "params": {
+                "title": title,
+                "type": "window",
+                "window": "videos",
+                "windowparameter": cfg["path"],
+                "thumbnail": cfg["icon"],
+            },
+            "id": 1,
+        }))
+        xbmcgui.Dialog().notification("Sweet.TV", "%s %s" % (title, _t(M.KODI_FAV_REMOVED)))
+        return
+
+    resp_str = xbmc.executeJSONRPC(json.dumps({
+        "jsonrpc": "2.0",
+        "method": "Favourites.AddFavourite",
+        "params": {
+            "title": title,
+            "type": "window",
+            "window": "videos",
+            "windowparameter": cfg["path"],
+            "thumbnail": cfg["icon"],
+        },
+        "id": 1,
+    }))
+
+    try:
+        resp = json.loads(resp_str)
+        if "error" in resp:
+            _log("add_kodi_favourite failed: %s" % resp, level=xbmc.LOGERROR)
+            xbmcgui.Dialog().notification("Sweet.TV", "Failed", xbmcgui.NOTIFICATION_ERROR)
+            return
+    except (ValueError, TypeError):
+        pass
+
+    xbmcgui.Dialog().notification("Sweet.TV", "%s %s" % (title, _t(M.KODI_FAV_ADDED)))
 
 
 # -- One-shot full PVR setup ---------------------------------------------

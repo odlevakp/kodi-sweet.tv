@@ -291,9 +291,37 @@ msgctxt "#30837"
 msgid "Setup PVR Integration"
 msgstr "Nastavit PVR integraci"
 
+msgctxt "#30731"
+msgid "added to Favourites"
+msgstr "přidáno do oblíbených"
+
+msgctxt "#30732"
+msgid "is already in Favourites. Remove it?"
+msgstr "už je v oblíbených. Odebrat?"
+
+msgctxt "#30733"
+msgid "removed from Favourites"
+msgstr "odebráno z oblíbených"
+
 msgctxt "#30838"
 msgid "EPG Past Days"
 msgstr "Dní EPG do minulosti"
+
+msgctxt "#30839"
+msgid "Add Archive to Kodi Favourites"
+msgstr "Přidat Archiv do Kodi oblíbených"
+
+msgctxt "#30840"
+msgid "Add Movies to Kodi Favourites"
+msgstr "Přidat Filmy do Kodi oblíbených"
+
+msgctxt "#30939"
+msgid "Adds a shortcut to Sweet.TV Archive in Kodi's Favourites menu with a custom icon. Access it from Kodi's main screen Favourites section."
+msgstr "Přidá odkaz na Sweet.TV Archiv do sekce Oblíbené v Kodi s vlastní ikonou. Přístupné z hlavní obrazovky Kodi v sekci Oblíbené."
+
+msgctxt "#30940"
+msgid "Adds a shortcut to Sweet.TV Movies in Kodi's Favourites menu with a custom icon. Access it from Kodi's main screen Favourites section."
+msgstr "Přidá odkaz na Sweet.TV Filmy do sekce Oblíbené v Kodi s vlastní ikonou. Přístupné z hlavní obrazovky Kodi v sekci Oblíbené."
 
 msgctxt "#30938"
 msgid "Number of past days to fetch from sweet.tv. Lets you scroll back in the TV guide and play archived programs from the EPG. Sweet.tv keeps up to 7 days of past EPG. Higher values mean more data per refresh."

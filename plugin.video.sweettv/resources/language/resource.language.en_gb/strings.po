@@ -291,8 +291,36 @@ msgctxt "#30837"
 msgid "Setup PVR Integration"
 msgstr ""
 
+msgctxt "#30731"
+msgid "added to Favourites"
+msgstr ""
+
+msgctxt "#30732"
+msgid "is already in Favourites. Remove it?"
+msgstr ""
+
+msgctxt "#30733"
+msgid "removed from Favourites"
+msgstr ""
+
 msgctxt "#30838"
 msgid "EPG Past Days"
+msgstr ""
+
+msgctxt "#30839"
+msgid "Add Archive to Kodi Favourites"
+msgstr ""
+
+msgctxt "#30840"
+msgid "Add Movies to Kodi Favourites"
+msgstr ""
+
+msgctxt "#30939"
+msgid "Adds a shortcut to Sweet.TV Archive in Kodi's Favourites menu with a custom icon. Access it from Kodi's main screen Favourites section."
+msgstr ""
+
+msgctxt "#30940"
+msgid "Adds a shortcut to Sweet.TV Movies in Kodi's Favourites menu with a custom icon. Access it from Kodi's main screen Favourites section."
 msgstr ""
 
 msgctxt "#30938"

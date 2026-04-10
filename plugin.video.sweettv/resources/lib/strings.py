@@ -92,6 +92,9 @@ class _MessageRegistry:
     PVR_SETUP_CONFIGURING = 30728
     PVR_SETUP_INSTALL_FAILED = 30729
     PVR_SETUP_REFRESH_FAILED = 30730
+    KODI_FAV_ADDED = 30731
+    KODI_FAV_ALREADY = 30732
+    KODI_FAV_REMOVED = 30733
 
     # Settings labels (30800-30899) — these are referenced from settings.xml
     # by ID, no need to use them in Python code.

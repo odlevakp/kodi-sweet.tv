@@ -62,6 +62,18 @@
             <data>RunPlugin(plugin://plugin.video.sweettv/?action=configure_pvr)</data>
           </control>
         </setting>
+        <setting id="fav_archive" type="action" label="30839" help="30939">
+          <level>0</level>
+          <control type="button" format="action">
+            <data>RunPlugin(plugin://plugin.video.sweettv/?action=add_kodi_favourite&amp;target=archive)</data>
+          </control>
+        </setting>
+        <setting id="fav_movies" type="action" label="30840" help="30940">
+          <level>0</level>
+          <control type="button" format="action">
+            <data>RunPlugin(plugin://plugin.video.sweettv/?action=add_kodi_favourite&amp;target=movies)</data>
+          </control>
+        </setting>
       </group>
     </category>
 
