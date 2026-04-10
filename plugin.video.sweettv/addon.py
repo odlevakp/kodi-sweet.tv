@@ -997,28 +997,38 @@ def configure_pvr_simple():
                 "</settings>", "    " + replacement + "\n</settings>", 1
             )
 
-    try:
-        with open(settings_path, "w", encoding="utf-8") as f:
-            f.write(new_content)
-    except OSError as e:
-        _log("configure_pvr_simple: write failed: %s" % e, level=xbmc.LOGERROR)
-        xbmcgui.Dialog().notification("Sweet.TV", str(e), xbmcgui.NOTIFICATION_ERROR)
-        return
+    settings_changed = (new_content != content)
+    if settings_changed:
+        try:
+            with open(settings_path, "w", encoding="utf-8") as f:
+                f.write(new_content)
+        except OSError as e:
+            _log("configure_pvr_simple: write failed: %s" % e, level=xbmc.LOGERROR)
+            xbmcgui.Dialog().notification("Sweet.TV", str(e), xbmcgui.NOTIFICATION_ERROR)
+            return
+        _vlog("PVR Simple Client instance settings updated")
+    else:
+        _vlog("PVR Simple Client instance settings already correct, no changes")
 
-    _vlog("PVR Simple Client instance settings updated")
+    # Restart PVR Simple Client only if its instance settings actually
+    # changed. The disable->enable cycle is racy when the addon is in
+    # the middle of loading EPG, and re-running the action with no
+    # changes shouldn't cycle the PVR client every time.
+    if settings_changed:
+        def _rpc(method, params):
+            xbmc.executeJSONRPC(json.dumps({
+                "jsonrpc": "2.0",
+                "method": method,
+                "params": params,
+                "id": 1,
+            }))
 
-    # Restart PVR Simple Client so the changes take effect.
-    def _rpc(method, params):
-        xbmc.executeJSONRPC(json.dumps({
-            "jsonrpc": "2.0",
-            "method": method,
-            "params": params,
-            "id": 1,
-        }))
-
-    _rpc("Addons.SetAddonEnabled", {"addonid": "pvr.iptvsimple", "enabled": False})
-    xbmc.sleep(500)
-    _rpc("Addons.SetAddonEnabled", {"addonid": "pvr.iptvsimple", "enabled": True})
+        _rpc("Addons.SetAddonEnabled", {"addonid": "pvr.iptvsimple", "enabled": False})
+        # Wait long enough for the addon's destruction to fully complete.
+        # 500ms wasn't enough on Android TV - PVR Simple ended up in
+        # "Permanent failure" state because the recreate raced the destroy.
+        xbmc.sleep(2500)
+        _rpc("Addons.SetAddonEnabled", {"addonid": "pvr.iptvsimple", "enabled": True})
 
     xbmcgui.Dialog().ok("Sweet.TV", _t(M.PVR_CONFIGURED))
 
@@ -1042,17 +1052,47 @@ def setup_pvr_integration():
     progress = xbmcgui.DialogProgress()
     progress.create("Sweet.TV", _t(M.PVR_SETUP_INSTALLING))
 
-    def is_installed(addon_id):
+    def get_addon_state(addon_id):
+        """Return ('not_installed' | 'disabled' | 'enabled') for an addon.
+
+        Uses JSON-RPC Addons.GetAddonDetails which works regardless of
+        enabled state, unlike xbmcaddon.Addon() which raises for disabled.
+        """
+        resp_str = xbmc.executeJSONRPC(json.dumps({
+            "jsonrpc": "2.0",
+            "method": "Addons.GetAddonDetails",
+            "params": {"addonid": addon_id, "properties": ["enabled"]},
+            "id": 1,
+        }))
         try:
-            xbmcaddon.Addon(addon_id)
-            return True
-        except RuntimeError:
-            return False
+            resp = json.loads(resp_str)
+        except (ValueError, TypeError):
+            return "not_installed"
+        if "error" in resp:
+            return "not_installed"
+        addon_info = (resp.get("result") or {}).get("addon") or {}
+        if addon_info.get("enabled"):
+            return "enabled"
+        return "disabled"
+
+    def enable_addon(addon_id):
+        xbmc.executeJSONRPC(json.dumps({
+            "jsonrpc": "2.0",
+            "method": "Addons.SetAddonEnabled",
+            "params": {"addonid": addon_id, "enabled": True},
+            "id": 1,
+        }))
 
     def wait_for(addon_id, timeout=120):
-        """Trigger install if missing, wait up to timeout seconds."""
-        if is_installed(addon_id):
+        """Make sure addon is installed AND enabled. Trigger install if needed."""
+        state = get_addon_state(addon_id)
+        if state == "enabled":
             return True
+        if state == "disabled":
+            enable_addon(addon_id)
+            return True
+
+        # Not installed - trigger Kodi's installer.
         progress.update(0, _t(M.PVR_SETUP_INSTALLING) + "\n" + addon_id)
         xbmc.executebuiltin("InstallAddon(%s)" % addon_id, wait=False)
         elapsed = 0
@@ -1062,14 +1102,10 @@ def setup_pvr_integration():
                 return False
             xbmc.sleep(step * 1000)
             elapsed += step
-            if is_installed(addon_id):
-                # Make sure it's enabled too.
-                xbmc.executeJSONRPC(json.dumps({
-                    "jsonrpc": "2.0",
-                    "method": "Addons.SetAddonEnabled",
-                    "params": {"addonid": addon_id, "enabled": True},
-                    "id": 1,
-                }))
+            state = get_addon_state(addon_id)
+            if state in ("enabled", "disabled"):
+                if state == "disabled":
+                    enable_addon(addon_id)
                 return True
             progress.update(int(elapsed / timeout * 100))
         return False

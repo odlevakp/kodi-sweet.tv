@@ -291,6 +291,14 @@ msgctxt "#30837"
 msgid "Setup PVR Integration"
 msgstr "Nastavit PVR integraci"
 
+msgctxt "#30838"
+msgid "EPG Past Days"
+msgstr "Dní EPG do minulosti"
+
+msgctxt "#30938"
+msgid "Number of past days to fetch from sweet.tv. Lets you scroll back in the TV guide and play archived programs from the EPG. Sweet.tv keeps up to 7 days of past EPG. Higher values mean more data per refresh."
+msgstr "Počet minulých dní načtených ze sweet.tv. Umožňuje rolovat zpět v TV programu a přehrávat archivní pořady z EPG. Sweet.tv uchovává až 7 dní minulého EPG. Vyšší hodnoty znamenají více dat při obnově."
+
 msgctxt "#30937"
 msgid "One-shot full setup: installs IPTV Manager and PVR IPTV Simple Client (if missing), triggers an IPTV Manager refresh, and configures PVR Simple Client to read sweet.tv channels and EPG. Run this on a fresh install."
 msgstr "Plné nastavení jedním kliknutím: nainstaluje IPTV Manager a PVR IPTV Simple Client (pokud chybí), spustí obnovu IPTV Manageru a nakonfiguruje PVR Simple Client pro čtení sweet.tv kanálů a EPG. Spusťte po čerstvé instalaci."
