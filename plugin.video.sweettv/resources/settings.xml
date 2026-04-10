@@ -44,6 +44,7 @@
               <option label="30823">en</option>
               <option label="30824">uk</option>
               <option label="30825">ru</option>
+              <option label="30826">hu</option>
             </options>
           </constraints>
           <control type="list" format="string">

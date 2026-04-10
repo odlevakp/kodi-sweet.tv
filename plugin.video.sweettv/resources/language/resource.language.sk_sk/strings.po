@@ -429,6 +429,10 @@ msgctxt "#30825"
 msgid "Russian"
 msgstr "Ruština"
 
+msgctxt "#30826"
+msgid "Hungarian"
+msgstr "Maďarčina"
+
 # Bitrate options
 msgctxt "#30830"
 msgid "Unlimited"

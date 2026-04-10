@@ -52,7 +52,7 @@ class SweetTVApi:
     # -- Headers and device info ------------------------------------------
 
     # Languages sweet.tv API is known to support. Anything else gets mapped to 'sk'.
-    _SUPPORTED_LANGS = ("sk", "cs", "uk", "ru", "en")
+    _SUPPORTED_LANGS = ("sk", "cs", "uk", "ru", "en", "hu")
 
     @classmethod
     def _api_lang(cls):

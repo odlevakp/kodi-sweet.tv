@@ -1,13 +1,13 @@
 # Sweet.TV Kodi Addon
-# Czech language file
+# Hungarian language file
 msgid ""
 msgstr ""
 "Project-Id-Version: plugin.video.sweettv\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-04-06 00:00+0000\n"
+"PO-Revision-Date: 2026-04-10 00:00+0000\n"
 "Last-Translator: \n"
-"Language-Team: Czech\n"
-"Language: cs_CZ\n"
+"Language-Team: Hungarian\n"
+"Language: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,428 +15,415 @@ msgstr ""
 # Main menu
 msgctxt "#30100"
 msgid "Live TV"
-msgstr "Živé vysílání"
+msgstr "Élő TV"
 
 msgctxt "#30101"
 msgid "Archive"
-msgstr "Archiv"
+msgstr "Archívum"
 
 msgctxt "#30102"
 msgid "Movies"
-msgstr "Filmy"
+msgstr "Filmek"
 
 msgctxt "#30103"
 msgid "Search"
-msgstr "Hledat"
+msgstr "Keresés"
 
 msgctxt "#30104"
 msgid "Pinned Channels"
-msgstr "Připnuté kanály"
+msgstr "Rögzített csatornák"
 
 # Pairing
 msgctxt "#30200"
 msgid "Pair Device"
-msgstr "Spárovat zařízení"
+msgstr "Eszköz párosítása"
 
 msgctxt "#30201"
 msgid "Sweet.TV - Device Pairing"
-msgstr "Sweet.TV - Párování zařízení"
+msgstr "Sweet.TV - Eszköz párosítása"
 
 msgctxt "#30202"
 msgid "Your pairing code is: [B]{code}[/B][CR][CR]Go to sweet.tv, log in to your account,[CR]navigate to My Devices, enter this code,[CR]and click Activate.[CR][CR]Waiting for pairing..."
-msgstr "Váš párovací kód je: [B]{code}[/B][CR][CR]Přejděte na sweet.tv, přihlaste se ke svému účtu,[CR]otevřete sekci Moje zařízení, zadejte tento kód[CR]a klikněte na Aktivovat.[CR][CR]Čekání na spárování..."
+msgstr "A párosítási kód: [B]{code}[/B][CR][CR]Lépjen a sweet.tv oldalra, jelentkezzen be,[CR]navigáljon az Eszközeim menüpontba, adja meg ezt a kódot,[CR]és kattintson az Aktiválás gombra.[CR][CR]Várakozás a párosításra..."
 
 msgctxt "#30203"
 msgid "Already paired. Do you want to re-pair?"
-msgstr "Zařízení je již spárováno. Chcete jej spárovat znovu?"
+msgstr "Már párosítva. Szeretné újra párosítani?"
 
 msgctxt "#30204"
 msgid "Failed to get pairing code. Please try again."
-msgstr "Nepodařilo se získat párovací kód. Zkuste to znovu."
+msgstr "Nem sikerült megkapni a párosítási kódot. Kérjük, próbálja újra."
 
 msgctxt "#30205"
 msgid "Device paired successfully!"
-msgstr "Zařízení bylo úspěšně spárováno!"
+msgstr "Az eszköz sikeresen párosítva!"
 
 msgctxt "#30206"
 msgid "Pairing timed out. Please try again."
-msgstr "Vypršel čas párování. Zkuste to znovu."
+msgstr "A párosítás időtúllépés miatt megszakadt. Kérjük, próbálja újra."
 
 msgctxt "#30207"
 msgid "Are you sure you want to unpair this device?"
-msgstr "Opravdu chcete zrušit spárování tohoto zařízení?"
+msgstr "Biztosan szeretné leválasztani ezt az eszközt?"
 
 msgctxt "#30208"
 msgid "Device unpaired successfully."
-msgstr "Spárování zařízení bylo zrušeno."
+msgstr "Az eszköz sikeresen leválasztva."
 
 msgctxt "#30209"
 msgid "Not logged in. Please pair your device first."
-msgstr "Nejste přihlášeni. Nejprve spárujte své zařízení."
+msgstr "Nincs bejelentkezve. Kérjük, először párosítsa az eszközét."
 
 # Errors
 msgctxt "#30300"
 msgid "Failed to load stream"
-msgstr "Nepodařilo se načíst stream"
+msgstr "Nem sikerült betölteni a streamet"
 
 msgctxt "#30301"
 msgid "Failed to load archive stream"
-msgstr "Nepodařilo se načíst archivní stream"
+msgstr "Nem sikerült betölteni az archív streamet"
 
 msgctxt "#30302"
 msgid "Failed to load movie"
-msgstr "Nepodařilo se načíst film"
+msgstr "Nem sikerült betölteni a filmet"
 
 # Favourites
 msgctxt "#30400"
 msgid "Pin Channel"
-msgstr "Připnout kanál"
+msgstr "Csatorna rögzítése"
 
 msgctxt "#30401"
 msgid "Unpin Channel"
-msgstr "Odepnout kanál"
+msgstr "Csatorna rögzítésének törlése"
 
 msgctxt "#30402"
 msgid "Channel pinned"
-msgstr "Kanál připnut"
+msgstr "Csatorna rögzítve"
 
 msgctxt "#30403"
 msgid "Channel unpinned"
-msgstr "Kanál odepnut"
+msgstr "Csatorna rögzítése törölve"
 
 # Browse
 msgctxt "#30500"
 msgid "Search Sweet.TV"
-msgstr "Hledat na Sweet.TV"
+msgstr "Keresés a Sweet.TV-n"
 
 msgctxt "#30501"
 msgid "By Genre"
-msgstr "Podle žánru"
+msgstr "Műfaj szerint"
 
 msgctxt "#30502"
 msgid "By Collection"
-msgstr "Podle kolekce"
+msgstr "Gyűjtemény szerint"
 
 msgctxt "#30503"
 msgid "Today"
-msgstr "Dnes"
+msgstr "Ma"
 
 msgctxt "#30504"
 msgid "Yesterday"
-msgstr "Včera"
+msgstr "Tegnap"
 
 # Device management
 msgctxt "#30600"
 msgid "Registered Devices"
-msgstr "Registrovaná zařízení"
+msgstr "Regisztrált eszközök"
 
 msgctxt "#30601"
 msgid "No devices found."
-msgstr "Nenalezena žádná zařízení."
+msgstr "Nem találhatók eszközök."
 
 msgctxt "#30602"
 msgid "Remove this device?"
-msgstr "Odebrat toto zařízení?"
+msgstr "Eltávolítja ezt az eszközt?"
 
 msgctxt "#30603"
 msgid "Device removed."
-msgstr "Zařízení bylo odebráno."
+msgstr "Eszköz eltávolítva."
 
 msgctxt "#30604"
 msgid "Select to remove this device"
-msgstr "Vyberte pro odebrání tohoto zařízení"
+msgstr "Válassza ki az eszköz eltávolításához"
 
 # Subscription
 msgctxt "#30700"
 msgid "Subscription Information"
-msgstr "Informace o předplatném"
+msgstr "Előfizetési információk"
 
 msgctxt "#30701"
 msgid "Failed to load subscription info."
-msgstr "Nepodařilo se načíst informace o předplatném."
+msgstr "Nem sikerült betölteni az előfizetési információkat."
 
 msgctxt "#30702"
 msgid "Account"
-msgstr "Účet"
+msgstr "Fiók"
 
 msgctxt "#30703"
 msgid "Plan"
-msgstr "Tarif"
+msgstr "Csomag"
 
 msgctxt "#30704"
 msgid "Active services"
-msgstr "Aktivní služby"
+msgstr "Aktív szolgáltatások"
 
 msgctxt "#30705"
 msgid "expires"
-msgstr "vyprší"
+msgstr "lejár"
 
 msgctxt "#30706"
 msgid "days left"
-msgstr "dní zbývá"
+msgstr "nap van hátra"
 
 msgctxt "#30707"
 msgid "Balance"
-msgstr "Zůstatek"
+msgstr "Egyenleg"
 
 msgctxt "#30708"
 msgid "To pay"
-msgstr "K úhradě"
+msgstr "Fizetendő"
 
 msgctxt "#30709"
 msgid "Parental control"
-msgstr "Rodičovská kontrola"
+msgstr "Szülői felügyelet"
 
 msgctxt "#30710"
 msgid "Enabled"
-msgstr "Zapnutá"
+msgstr "Bekapcsolva"
 
 msgctxt "#30711"
 msgid "ACTIVE"
-msgstr "AKTIVNÍ"
+msgstr "AKTÍV"
 
 msgctxt "#30712"
 msgid "BLOCKED"
-msgstr "BLOKOVANÝ"
+msgstr "LETILTVA"
 
 msgctxt "#30713"
 msgid "Added"
-msgstr "Přidáno"
+msgstr "Hozzáadva"
 
 msgctxt "#30714"
 msgid "Select to remove this device"
-msgstr "Vyberte pro odebrání tohoto zařízení"
+msgstr "Válassza ki az eszköz eltávolításához"
 
 msgctxt "#30715"
 msgid "[THIS DEVICE]"
-msgstr "[TOTO ZAŘÍZENÍ]"
+msgstr "[EZ AZ ESZKÖZ]"
 
 msgctxt "#30716"
 msgid "Settings"
-msgstr "Nastavení"
+msgstr "Beállítások"
 
 msgctxt "#30817"
 msgid "Verbose Logging"
-msgstr "Podrobné logování"
+msgstr "Részletes naplózás"
 
 msgctxt "#30917"
 msgid "Log API responses and stream details to the Kodi log. Useful for diagnosing playback issues. Leave off for normal use - the log gets noisy."
-msgstr "Zapisuje odpovědi API a detaily streamu do Kodi logu. Užitečné pro diagnostiku problémů s přehráváním. Pro běžné používání nechte vypnuté - log se stává zahlcený."
+msgstr "API válaszok és stream részletek naplózása a Kodi naplóba. Hasznos lejátszási problémák diagnosztizálásához. Normál használathoz hagyja kikapcsolva."
 
 msgctxt "#30818"
 msgid "[COLOR yellow]Master Lock is enabled — adult content stays hidden[/COLOR]"
-msgstr "[COLOR yellow]Master Lock je zapnutý — kanály pro dospělé jsou skryté[/COLOR]"
+msgstr "[COLOR yellow]A fő zár be van kapcsolva — a felnőtt tartalom rejtve marad[/COLOR]"
 
 msgctxt "#30918"
 msgid "Kodi's Master Lock is on, so the addon hides all adult channels regardless of the toggle below. Disable Master Lock in System settings if you want full control via this addon."
-msgstr "Kodi Master Lock je zapnutý, doplněk proto skrývá všechny kanály pro dospělé bez ohledu na přepínač níže. Vypněte Master Lock v systémových nastaveních, pokud chcete plnou kontrolu přes tento doplněk."
+msgstr "A Kodi fő zára be van kapcsolva, ezért a kiegészítő elrejti az összes felnőtt csatornát az alábbi kapcsolótól függetlenül. Kapcsolja ki a fő zárat a Rendszerbeállításokban, ha teljes kontrollt szeretne."
 
 msgctxt "#30717"
 msgid "Sweet.TV details"
-msgstr "Sweet.TV detaily"
+msgstr "Sweet.TV részletek"
 
 msgctxt "#30718"
 msgid "Enter PIN to unlock adult content"
-msgstr "Zadejte PIN pro odemknutí obsahu pro dospělé"
+msgstr "Adja meg a PIN-kódot a felnőtt tartalom feloldásához"
 
 msgctxt "#30719"
 msgid "PVR IPTV Simple Client is not installed. Install it from the Kodi addon repository first."
-msgstr "PVR IPTV Simple Client není nainstalován. Nejprve jej nainstalujte z repozitáře doplňků Kodi."
+msgstr "A PVR IPTV Simple Client nincs telepítve. Először telepítse a Kodi kiegészítő tárhelyéről."
 
 msgctxt "#30720"
 msgid "PVR IPTV Simple Client has not been configured yet. Its settings will open now - close them, then run this action again."
-msgstr "PVR IPTV Simple Client ještě nebyl nakonfigurován. Otevřou se jeho nastavení - zavřete je a spusťte tuto akci znovu."
+msgstr "A PVR IPTV Simple Client még nincs konfigurálva. Most megnyílnak a beállításai - zárja be, majd futtassa újra ezt a műveletet."
 
 msgctxt "#30721"
 msgid "PVR IPTV Simple Client configured. Channels and EPG should appear in the TV section after a moment."
-msgstr "PVR IPTV Simple Client nakonfigurován. Kanály a EPG by se měly za chvíli objevit v sekci TV."
+msgstr "PVR IPTV Simple Client konfigurálva. A csatornák és az EPG hamarosan megjelennek a TV szekcióban."
 
 msgctxt "#30722"
 msgid "All Channels"
-msgstr "Všechny kanály"
+msgstr "Összes csatorna"
 
 msgctxt "#30723"
 msgid "Move Up"
-msgstr "Posunout nahoru"
+msgstr "Felfelé mozgatás"
 
 msgctxt "#30724"
 msgid "Move Down"
-msgstr "Posunout dolů"
+msgstr "Lefelé mozgatás"
 
 msgctxt "#30725"
 msgid "This will install IPTV Manager and PVR IPTV Simple Client (if missing), refresh the channel list, and configure everything to plug into Kodi's TV section. Continue?"
-msgstr "Toto nainstaluje IPTV Manager a PVR IPTV Simple Client (pokud chybí), obnoví seznam kanálů a vše nakonfiguruje pro integraci s Kodi sekcí TV. Pokračovat?"
+msgstr "Ez telepíti az IPTV Managert és a PVR IPTV Simple Clientet (ha hiányzik), frissíti a csatornalistát, és mindent beállít a Kodi TV szekciójához. Folytatja?"
 
 msgctxt "#30726"
 msgid "Installing dependencies..."
-msgstr "Instaluji závislosti..."
+msgstr "Függőségek telepítése..."
 
 msgctxt "#30727"
 msgid "Fetching channels and EPG..."
-msgstr "Načítám kanály a EPG..."
+msgstr "Csatornák és EPG betöltése..."
 
 msgctxt "#30728"
 msgid "Configuring PVR Simple Client..."
-msgstr "Konfiguruji PVR Simple Client..."
+msgstr "PVR Simple Client konfigurálása..."
 
 msgctxt "#30729"
 msgid "Failed to install {addon}. Try installing it manually from the Kodi addon repository, then run this action again."
-msgstr "Instalace {addon} selhala. Zkuste jej nainstalovat ručně z repozitáře doplňků Kodi a spusťte tuto akci znovu."
+msgstr "Nem sikerült telepíteni: {addon}. Próbálja meg kézzel telepíteni a Kodi kiegészítő tárhelyéről, majd futtassa újra ezt a műveletet."
 
 msgctxt "#30730"
 msgid "IPTV Manager did not produce the channel list within the timeout. Open IPTV Manager settings and try Force Refresh manually, then run Configure PVR Simple Client."
-msgstr "IPTV Manager nevytvořil seznam kanálů ve stanoveném čase. Otevřete nastavení IPTV Manageru a zkuste Force Refresh ručně, poté spusťte Konfigurovat PVR Simple Client."
+msgstr "Az IPTV Manager nem hozta létre a csatornalistát az időkorláton belül. Nyissa meg az IPTV Manager beállításait, próbálja meg a Kényszerített frissítést, majd futtassa a PVR Simple Client konfigurálást."
 
 msgctxt "#30837"
 msgid "Setup PVR Integration"
-msgstr "Nastavit PVR integraci"
+msgstr "PVR integráció beállítása"
 
 msgctxt "#30731"
 msgid "added to Favourites"
-msgstr "přidáno do oblíbených"
+msgstr "hozzáadva a kedvencekhez"
 
 msgctxt "#30732"
 msgid "is already in Favourites. Remove it?"
-msgstr "už je v oblíbených. Odebrat?"
+msgstr "már a kedvencek között van. Eltávolítja?"
 
 msgctxt "#30733"
 msgid "removed from Favourites"
-msgstr "odebráno z oblíbených"
-
-msgctxt "#30838"
-msgid "EPG Past Days"
-msgstr "Dní EPG do minulosti"
+msgstr "eltávolítva a kedvencekből"
 
 msgctxt "#30839"
 msgid "Add Archive to Kodi Favourites"
-msgstr "Přidat Archiv do Kodi oblíbených"
+msgstr "Archívum hozzáadása a Kodi kedvencekhez"
 
 msgctxt "#30840"
 msgid "Add Movies to Kodi Favourites"
-msgstr "Přidat Filmy do Kodi oblíbených"
+msgstr "Filmek hozzáadása a Kodi kedvencekhez"
 
 msgctxt "#30939"
 msgid "Adds a shortcut to Sweet.TV Archive in Kodi's Favourites menu with a custom icon. Access it from Kodi's main screen Favourites section."
-msgstr "Přidá odkaz na Sweet.TV Archiv do sekce Oblíbené v Kodi s vlastní ikonou. Přístupné z hlavní obrazovky Kodi v sekci Oblíbené."
+msgstr "Parancsikont ad a Sweet.TV Archívumhoz a Kodi Kedvencek menüjében egyéni ikonnal. A Kodi főképernyő Kedvencek szekciójából érhető el."
 
 msgctxt "#30940"
 msgid "Adds a shortcut to Sweet.TV Movies in Kodi's Favourites menu with a custom icon. Access it from Kodi's main screen Favourites section."
-msgstr "Přidá odkaz na Sweet.TV Filmy do sekce Oblíbené v Kodi s vlastní ikonou. Přístupné z hlavní obrazovky Kodi v sekci Oblíbené."
-
-msgctxt "#30938"
-msgid "Number of past days to fetch from sweet.tv. Lets you scroll back in the TV guide and play archived programs from the EPG. Sweet.tv keeps up to 7 days of past EPG. Higher values mean more data per refresh."
-msgstr "Počet minulých dní načtených ze sweet.tv. Umožňuje rolovat zpět v TV programu a přehrávat archivní pořady z EPG. Sweet.tv uchovává až 7 dní minulého EPG. Vyšší hodnoty znamenají více dat při obnově."
+msgstr "Parancsikont ad a Sweet.TV Filmekhez a Kodi Kedvencek menüjében egyéni ikonnal. A Kodi főképernyő Kedvencek szekciójából érhető el."
 
 msgctxt "#30937"
 msgid "One-shot full setup: installs IPTV Manager and PVR IPTV Simple Client (if missing), triggers an IPTV Manager refresh, and configures PVR Simple Client to read sweet.tv channels and EPG. Run this on a fresh install."
-msgstr "Plné nastavení jedním kliknutím: nainstaluje IPTV Manager a PVR IPTV Simple Client (pokud chybí), spustí obnovu IPTV Manageru a nakonfiguruje PVR Simple Client pro čtení sweet.tv kanálů a EPG. Spusťte po čerstvé instalaci."
+msgstr "Egyszeri teljes beállítás: telepíti az IPTV Managert és a PVR IPTV Simple Clientet (ha hiányzik), elindítja az IPTV Manager frissítését, és beállítja a PVR Simple Clientet a sweet.tv csatornák és EPG olvasásához. Futtassa friss telepítés után."
 
 msgctxt "#30836"
 msgid "Configure PVR IPTV Simple Client"
-msgstr "Konfigurovat PVR IPTV Simple Client"
+msgstr "PVR IPTV Simple Client konfigurálása"
 
 msgctxt "#30936"
 msgid "One-click setup: points PVR IPTV Simple Client at the IPTV Manager M3U/EPG files, enables catchup, and renames the instance to Sweet.TV. Run this once after installing the addon."
-msgstr "Instalace jedním kliknutím: nasměruje PVR IPTV Simple Client na M3U/EPG soubory IPTV Manageru, zapne catchup a přejmenuje instanci na Sweet.TV. Spusťte jednou po instalaci doplňku."
+msgstr "Egykattintásos beállítás: a PVR IPTV Simple Clientet az IPTV Manager M3U/EPG fájljaira irányítja, engedélyezi a visszanézést, és átnevezi a példányt Sweet.TV-re. Futtassa egyszer a kiegészítő telepítése után."
 
 msgctxt "#30819"
 msgid "Adult Content PIN"
-msgstr "PIN pro obsah pro dospělé"
+msgstr "Felnőtt tartalom PIN"
 
 msgctxt "#30919"
 msgid "Optional PIN to gate adult content. If set, you'll be asked for it once per Kodi session before adult channels are shown. If left empty, adult channels are shown without any prompt."
-msgstr "Nepovinný PIN pro zamknutí obsahu pro dospělé. Pokud je nastaven, jednou za relaci Kodi se na něj zeptá před zobrazením kanálů pro dospělé. Pokud je prázdný, kanály pro dospělé se zobrazí bez jakékoli výzvy."
+msgstr "Opcionális PIN a felnőtt tartalom védelméhez. Ha be van állítva, Kodi munkamenetenként egyszer kéri a felnőtt csatornák megjelenítése előtt. Ha üres, a felnőtt csatornák kérdezés nélkül megjelennek."
 
 # Settings labels
 msgctxt "#30800"
 msgid "General"
-msgstr "Obecné"
+msgstr "Általános"
 
 msgctxt "#30801"
 msgid "Pair Device"
-msgstr "Spárovat zařízení"
+msgstr "Eszköz párosítása"
 
 msgctxt "#30802"
 msgid "Unpair Device (Logout)"
-msgstr "Zrušit spárování (Odhlásit)"
+msgstr "Eszköz leválasztása (Kijelentkezés)"
 
 msgctxt "#30803"
 msgid "Maximum Bitrate"
-msgstr "Maximální datový tok"
+msgstr "Maximális bitráta"
 
 msgctxt "#30804"
 msgid "Channels"
-msgstr "Kanály"
+msgstr "Csatornák"
 
 msgctxt "#30805"
 msgid "Show Adult Channels"
-msgstr "Zobrazit kanály pro dospělé"
+msgstr "Felnőtt csatornák megjelenítése"
 
 msgctxt "#30806"
 msgid "EPG Days to Load"
-msgstr "Počet dní EPG k načtení"
+msgstr "Betöltendő EPG napok"
 
 msgctxt "#30807"
 msgid "Playback"
-msgstr "Přehrávání"
+msgstr "Lejátszás"
 
 msgctxt "#30809"
 msgid "Auto-close Stream on Stop"
-msgstr "Automaticky uzavřít stream při zastavení"
+msgstr "Stream automatikus lezárása leállításkor"
 
 msgctxt "#30810"
 msgid "Advanced"
-msgstr "Pokročilé"
+msgstr "Haladó"
 
 msgctxt "#30811"
 msgid "Manage Registered Devices"
-msgstr "Spravovat registrovaná zařízení"
+msgstr "Regisztrált eszközök kezelése"
 
 msgctxt "#30812"
 msgid "Show Subscription Info"
-msgstr "Zobrazit informace o předplatném"
+msgstr "Előfizetési információk megjelenítése"
 
-# Language override.
 msgctxt "#30808"
 msgid "API Language"
-msgstr "Jazyk API"
+msgstr "API nyelv"
 
 msgctxt "#30908"
 msgid "Language code sent to sweet.tv API. Affects descriptions, category names and EPG titles. 'Auto' uses your Kodi UI language if supported, otherwise Slovak."
-msgstr "Jazykový kód posílaný do sweet.tv API. Ovlivňuje popisy, názvy kategorií a tituly EPG. 'Auto' použije jazyk Kodi, pokud je podporován, jinak slovenštinu."
+msgstr "A sweet.tv API-nak küldött nyelvkód. Hatással van a leírásokra, kategórianevekre és EPG címekre. Az 'Auto' a Kodi felületi nyelvét használja, ha támogatott, egyébként szlovákot."
 
 msgctxt "#30820"
 msgid "Auto"
-msgstr "Automaticky"
+msgstr "Automatikus"
 
 msgctxt "#30821"
 msgid "Slovak"
-msgstr "Slovenština"
+msgstr "Szlovák"
 
 msgctxt "#30822"
 msgid "Czech"
-msgstr "Čeština"
+msgstr "Cseh"
 
 msgctxt "#30823"
 msgid "English"
-msgstr "Angličtina"
+msgstr "Angol"
 
 msgctxt "#30824"
 msgid "Ukrainian"
-msgstr "Ukrajinština"
+msgstr "Ukrán"
 
 msgctxt "#30825"
 msgid "Russian"
-msgstr "Ruština"
-
-msgctxt "#30826"
-msgid "Hungarian"
-msgstr "Maďarština"
+msgstr "Orosz"
 
 # Bitrate options
 msgctxt "#30830"
 msgid "Unlimited"
-msgstr "Neomezený"
+msgstr "Korlátlan"
 
 msgctxt "#30831"
 msgid "8 Mbit/s"
@@ -458,55 +445,51 @@ msgctxt "#30835"
 msgid "2 Mbit/s"
 msgstr "2 Mbit/s"
 
-# Settings help text (descriptions shown in the footer)
+# Settings help text
 msgctxt "#30900"
 msgid "General settings: account pairing and stream quality."
-msgstr "Obecná nastavení: párování účtu a kvalita streamu."
+msgstr "Általános beállítások: fiók párosítás és stream minőség."
 
 msgctxt "#30901"
 msgid "Start the device pairing flow. You will be shown a code to enter at sweet.tv -> My Devices."
-msgstr "Spustí proces párování zařízení. Zobrazí se vám kód, který zadáte na sweet.tv -> Moje zařízení."
+msgstr "Eszköz párosítás indítása. Egy kódot kap, amelyet a sweet.tv -> Eszközeim menüpontban kell megadnia."
 
 msgctxt "#30902"
 msgid "Logout from sweet.tv and clear stored credentials. You will need to re-pair to use the addon again."
-msgstr "Odhlásí vás ze sweet.tv a smaže uložené přihlašovací údaje. Pro další použití doplňku bude potřeba opětovné spárování."
+msgstr "Kijelentkezés a sweet.tv-ből és a tárolt hitelesítő adatok törlése. A kiegészítő újbóli használatához újra kell párosítania."
 
 msgctxt "#30903"
 msgid "Cap the maximum HLS variant bitrate the addon will request. Lower values use less bandwidth at the cost of quality."
-msgstr "Omezí maximální bitrate HLS varianty, kterou si doplněk vyžádá. Nižší hodnoty šetří připojení na úkor kvality."
+msgstr "A kiegészítő által kért maximális HLS bitráta korlátozása. Az alacsonyabb értékek kevesebb sávszélességet használnak a minőség rovására."
 
 msgctxt "#30904"
 msgid "Channel and EPG configuration."
-msgstr "Konfigurace kanálů a EPG."
+msgstr "Csatorna és EPG konfiguráció."
 
 msgctxt "#30905"
 msgid "When enabled, channels marked as adult by sweet.tv (18+ category) appear in listings and the TV guide."
-msgstr "Pokud je zapnuto, kanály označené sweet.tv jako pro dospělé (kategorie 18+) se zobrazí v seznamech a v TV programu."
+msgstr "Ha engedélyezve van, a sweet.tv által felnőttként (18+) jelölt csatornák megjelennek a listákban és a TV műsorkalauzban."
 
 msgctxt "#30906"
 msgid "How many days of EPG data to fetch from sweet.tv when IPTV Manager refreshes. More days = larger payload and slower refresh."
-msgstr "Kolik dní EPG dat stáhnout ze sweet.tv při obnově přes IPTV Manager. Více dní znamená větší objem dat a pomalejší obnovu."
+msgstr "Hány nap EPG adatot töltsön le a sweet.tv-ből az IPTV Manager frissítésekor. Több nap = nagyobb adatmennyiség és lassabb frissítés."
 
 msgctxt "#30907"
 msgid "Stream playback behaviour."
-msgstr "Chování při přehrávání streamu."
+msgstr "Stream lejátszási viselkedés."
 
 msgctxt "#30909"
 msgid "Tell sweet.tv to release the stream slot when playback stops. If disabled, slots leak until the server times them out, which can trigger 'too many devices' errors."
-msgstr "Po zastavení přehrávání řekne sweet.tv, aby uvolnil slot streamu. Pokud je vypnuto, sloty zůstávají obsazené až do timeoutu na serveru, což může způsobit chybu 'příliš mnoho zařízení'."
+msgstr "Utasítsa a sweet.tv-t a stream slot felszabadítására, ha a lejátszás leáll. Ha ki van kapcsolva, a slotok szivárognak, amíg a szerver le nem időzíti őket, ami 'túl sok eszköz' hibákat válthat ki."
 
 msgctxt "#30910"
 msgid "Advanced settings: device management and subscription info."
-msgstr "Pokročilá nastavení: správa zařízení a informace o předplatném."
+msgstr "Haladó beállítások: eszközkezelés és előfizetési információk."
 
 msgctxt "#30911"
 msgid "Open the list of devices currently registered to your sweet.tv account. You can remove devices to free up slots."
-msgstr "Otevře seznam zařízení aktuálně registrovaných k vašemu sweet.tv účtu. Zařízení můžete odebrat pro uvolnění slotů."
+msgstr "A sweet.tv fiókjához jelenleg regisztrált eszközök listájának megnyitása. Eszközöket távolíthat el a slotok felszabadításához."
 
 msgctxt "#30912"
 msgid "Show details about your active sweet.tv subscription."
-msgstr "Zobrazí informace o vašem aktivním sweet.tv předplatném."
-
-msgctxt "#30813"
-msgid "Show Movies Not in Subscription"
-msgstr "Zobrazit filmy mimo předplatné"
+msgstr "Az aktív sweet.tv előfizetés részleteinek megjelenítése."
