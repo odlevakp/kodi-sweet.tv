@@ -15,7 +15,13 @@ from resources.lib.sweettv_api import SweetTVApi, _log
 
 
 class SweetTVMonitor(xbmc.Monitor):
-    """Monitor for addon settings changes and system events."""
+    """Monitor for addon settings changes and system events.
+
+    On Android TV, Kodi suspends instead of quitting when the TV turns
+    off. PVR IPTV Simple Client loads channels at startup only, so after
+    a long suspend the TV section can appear empty. We listen for resume
+    signals (screensaver off, DPMS wake) and nudge PVR to re-scan.
+    """
 
     def __init__(self):
         super().__init__()
@@ -28,6 +34,14 @@ class SweetTVMonitor(xbmc.Monitor):
             _handle_iptv_request(data, "channels")
         elif method == "Other.sweettv_iptv_epg":
             _handle_iptv_request(data, "epg")
+
+    def onScreensaverDeactivated(self):
+        """Kodi woke from screensaver — nudge PVR to re-scan."""
+        _nudge_pvr()
+
+    def onDPMSDeactivated(self):
+        """Display woke from power management (e.g. CEC TV turned on)."""
+        _nudge_pvr()
 
 
 class SweetTVPlayer(xbmc.Player):
@@ -67,6 +81,28 @@ class SweetTVPlayer(xbmc.Player):
                 self._api.close_stream(self._stream_id)
             self._stream_id = None
             self._api = None
+
+
+def _nudge_pvr():
+    """Ask PVR to re-import channels from all active clients.
+
+    Uses the lightweight PVR.Scan JSON-RPC call which tells the PVR
+    subsystem to re-read its sources without the risky disable/enable
+    cycle that can crash PVR IPTV Simple Client.
+
+    This runs on every screensaver/DPMS wake, which is frequent on
+    Android TV (every time the TV turns on). The scan itself is cheap —
+    PVR Simple Client just re-reads the M3U and EPG files it already has.
+    """
+    _log("Resume detected — nudging PVR to re-scan channels")
+    try:
+        xbmc.executeJSONRPC(json.dumps({
+            "jsonrpc": "2.0",
+            "method": "PVR.Scan",
+            "id": 1,
+        }))
+    except Exception as e:
+        _log("PVR.Scan failed: %s" % e, level=xbmc.LOGERROR)
 
 
 def _register_iptv_manager():

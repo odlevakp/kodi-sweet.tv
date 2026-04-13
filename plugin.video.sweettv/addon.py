@@ -975,6 +975,10 @@ def configure_pvr_simple():
         "epgPath": "special://userdata/addon_data/service.iptv.manager/epg.xml",
         "catchupEnabled": "true",
         "kodi_addon_instance_name": "Sweet.TV",
+        # Auto-reload M3U every 12 hours so long-running Kodi stays fresh.
+        "m3uRefreshMode": "1",
+        "m3uRefreshIntervalMins": "720",
+        "m3uRefreshHour": "4",
     }
 
     new_content = content
